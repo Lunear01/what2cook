@@ -27,17 +27,47 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
     private static final String BASE_URL = "https://api.spoonacular.com/recipes";
 
     @Override
-    public List<Recipe> getRecipesByIngredients(List<String> ingredients, int number, int ranking, boolean ignorePantry) throws IngredientNotFoundException {
-        return List.of();
+    public List<Recipe> getRecipesByIngredients(List<String> ingredients, int number, int ranking,
+                                                boolean ignorePantry) throws IngredientNotFoundException {
+
+        final String url = BASE_URL + "findByIngredients" + "?apiKey=" + API_KEY + "&ingredients="
+                + String.join(",", ingredients) + "&number=" + number + "&ranking=" + ranking
+                + "&ignorePantry=" + ignorePantry;
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        List<Recipe> recipeList;
+
+        try {
+            // Get Response from the client
+            Response response = client.newCall(request).execute();
+            assert response.body() != null;
+            // Get string body of the response and Parse into JSON
+            String responseBody = response.body().string();
+            JSONObject Json_data = new JSONObject(responseBody);
+
+            recipeList = new ArrayList<>();
+
+            for
+
+        }
+        catch (IOException e) {
+            throw new IngredientNotFoundException("Ingredient not found");
+        }
+
+        return recipeList;
     }
 
     @Override
-    public Recipe getRecipeInfo(int id, boolean includeNutrition, boolean addWinePairing, boolean addTasteData) throws RecipeNotFoundException {
+    public Recipe getRecipeInfo(int id, boolean includeNutrition, boolean addWinePairing,
+                                boolean addTasteData) throws RecipeNotFoundException {
         return null;
     }
 
     @Override
-    public Recipe getRecipeInstructions(int id, boolean steBreakdown) throws RecipeNotFoundException {
+    public Recipe getRecipeInstructions(int id, boolean stepBreakdown) throws RecipeNotFoundException {
         return null;
     }
 
