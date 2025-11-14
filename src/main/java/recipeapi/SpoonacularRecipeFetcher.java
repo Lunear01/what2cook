@@ -26,7 +26,6 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
     private static final String API_KEY = "a8caa3ad56aa4b7ba4a935fda8cfabdd";
     private static final String BASE_URL = "https://api.spoonacular.com/recipes";
 
-
     @Override
     public List<Recipe> getRecipesByIngredients(List<String> ingredients, int number, int ranking, boolean ignorePantry) throws IngredientNotFoundException {
         return List.of();
