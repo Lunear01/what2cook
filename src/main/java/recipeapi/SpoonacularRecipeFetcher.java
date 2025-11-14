@@ -49,8 +49,11 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
             JSONObject Json_data = new JSONObject(responseBody);
 
             recipeList = new ArrayList<>();
+            JSONArray recipeInfo = new JSONArray(Json_data.getJSONArray("message"));
 
-            for
+            for (int i = 0; i < recipeInfo.length(); i++) {
+                    String recipeInformation = recipeInfo.getString(i);
+                    recipeList.add(recipeInformation);
 
         }
         catch (IOException e) {
