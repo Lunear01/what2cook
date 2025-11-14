@@ -21,11 +21,34 @@ public interface RecipeFetcher {
     List<Recipe> getRecipesByIngredients(List<String> ingredients, int number, int ranking,
                                          boolean ignorePantry) throws IngredientNotFoundException;
 
+    /**
+     * Gets detailed information for a specific recipe.
+     * @param id the recipe ID
+     * @param includeNutrition true to include nutrition data
+     * @param addWinePairing true to include wine pairing suggestions
+     * @param addTasteData true to include taste analysis
+     * @return detailed recipe information
+     * @throws RecipeNotFoundException if recipe ID is not found
+     */
     Recipe getRecipeInfo(int id, boolean includeNutrition, boolean addWinePairing,
                          boolean addTasteData) throws RecipeNotFoundException;
 
-    Recipe getRecipeInstructions(int id, boolean steBreakdown) throws RecipeNotFoundException;
 
+    /**
+     * Gets cooking instructions for a recipe.
+     * @param id the recipe ID
+     * @param stepBreakdown true to include detailed step-by-step instructions
+     * @return recipe with instructions
+     * @throws RecipeNotFoundException if recipe ID is not found
+     */
+    Recipe getRecipeInstructions(int id, boolean stepBreakdown) throws RecipeNotFoundException;
+
+    /**
+     * Gets nutrition information for a recipe.
+     * @param id the recipe ID
+     * @return recipe with nutrition data
+     * @throws RecipeNotFoundException if recipe ID is not found
+     */
     Recipe getNutrition(int id) throws RecipeNotFoundException;
 
     class RecipeNotFoundException extends Exception {
