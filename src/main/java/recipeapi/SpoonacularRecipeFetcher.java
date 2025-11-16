@@ -206,9 +206,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
         }
     }
 
-    // =====================================================================================
-    // 4. GET NUTRITION
-    // =====================================================================================
+    // Get recipe nutrition
     @Override
     public Recipe getNutrition(int id) throws RecipeNotFoundException {
 
@@ -244,9 +242,9 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
         }
     }
 
-    // =====================================================================================
-    // RESPONSE PARSER
-    // =====================================================================================
+    // Response Parser
+    // Check for API call integrity
+    // Parse JSON response
     private static JSONArray parseResponse(List<String> ingredients, Response response)
             throws IngredientNotFoundException, IOException {
 
