@@ -3,12 +3,11 @@ package interface_adapter.recipe_search;
 import java.util.ArrayList;
 import java.util.List;
 
-import entity.Ingredient;
 import entity.Recipe;
 
 public class RecipeSearchState {
 
-    private List<Ingredient> ingredients = new ArrayList<>();
+    private List<String> ingredients = new ArrayList<>();
     private List<Recipe> recipes = new ArrayList<>();
     private String error;
 
@@ -24,7 +23,7 @@ public class RecipeSearchState {
     }
 
     // ====== Getters ======
-    public List<Ingredient> getIngredients() {
+    public List<String> getIngredients() {
         return ingredients;
     }
 
@@ -37,7 +36,7 @@ public class RecipeSearchState {
     }
 
     // ====== Setters ======
-    public void setIngredients(List<Ingredient> ingredients) {
+    public void setIngredients(List<String> ingredients) {
         this.ingredients = ingredients;
     }
 
