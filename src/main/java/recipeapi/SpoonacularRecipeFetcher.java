@@ -14,7 +14,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
     private static final String API_KEY = System.getenv().getOrDefault(
             "SPOONACULAR_API_KEY",
-            "a8caa3ad56aa4b7ba4a935fda8cfabdd"
+            "3edf2d268b314f25afbee7ea2f92cbee"
     );
 
     private static final String BASE_URL = "https://api.spoonacular.com/recipes";
@@ -56,6 +56,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 final Recipe recipe = new Recipe();
                 recipe.setId(obj.getInt("id"));
                 recipe.setTitle(obj.getString("title"));
+                recipe.setImage(obj.getString("image"));
 
                 // Extract ingredient names
                 final List<String> ingNames = new ArrayList<>();
@@ -125,18 +126,6 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
             // Health score
             recipe.setHealthScore(obj.optInt("healthScore", 0));
-
-            // Calories if included
-            if (includeNutrition && obj.has("nutrition")) {
-                final JSONObject nutrition = obj.getJSONObject("nutrition");
-                final JSONArray nutrients = nutrition.getJSONArray("nutrients");
-                for (int i = 0; i < nutrients.length(); i++) {
-                    final JSONObject n = nutrients.getJSONObject(i);
-                    if (n.getString("name").equalsIgnoreCase("Calories")) {
-                        recipe.setCalories((int) n.getDouble("amount"));
-                    }
-                }
-            }
 
             return recipe;
 

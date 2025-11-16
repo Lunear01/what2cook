@@ -33,7 +33,6 @@ public interface RecipeFetcher {
     Recipe getRecipeInfo(int id, boolean includeNutrition, boolean addWinePairing,
                          boolean addTasteData) throws RecipeNotFoundException;
 
-
     /**
      * Gets cooking instructions for a recipe.
      * @param id the recipe ID

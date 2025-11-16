@@ -18,9 +18,10 @@ public class SpoonacularRecipeFetcherTest {
                     true
             );
 
-            // Print recipe names
+            // Print recipe names and images
             for (Recipe r : recipes) {
                 System.out.println("Recipe: " + r.getTitle() + " (ID: " + r.getId() + ")");
+                System.out.println("Image: " + r.getImage());
             }
 
             // Basic assertions to ensure it's not empty
@@ -32,12 +33,11 @@ public class SpoonacularRecipeFetcherTest {
 
         /* === Testing getRecipeInfo === */
         try {
-            int id = 715538; // Known working recipe ID
+            int id = 649985; // Known working recipe ID
 
             Recipe info = fetcher.getRecipeInfo(id, true, false, false);
 
             System.out.println("Title: " + info.getTitle());
-            System.out.println("Calories: " + info.getCalories());
             System.out.println("Health Score: " + info.getHealthScore());
 
             assertNotNull(info.getTitle());
@@ -48,7 +48,7 @@ public class SpoonacularRecipeFetcherTest {
 
         /* === Testing getRecipeInstructions === */
         try {
-            int id = 715538;
+            int id = 649985;
 
             Recipe instructions = fetcher.getRecipeInstructions(id, true);
 
@@ -62,7 +62,7 @@ public class SpoonacularRecipeFetcherTest {
 
         /* === Testing getNutrition === */
         try {
-            int id = 715538;
+            int id = 1003464;
 
             Recipe nutrition = fetcher.getNutrition(id);
 
