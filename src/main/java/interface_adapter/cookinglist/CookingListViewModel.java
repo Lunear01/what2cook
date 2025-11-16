@@ -5,12 +5,14 @@ import entity.Recipe;
 
 import java.util.List;
 
-public class CookingListViewModel {
+public class CookingListViewModel extends ViewModel<CookingListState> {
+
     public static final String VIEW_NAME = "cooking list";
 
     public CookingListViewModel() {
         super(VIEW_NAME);
-        this.setState(new CookingListState()); // 初始化 state，避免 null
+        // 初始化 state，避免一开始 getState() 为 null
+        this.setState(new CookingListState());
     }
 
     // 方便 Presenter / View 使用的封装方法：
@@ -18,8 +20,8 @@ public class CookingListViewModel {
     public void setPersonalCookingList(List<Recipe> recipes) {
         CookingListState state = getState();
         state.setPersonalCookingList(recipes);
-        setState(state);         // 更新 state
-        firePropertyChanged();   // 通知监听者（比如 NoteView）
+        setState(state);                 // 更新状态
+        firePropertyChanged("cooking");  // 通知监听者（比如 NoteView）
     }
 
     public List<Recipe> getPersonalCookingList() {
