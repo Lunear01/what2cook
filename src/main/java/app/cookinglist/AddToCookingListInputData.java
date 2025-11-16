@@ -1,6 +1,10 @@
 package app.cookinglist;
 
-public interface AddToCookingListInputData {
+import org.w3c.dom.CDATASection;
+import entity.Recipe;
+
+
+public class AddToCookingListInputData {
     private final String username;
     private final Recipe recipe;
 

@@ -1,6 +1,10 @@
 package app.cookinglist;
+import entity.Recipe;
+import entity.User;
 
-public interface AddToCookingListInteractor {
+
+
+public class AddToCookingListInteractor {
     private final UserDataAccessInterface userDao;
     private final AddToCookingListOutputBoundary presenter;
 

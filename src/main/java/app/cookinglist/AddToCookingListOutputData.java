@@ -1,6 +1,8 @@
 package app.cookinglist;
+import entity.Recipe;
+import java.util.List;
 
-public interface AddToCookingListOutputData {
+public class AddToCookingListOutputData {
     private final List<Recipe> updatedCookingList;
     private final String message;
 
