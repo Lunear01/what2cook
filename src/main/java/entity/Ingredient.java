@@ -10,5 +10,7 @@ public class Ingredient {
     public String getName() {
         return name;
     }
+
+    pub
 }
 

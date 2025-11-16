@@ -109,3 +109,54 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         int count = (recipes == null) ? 0 : recipes.size();
         resultsCountLabel.setText(count + " results");
     }
+
+    /* ------------------- Recipe Card ------------------- */
+
+    private JPanel createRecipeCard(Recipe recipe) {
+        JPanel card = new JPanel(new BorderLayout());
+        card.setPreferredSize(new Dimension(460, 200));
+        card.setMaximumSize(new Dimension(Short.MAX_VALUE, 200));
+        card.setAlignmentX(Component.CENTER_ALIGNMENT);
+        card.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // ===== image =====
+        ImageIcon icon;
+        String path = recipe.getImage(); // Recipe.getImage()
+
+        if (path != null && !path.isEmpty()) {
+            ImageIcon raw = new ImageIcon(path);
+            Image scaled = raw.getImage().getScaledInstance(440, 140, Image.SCALE_SMOOTH);
+            icon = new ImageIcon(scaled);
+        } else {
+            icon = new ImageIcon(); // empty placeholder
+        }
+
+        JLabel imgLabel = new JLabel(icon);
+        imgLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // ===== title =====
+        JLabel titleLabel = new JLabel(recipe.getTitle());
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // add to card
+        card.add(imgLabel, BorderLayout.CENTER);
+        card.add(titleLabel, BorderLayout.SOUTH);
+
+        // clickable behavior
+        card.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (controller != null) {
+                    controller.openRecipe(recipe); // go to detail page
+                }
+            }
+        });
+
+        return card;
+    }
+
+    public void setController(RecipeSearchController controller) {
+        this.controller = controller;
+    }
+}
+
