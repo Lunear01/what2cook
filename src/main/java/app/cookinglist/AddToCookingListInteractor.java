@@ -4,7 +4,7 @@ import entity.User;
 
 
 
-public class AddToCookingListInteractor {
+public class AddToCookingListInteractor implements AddToCookingListInputBoundary {
     private final UserDataAccessInterface userDao;
     private final AddToCookingListOutputBoundary presenter;
 
