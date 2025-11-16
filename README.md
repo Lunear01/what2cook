@@ -16,5 +16,5 @@ API infused recipe recommendation/search engine based on user provided ingredien
 - Iker Huang
 - Yuchen Ji
 - Mohan Yuan
-- Han kong
+- Han Kong
 - David Kang-hee Kim
