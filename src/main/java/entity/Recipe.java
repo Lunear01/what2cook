@@ -69,7 +69,7 @@ public class Recipe {
         this.ingredientNames = ingredientNames;
     }
 
-    public void setCalories(double calories) {
+    public void setCalories(int calories) {
         this.calories = calories;
     }
 
@@ -85,4 +85,3 @@ public class Recipe {
         this.image = image;
     }
 }
-
