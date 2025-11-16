@@ -3,13 +3,14 @@ package interface_adapter.cookinglist;
 
 import app.cookinglist.AddToCookingListOutputBoundary;
 import app.cookinglist.AddToCookingListOutputData;
-import interface_adapter.note.ViewModel;
 
 
-public class AddToCookingListPresenter {
-    private final ViewModel viewModel;
 
-    public AddToCookingListPresenter(ViewModel viewModel) {
+public class AddToCookingListPresenter implements AddToCookingListOutputBoundary {
+
+    private final CookingListViewModel viewModel;
+
+    public AddToCookingListPresenter(CookingListViewModel viewModel) {
         this.viewModel = viewModel;
     }
 
