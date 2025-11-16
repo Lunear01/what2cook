@@ -11,6 +11,5 @@ public class Ingredient {
         return name;
     }
 
-    pub
 }
 
