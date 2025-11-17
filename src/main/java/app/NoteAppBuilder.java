@@ -2,7 +2,15 @@ package app;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
+import data_access.UserDataAccessObject;
 
+import app.cookinglist.AddToCookingListInputBoundary;
+import app.cookinglist.AddToCookingListInteractor;
+import app.cookinglist.AddToCookingListOutputBoundary;
+
+import interface_adapter.cookinglist.CookingListViewModel;
+import interface_adapter.cookinglist.AddToCookingListPresenter;
+import interface_adapter.cookinglist.AddToCookingListController;
 import interface_adapter.note.NoteController;
 import interface_adapter.note.NotePresenter;
 import interface_adapter.note.NoteViewModel;
@@ -21,6 +29,8 @@ public class NoteAppBuilder {
     private NoteViewModel noteViewModel = new NoteViewModel();
     private NoteView noteView;
     private NoteInteractor noteInteractor;
+    private UserDataAccessObject userDAO;
+    private CookingListViewModel cookingListViewModel = new CookingListViewModel();
 
     /**
      * Sets the NoteDAO to be used in this application.
@@ -60,8 +70,49 @@ public class NoteAppBuilder {
     public NoteAppBuilder addNoteView() {
         noteViewModel = new NoteViewModel();
         noteView = new NoteView(noteViewModel);
+        noteView = new NoteView(noteViewModel, cookingListViewModel);
         return this;
     }
+
+    /**
+     * Creates the objects for the Cooking List Use Case and
+     * connects the NoteView to its controller.
+     *
+     * <p>This method must be called after addNoteView!</p>
+     * @return this builder
+     * @throws RuntimeException if this method is called before addNoteView
+     */
+    public NoteAppBuilder addCookingListUseCase() {
+        if (noteView == null) {
+            throw new RuntimeException("addNoteView must be called before addCookingListUseCase");
+        }
+
+        // 1. 如果还没有 userDAO，就 new 一个
+        if (userDAO == null) {
+            userDAO = new UserDataAccessObject();
+        }
+
+        // 2. 创建 Presenter
+        AddToCookingListOutputBoundary outputBoundary =
+                new AddToCookingListPresenter(cookingListViewModel);
+
+        // 3. 创建 Interactor
+        AddToCookingListInputBoundary interactor =
+                new AddToCookingListInteractor(userDAO, outputBoundary);
+
+        // 4. 创建 Controller
+        AddToCookingListController controller =
+                new AddToCookingListController(interactor);
+
+        // 5. 把 Controller 交给 NoteView
+        noteView.setAddToCookingListController(controller);
+
+        return this;
+    }
+
+
+
+
 
     /**
      * Builds the application.
