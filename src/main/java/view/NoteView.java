@@ -49,7 +49,7 @@ public class NoteView extends JPanel implements ActionListener, PropertyChangeLi
 
         noteName.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.noteViewModel = noteViewModel;
-        CookingListViewModel cookingListViewModel
+        this.cookingListViewModel = cookingListViewModel;
         this.noteViewModel.addPropertyChangeListener(this);
         this.cookingListViewModel.addPropertyChangeListener(evt -> refreshCookingList());
 
@@ -88,12 +88,11 @@ public class NoteView extends JPanel implements ActionListener, PropertyChangeLi
 
 
                         Recipe demoRecipe = new Recipe(
-                                0,
-                                "Tomato",
-                                Collections.emptyList(),
-                                0.0,
-                                0,
-                                noteInputField.getText()
+                                "Tomato",                   // title
+                                Collections.emptyList(),    // ingredientNames
+                                0,                          // calories
+                                0,                          // healthScore
+                                noteInputField.getText()    // instructions
                         );
 
                         String username = "Csc207";
