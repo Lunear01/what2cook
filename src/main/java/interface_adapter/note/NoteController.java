@@ -1,6 +1,6 @@
 package interface_adapter.note;
 
-import use_case.note.NoteInputBoundary;
+import interface_adapter.note.NoteInputBoundary;
 
 /**
  * Controller for our Note related Use Cases.
@@ -18,10 +18,10 @@ public class NoteController {
      * @param note the note to be recorded
      */
     public void execute(String note) {
-        if (note != null) {
-            noteInteractor.executeSave(note);
-        }
-        else {
+        if (note != null && !note.isEmpty()) {
+            NoteInputData inputData = new NoteInputData(note);
+            noteInteractor.execute(inputData);
+        }else {
             noteInteractor.executeRefresh();
         }
     }

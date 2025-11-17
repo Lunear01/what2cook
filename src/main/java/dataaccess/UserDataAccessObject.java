@@ -1,11 +1,10 @@
 package dataaccess;
-import app.cookinglist.UserDataAccessInterface;
 import entity.User;
 import java.util.HashMap;
 import java.util.Map;
+import app.cookinglist.UserDataAccessInterface;
 
-
-public class UserDataAccesssObject {
+public class UserDataAccessObject implements UserDataAccessInterface {
     private final Map<String, User> users = new HashMap<>();
 
     @Override

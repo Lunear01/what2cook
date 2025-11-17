@@ -2,11 +2,12 @@ package app;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
-import data_access.UserDataAccessObject;
+import dataaccess.UserDataAccessObject;
 
 import app.cookinglist.AddToCookingListInputBoundary;
 import app.cookinglist.AddToCookingListInteractor;
 import app.cookinglist.AddToCookingListOutputBoundary;
+import app.cookinglist.UserDataAccessInterface;
 
 import interface_adapter.cookinglist.CookingListViewModel;
 import interface_adapter.cookinglist.AddToCookingListPresenter;
@@ -29,7 +30,7 @@ public class NoteAppBuilder {
     private NoteViewModel noteViewModel = new NoteViewModel();
     private NoteView noteView;
     private NoteInteractor noteInteractor;
-    private UserDataAccessObject userDAO;
+    private UserDataAccessInterface userDAO;
     private CookingListViewModel cookingListViewModel = new CookingListViewModel();
 
     /**
@@ -69,7 +70,6 @@ public class NoteAppBuilder {
      */
     public NoteAppBuilder addNoteView() {
         noteViewModel = new NoteViewModel();
-        noteView = new NoteView(noteViewModel);
         noteView = new NoteView(noteViewModel, cookingListViewModel);
         return this;
     }
@@ -87,24 +87,15 @@ public class NoteAppBuilder {
             throw new RuntimeException("addNoteView must be called before addCookingListUseCase");
         }
 
-        // 1. 如果还没有 userDAO，就 new 一个
         if (userDAO == null) {
             userDAO = new UserDataAccessObject();
         }
-
-        // 2. 创建 Presenter
         AddToCookingListOutputBoundary outputBoundary =
                 new AddToCookingListPresenter(cookingListViewModel);
-
-        // 3. 创建 Interactor
         AddToCookingListInputBoundary interactor =
                 new AddToCookingListInteractor(userDAO, outputBoundary);
-
-        // 4. 创建 Controller
         AddToCookingListController controller =
                 new AddToCookingListController(interactor);
-
-        // 5. 把 Controller 交给 NoteView
         noteView.setAddToCookingListController(controller);
 
         return this;
