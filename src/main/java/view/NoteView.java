@@ -23,6 +23,7 @@ import interface_adapter.note.NoteViewModel;
 import interface_adapter.cookinglist.CookingListViewModel;
 import interface_adapter.cookinglist.AddToCookingListController;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * The View for when the user is viewing a note in the program.
@@ -37,7 +38,7 @@ public class NoteView extends JPanel implements ActionListener, PropertyChangeLi
 
     private final JButton saveButton = new JButton("Save");
     private final JButton refreshButton = new JButton("Refresh");
-
+    private final JButton removeFromCookingListButton = new JButton("Remove selected");
     private final JButton addToCookingListButton = new JButton("Add to personal cooking list");
     private final DefaultListModel<String> cookingListModel = new DefaultListModel<>();
     private final JList<String> cookingListList = new JList<>(cookingListModel);
@@ -57,6 +58,7 @@ public class NoteView extends JPanel implements ActionListener, PropertyChangeLi
         buttons.add(saveButton);
         buttons.add(refreshButton);
         buttons.add(addToCookingListButton);
+        buttons.add(removeFromCookingListButton);
 
         saveButton.addActionListener(
                 evt -> {
@@ -87,17 +89,55 @@ public class NoteView extends JPanel implements ActionListener, PropertyChangeLi
                         }
 
 
-                        Recipe demoRecipe = new Recipe(
-                                "Tomato",                   // title
-                                Collections.emptyList(),    // ingredientNames
-                                0,                          // calories
-                                0,                          // healthScore
-                                noteInputField.getText()    // instructions
-                        );
+                        String text = noteInputField.getText();
+                        if (text == null || text.isBlank()) {
+                            JOptionPane.showMessageDialog(this,
+                                    "Please enter something before adding.",
+                                    "Warning", JOptionPane.WARNING_MESSAGE);
+                            return;
+                        }
 
+                        Recipe demoRecipe = new Recipe(
+                                text,                 // title = 你的输入
+                                Collections.emptyList(),
+                                0,
+                                0,
+                                text                  // instructions 也用同一个
+                        );
                         String username = "Csc207";
 
                         addToCookingListController.add(username, demoRecipe);
+                    }
+                }
+        );
+
+        removeFromCookingListButton.addActionListener(
+                evt -> {
+                    if (evt.getSource().equals(removeFromCookingListButton)) {
+                        if (addToCookingListController == null) {
+                            JOptionPane.showMessageDialog(this,
+                                    "AddToCookingListController not set.",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        int index = cookingListList.getSelectedIndex();
+                        if (index == -1) {
+                            JOptionPane.showMessageDialog(this,
+                                    "Please select a recipe to remove.",
+                                    "Warning", JOptionPane.WARNING_MESSAGE);
+                            return;
+                        }
+
+                        // 从 ViewModel 里拿当前列表，找出选中的那一个 Recipe
+                        List<Recipe> recipes = cookingListViewModel.getPersonalCookingList();
+                        if (index < 0 || index >= recipes.size()) {
+                            return; // 防御性检查
+                        }
+                        Recipe toRemove = recipes.get(index);
+
+                        String username = "Csc207";
+                        addToCookingListController.remove(username, toRemove);
                     }
                 }
         );

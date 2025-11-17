@@ -16,4 +16,7 @@ public class AddToCookingListController {
     public void add(String username, Recipe recipe) {
         interactor.add(username, recipe);
     }
+    public void remove(String username, Recipe recipe) {
+        interactor.remove(username, recipe);
+    }
 }

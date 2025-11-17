@@ -35,4 +35,19 @@ public class AddToCookingListInteractor implements AddToCookingListInputBoundary
 
         presenter.prepareSuccessView(outputData);
     }
+    @Override
+    public void remove(String username, Recipe recipe) {
+        User user = userDAO.getUser(username);
+        if (user == null) {
+            presenter.prepareFailView("User not found: " + username);
+            return;
+        }
+        user.removeFromPersonalCookingList(recipe);
+        userDAO.saveUser(user);
+
+        List<Recipe> updatedList = user.getPersonalCookingList();
+        AddToCookingListOutputData data =
+                new AddToCookingListOutputData(updatedList);
+        presenter.prepareSuccessView(data);
+    }
 }
