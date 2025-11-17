@@ -3,25 +3,31 @@ package interface_adapter.fridgemodify;
 import use_case.AddIngredientUseCase;
 import use_case.GetIngredientUseCase;
 
+/**
+ * The Controller for fridge-related actions.
+ */
 public class FridgeController {
 
-    private final AddIngredientUseCase addin;
-    private final GetIngredientUseCase getin;
+    private final AddIngredientUseCase addUC;
+    private final GetIngredientUseCase getUC;
 
-    private final FridgeViewModel vm;
-
-    public FridgeController(AddIngredientUseCase addin,
-                            FridgeViewModel VM) {
-        this.addin = addin;
-        this.vm = VM;
+    public FridgeController(AddIngredientUseCase addUC, GetIngredientUseCase getUC) {
+        this.addUC = addUC;
+        this.getUC = getUC;
     }
 
+    /**
+     * Adds an ingredient and triggers UI update.
+     */
     public void addIngredient(String name) {
-        addin.addToList(name);
+        addUC.addToList(name);
+        getUC.execute();
     }
 
+    /**
+     * Refreshes the ingredient list.
+     */
     public void refresh() {
-        vm.update(getin.execute());
+        getUC.execute();
     }
 }
-
