@@ -1,5 +1,6 @@
 package recipeapi;
 
+import entity.Ingredient;
 import entity.Recipe;
 import okhttp3.*;
 import org.json.JSONArray;
@@ -229,6 +230,11 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
             throw new RecipeNotFoundException("Error retrieving nutrition: " + error.getMessage());
         }
     }
+
+//    @Override
+//    public Ingredient searchIngredient(String name) throws IngredientNotFoundException {
+//        return null;
+//     }
 
     // Response Parser
     // Check for API call integrity

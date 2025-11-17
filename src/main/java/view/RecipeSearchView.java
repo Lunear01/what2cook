@@ -106,14 +106,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     }
 
     private void updateResultCount(List<Recipe> recipes) {
-        final int count;
-
-        if (recipes == null) {
-            count = 0;
-        }
-        else {
-            count = recipes.size();
-        }
+        int count = (recipes == null) ? 0 : recipes.size();
         resultsCountLabel.setText(count + " results");
     }
 
@@ -127,7 +120,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         card.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // ===== image =====
-        final ImageIcon icon;
+        ImageIcon icon;
         String path = recipe.getImage(); // Recipe.getImage()
 
         if (path != null && !path.isEmpty()) {

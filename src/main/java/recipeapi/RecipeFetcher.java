@@ -2,6 +2,7 @@ package recipeapi;
 
 import java.util.List;
 
+import entity.Ingredient;
 import entity.Recipe;
 
 /**
@@ -49,6 +50,14 @@ public interface RecipeFetcher {
      * @throws RecipeNotFoundException if recipe ID is not found
      */
     Recipe getNutrition(int id) throws RecipeNotFoundException;
+
+    /**
+     * Checks whether the Ingredient being inputted is valid.
+     * @param name the ingredient's name
+     * @return Ingredient
+     * @throws IngredientNotFoundException if ingredient is not found
+     */
+//    Ingredient searchIngredient(String name) throws IngredientNotFoundException;
 
     class RecipeNotFoundException extends Exception {
         public RecipeNotFoundException(String recipe) {
