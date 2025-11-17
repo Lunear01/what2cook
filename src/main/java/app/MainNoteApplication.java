@@ -1,5 +1,12 @@
 package app;
 
+
+
+import interface_adapter.note.NoteDataAccessInterface;
+
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
 /**
  * An application where we can view and add to a note stored by a user.
  *
@@ -45,6 +52,21 @@ public class MainNoteApplication {
      * @param args commandline arguments are ignored
      */
     public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            NoteAppBuilder builder = new NoteAppBuilder();
+
+            NoteDataAccessInterface noteDAO = new InMemoryNoteDAO();
+
+            builder
+                    .addNoteDAO(noteDAO)
+                    .addNoteView()
+                    .addNoteUseCase()
+                    .addCookingListUseCase();
+
+            JFrame frame = builder.build();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        });
 
     }
 }

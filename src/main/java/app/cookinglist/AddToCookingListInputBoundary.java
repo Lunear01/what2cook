@@ -1,5 +1,6 @@
 package app.cookinglist;
 
+import entity.Recipe;
 public interface AddToCookingListInputBoundary {
-    void execute(AddToCookingListInputData inputData);
+    void add(String username, Recipe recipe);
 }

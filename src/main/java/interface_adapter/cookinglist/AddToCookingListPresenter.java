@@ -15,10 +15,14 @@ public class AddToCookingListPresenter implements AddToCookingListOutputBoundary
     }
 
     @Override
-    public void present(AddToCookingListOutputData outputData) {
-        if (outputData.getUpdatedCookingList() != null) {
-            viewModel.setPersonalCookingList(outputData.getUpdatedCookingList());
-        }
-        viewModel.setStatusMessage(outputData.getMessage());
+    public void prepareSuccessView(AddToCookingListOutputData data) {
+        // 直接用你封装好的方法
+        viewModel.setPersonalCookingList(data.getPersonalCookingList());
+        viewModel.setStatusMessage("Added to personal cooking list.");
+    }
+
+    @Override
+    public void prepareFailView(String errorMessage) {
+        viewModel.setStatusMessage("Failed to add: " + errorMessage);
     }
 }

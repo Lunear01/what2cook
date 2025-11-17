@@ -90,17 +90,20 @@ public class NoteAppBuilder {
         if (userDAO == null) {
             userDAO = new UserDataAccessObject();
         }
+
         AddToCookingListOutputBoundary outputBoundary =
                 new AddToCookingListPresenter(cookingListViewModel);
+
         AddToCookingListInputBoundary interactor =
                 new AddToCookingListInteractor(userDAO, outputBoundary);
+
         AddToCookingListController controller =
                 new AddToCookingListController(interactor);
+
         noteView.setAddToCookingListController(controller);
 
         return this;
     }
-
 
 
 

@@ -6,6 +6,7 @@ import app.cookinglist.AddToCookingListInputData;
 import entity.Recipe;
 
 public class AddToCookingListController {
+
     private final AddToCookingListInputBoundary interactor;
 
     public AddToCookingListController(AddToCookingListInputBoundary interactor) {
@@ -13,8 +14,6 @@ public class AddToCookingListController {
     }
 
     public void add(String username, Recipe recipe) {
-        AddToCookingListInputData inputData =
-                new AddToCookingListInputData(username, recipe);
-        interactor.execute(inputData);
+        interactor.add(username, recipe);
     }
 }

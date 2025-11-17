@@ -1,32 +1,38 @@
 package app.cookinglist;
 import entity.Recipe;
 import entity.User;
-
+import java.util.List;
 
 
 public class AddToCookingListInteractor implements AddToCookingListInputBoundary {
-    private final UserDataAccessInterface userDao;
+    private final UserDataAccessInterface userDAO;
     private final AddToCookingListOutputBoundary presenter;
 
-    public AddToCookingListInteractor(UserDataAccessInterface userDao,
+    public AddToCookingListInteractor(UserDataAccessInterface userDAO,
                                       AddToCookingListOutputBoundary presenter) {
-        this.userDao = userDao;
+        this.userDAO = userDAO;
         this.presenter = presenter;
     }
 
     @Override
-    public void execute(AddToCookingListInputData inputData) {
-        User user = userDao.getUser(inputData.getUsername());
-        Recipe recipe = inputData.getRecipe();
+    public void add(String username, Recipe recipe) {
+        User user = userDAO.getUser(username);
+        if (user == null) {
+            presenter.prepareFailView("User not found: " + username);
+            return;
+        }
 
+        // ✅ 真正往 personalCookingList 里加
         user.addToPersonalCookingList(recipe);
-        userDao.saveUser(user);
 
-        presenter.present(
-                new AddToCookingListOutputData(
-                        user.getPersonalCookingList(),
-                        recipe.getTitle() + " added to your cooking list!"
-                )
-        );
+        // 保存回 DAO
+        userDAO.saveUser(user);
+
+        // 把最新列表给 Presenter
+        List<Recipe> updatedList = user.getPersonalCookingList();
+        AddToCookingListOutputData outputData =
+                new AddToCookingListOutputData(updatedList);
+
+        presenter.prepareSuccessView(outputData);
     }
 }

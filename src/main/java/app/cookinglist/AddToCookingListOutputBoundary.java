@@ -1,5 +1,6 @@
 package app.cookinglist;
 
 public interface AddToCookingListOutputBoundary {
-    void present(AddToCookingListOutputData outputData);
+    void prepareSuccessView(AddToCookingListOutputData data);
+    void prepareFailView(String errorMessage);
 }

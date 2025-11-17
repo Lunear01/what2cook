@@ -4,18 +4,19 @@ import java.util.List;
 
 public class AddToCookingListOutputData {
     private final List<Recipe> updatedCookingList;
-    private final String message;
 
-    public AddToCookingListOutputData(List<Recipe> updatedCookingList, String message) {
+
+    public AddToCookingListOutputData(List<Recipe> updatedCookingList) {
         this.updatedCookingList = updatedCookingList;
-        this.message = message;
+
+    }
+    public List<Recipe> getPersonalCookingList() {
+        return updatedCookingList;
     }
 
     public List<Recipe> getUpdatedCookingList() {
         return updatedCookingList;
     }
 
-    public String getMessage() {
-        return message;
-    }
+
 }

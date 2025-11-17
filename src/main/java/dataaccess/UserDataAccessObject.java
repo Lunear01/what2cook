@@ -7,6 +7,10 @@ import app.cookinglist.UserDataAccessInterface;
 public class UserDataAccessObject implements UserDataAccessInterface {
     private final Map<String, User> users = new HashMap<>();
 
+
+    public UserDataAccessObject() {
+        users.put("Csc207", new User("Csc207", "password"));
+    }
     @Override
     public User getUser(String username) {
         return users.get(username);
