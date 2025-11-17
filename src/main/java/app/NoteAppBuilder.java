@@ -14,9 +14,9 @@ import interface_adapter.cookinglist.AddToCookingListController;
 import interface_adapter.note.NoteController;
 import interface_adapter.note.NotePresenter;
 import interface_adapter.note.NoteViewModel;
-import use_case.note.NoteDataAccessInterface;
-import use_case.note.NoteInteractor;
-import use_case.note.NoteOutputBoundary;
+import interface_adapter.note.NoteDataAccessInterface;
+import interface_adapter.note.NoteInteractor;
+import interface_adapter.note.NoteOutputBoundary;
 import view.NoteView;
 
 /**
