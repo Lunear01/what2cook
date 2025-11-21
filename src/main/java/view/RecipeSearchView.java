@@ -70,8 +70,8 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent event) {
-        final RecipeSearchState state = (RecipeSearchState) event.getNewValue();
+    public void propertyChange(PropertyChangeEvent evt) {
+        RecipeSearchState state = (RecipeSearchState) evt.getNewValue();
         updateIngredients(state.getIngredients());
         updateRecipes(state.getRecipes());
         updateResultCount(state.getRecipes());
@@ -87,8 +87,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     private void updateIngredients(List<String> ingredients) {
         if (ingredients != null && !ingredients.isEmpty()) {
             ingredientsArea.setText(String.join(", ", ingredients));
-        }
-        else {
+        } else {
             ingredientsArea.setText("");
         }
     }
@@ -107,33 +106,32 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     }
 
     private void updateResultCount(List<Recipe> recipes) {
-        final int count = (recipes == null) ? 0 : recipes.size();
+        int count = (recipes == null) ? 0 : recipes.size();
         resultsCountLabel.setText(count + " results");
     }
 
     /* ------------------- Recipe Card ------------------- */
 
     private JPanel createRecipeCard(Recipe recipe) {
-        final JPanel card = new JPanel(new BorderLayout());
+        JPanel card = new JPanel(new BorderLayout());
         card.setPreferredSize(new Dimension(460, 200));
         card.setMaximumSize(new Dimension(Short.MAX_VALUE, 200));
         card.setAlignmentX(Component.CENTER_ALIGNMENT);
         card.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // ===== image =====
-        final ImageIcon icon;
-        final String path = recipe.getImage(); // Recipe.getImage()
+        ImageIcon icon;
+        String path = recipe.getImage(); // Recipe.getImage()
 
         if (path != null && !path.isEmpty()) {
-            final ImageIcon raw = new ImageIcon(path);
-            final Image scaled = raw.getImage().getScaledInstance(440, 140, Image.SCALE_SMOOTH);
+            ImageIcon raw = new ImageIcon(path);
+            Image scaled = raw.getImage().getScaledInstance(440, 140, Image.SCALE_SMOOTH);
             icon = new ImageIcon(scaled);
-        }
-        else {
+        } else {
             icon = new ImageIcon(); // empty placeholder
         }
 
-        final JLabel imgLabel = new JLabel(icon);
+        JLabel imgLabel = new JLabel(icon);
         imgLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         // ===== title =====
