@@ -1,6 +1,7 @@
 package app.signup;
 
 import entity.User;
+import entity.UserBuilder;
 
 /**
  * Interactor for the Signup use case.
@@ -17,9 +18,9 @@ public class SignupInteractor implements SignupInputBoundary {
 
     @Override
     public void execute(SignupInputData inputData) {
-        String username = inputData.getUsername();
-        String password = inputData.getPassword();
-        String confirm = inputData.getConfirmPassword();
+        final String username = inputData.getUsername();
+        final String password = inputData.getPassword();
+        final String confirm = inputData.getConfirmPassword();
 
         // Basic validations
         if (username == null || username.trim().isEmpty()) {
@@ -42,7 +43,7 @@ public class SignupInteractor implements SignupInputBoundary {
         }
 
         // Create and save user
-        User user = new User.UserBuilder()
+        final User user = new UserBuilder()
                 .setName(username)
                 .setPassword(password)
                 .build();

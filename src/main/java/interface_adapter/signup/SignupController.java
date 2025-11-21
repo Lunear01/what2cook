@@ -11,7 +11,7 @@ public class SignupController {
     }
 
     public void signup(String username, String password, String confirmPassword) {
-        SignupInputData input = new SignupInputData(username, password, confirmPassword);
+        final SignupInputData input = new SignupInputData(username, password, confirmPassword);
         interactor.execute(input);
     }
 }
