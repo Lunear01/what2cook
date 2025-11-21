@@ -1,8 +1,8 @@
 package interface_adapter.fridgemodify;
 
-import use_case.AddIngredientUseCase;
-import use_case.GetIngredientUseCase;
-import use_case.DeleteIngredientUseCase;
+import use_case.Ingredient.AddIngredientUseCase;
+import use_case.Ingredient.GetIngredientUseCase;
+import use_case.Ingredient.DeleteIngredientUseCase;
 
 /**
  * The Controller for fridge-related actions.
