@@ -76,7 +76,7 @@ public class NoteAppBuilder {
         frame.add(noteView);
 
         // refresh so that the note will be visible when we start the program
-        noteInteractor.executeRefresh();
+        noteInteractor.execute(null);
 
         return frame;
 
