@@ -60,18 +60,21 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 recipe.setImage(obj.getString("image"));
 
                 // Extract ingredient names
-                final List<String> ingNames = new ArrayList<>();
+                final List<Ingredient> ingList = new ArrayList<>();
                 final JSONArray used = obj.getJSONArray("usedIngredients");
                 final JSONArray missed = obj.getJSONArray("missedIngredients");
 
                 for (int u = 0; u < used.length(); u++) {
-                    ingNames.add(used.getJSONObject(u).getString("name"));
+                    final String ingredientName = used.getJSONObject(u).getString("name");
+                    ingList.add(new Ingredient(ingredientName));
+
                 }
                 for (int m = 0; m < missed.length(); m++) {
-                    ingNames.add(missed.getJSONObject(m).getString("name"));
+                    final String ingredientName = missed.getJSONObject(m).getString("name");
+                    ingList.add(new Ingredient(ingredientName));
                 }
 
-                recipe.setIngredientNames(ingNames);
+                recipe.setIngredientNames(ingList);
 
                 results.add(recipe);
             }
@@ -118,10 +121,12 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
             recipe.setTitle(obj.getString("title"));
 
             // Ingredient names
-            final List<String> ingredients = new ArrayList<>();
+            final List<Ingredient> ingredients = new ArrayList<>();
             final JSONArray ingArray = obj.getJSONArray("extendedIngredients");
+
             for (int i = 0; i < ingArray.length(); i++) {
-                ingredients.add(ingArray.getJSONObject(i).getString("name"));
+                final String ingredientName = ingArray.getJSONObject(i).getString("name");
+                ingredients.add(new Ingredient(ingredientName));
             }
             recipe.setIngredientNames(ingredients);
 
@@ -230,11 +235,6 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
             throw new RecipeNotFoundException("Error retrieving nutrition: " + error.getMessage());
         }
     }
-
-//    @Override
-//    public Ingredient searchIngredient(String name) throws IngredientNotFoundException {
-//        return null;
-//     }
 
     // Response Parser
     // Check for API call integrity
