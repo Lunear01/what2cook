@@ -1,50 +1,66 @@
 package app;
 
-/**
- * An application where we can view and add to a note stored by a user.
- *
- * <p>This is a minimal example of using the password-protected user API from lab 5,
- * but demonstrating the endpoint allowing you to store an arbitrary JSON object.
- * This functionality could be used in any project where your team wants to persist
- * data which is then accessible across devices.</p>
- *
- * <p>The code is intentionally somewhat incomplete to leave work to be done if your
- * team were to choose to work on a project which would require similar functionality.
- * For example, we have intentionally not created a full "Note" entity here, but
- * rather just represented a note as a string.
- * </p>
- * The ViewManager code has also been removed, since this minimal program only requires a single
- * view. Your team may wish to bring back the ViewManager or make your own implementation of supporting
- * switching between views depending on your project.
- */
+import entity.Recipe;
+import interface_adapter.recipe_search.RecipeSearchController;
+import interface_adapter.recipe_search.RecipeSearchState;
+import interface_adapter.recipe_search.RecipeSearchViewModel;
+import view.RecipeSearchView;
+
+import javax.swing.*;
+import java.util.Arrays;
+
 public class MainNoteApplication {
 
-    /**
-     * The main entry point of the application.
-     *
-     * <p>
-     * The program will show you the note currently saved in the system.
-     * You are able to edit it and then save it to the system. You can refresh
-     * to update the note to reflect what was saved most recently. This
-     * uses the API from lab, so there is one database storing the note,
-     * which means that if anyone updates the note, that is what you will
-     * see when you refresh.
-     * </p>
-     *
-     * <p>
-     * You can generalize the code to allow you to
-     * specify which "user" to save the note for, which will allow your team
-     * to store information specific to your team which is password-protected.
-     * The username and password used in this application are currently for
-     * user jonathan_calver2, but you can change that. As you did in lab 3,
-     * you will likely want to store password information locally rather than
-     * in your repo. Or you can require the user to enter their credentials
-     * in your application; it just depends on what your program's main
-     * functionality.
-     * </p>
-     * @param args commandline arguments are ignored
-     */
     public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
 
+            // 1. 创建 ViewModel
+            RecipeSearchViewModel viewModel = new RecipeSearchViewModel();
+
+            // 2. 创建 View
+            RecipeSearchView recipeSearchView = new RecipeSearchView(viewModel);
+
+            // 3. 绑定一个简单的 Controller（只是弹出对话框）
+            RecipeSearchController controller = new RecipeSearchController();
+            recipeSearchView.setController(controller);
+
+            // 4. 构造几条 dummy Recipe 数据（完全不依赖真实 ingredients）
+            Recipe r1 = new Recipe(
+                    1,                                      // id
+                    "Pasta Carbonara",                      // title
+                    Arrays.asList("Pasta", "Egg", "Bacon"), // ingredientNames
+                    520.0,                                  // calories
+                    70,                                     // healthScore
+                    "Boil pasta. Mix eggs and bacon. Combine and serve."
+            );
+            // 如果你有图片，可以设路径；没有也没关系，会显示空白
+            r1.setImage("images/pasta.jpg");
+
+            Recipe r2 = new Recipe(
+                    2,
+                    "Tomato Soup",
+                    Arrays.asList("Tomato", "Salt", "Water"),
+                    150.0,
+                    90,
+                    "Cook tomatoes. Blend. Add water. Cook again."
+            );
+            r2.setImage("images/soup.jpg");
+
+            // 5. 把 dummy 数据塞进 State，然后推给 ViewModel
+            RecipeSearchState state = new RecipeSearchState();
+            // 这里 ingredients 随便写点占位就好，UI 里只是显示一行文字
+            state.setIngredients(Arrays.asList("dummy egg", "dummy milk"));
+            state.setRecipes(Arrays.asList(r1, r2));
+
+            viewModel.setState(state);
+
+            // 6. 创建 JFrame，把 View 放进去
+            JFrame frame = new JFrame("What2Cook");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setContentPane(recipeSearchView);
+            frame.pack();
+            frame.setLocationRelativeTo(null); // 居中
+            frame.setVisible(true);
+        });
     }
 }

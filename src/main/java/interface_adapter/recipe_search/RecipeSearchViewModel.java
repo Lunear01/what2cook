@@ -1,4 +1,11 @@
 package interface_adapter.recipe_search;
 
-public class RecipeSearchViewModel {
+import interface_adapter.ViewModel;
+
+public class RecipeSearchViewModel extends ViewModel<RecipeSearchState> {
+
+    public RecipeSearchViewModel() {
+        super("recipe search");
+        setState(new RecipeSearchState());
+    }
 }

@@ -8,15 +8,15 @@ import entity.Recipe;
 
 public class RecipeSearchState {
 
+    // 现在 ingredients 全部用 String 表示
     private List<Ingredient> ingredients = new ArrayList<>();
     private List<Recipe> recipes = new ArrayList<>();
     private String error;
 
     public RecipeSearchState() {
-
     }
 
-    // Copy constructor (用于 ViewModel 更新时不共享引用)
+    // Copy constructor
     public RecipeSearchState(RecipeSearchState copy) {
         this.ingredients = new ArrayList<>(copy.ingredients);
         this.recipes = new ArrayList<>(copy.recipes);

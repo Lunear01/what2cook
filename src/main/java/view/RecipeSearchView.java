@@ -52,7 +52,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         resultsCountLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // ingredients box
-        ingredientsArea.setEditable(false);
+        ingredientsArea.setEditable(true);
         ingredientsArea.setLineWrap(true);
         ingredientsArea.setWrapStyleWord(true);
 
