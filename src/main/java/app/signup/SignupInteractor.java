@@ -1,0 +1,53 @@
+package app.signup;
+
+import entity.User;
+
+/**
+ * Interactor for the Signup use case.
+ * Validates input, ensures username is unique, and saves the new user.
+ */
+public class SignupInteractor implements SignupInputBoundary {
+    private final SignupUserDataAccessInterface userDataAccess;
+    private final SignupOutputBoundary presenter;
+
+    public SignupInteractor(SignupUserDataAccessInterface userDataAccess, SignupOutputBoundary presenter) {
+        this.userDataAccess = userDataAccess;
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void execute(SignupInputData inputData) {
+        String username = inputData.getUsername();
+        String password = inputData.getPassword();
+        String confirm = inputData.getConfirmPassword();
+
+        // Basic validations
+        if (username == null || username.trim().isEmpty()) {
+            presenter.presentFailure("Username cannot be empty");
+            return;
+        }
+        if (password == null || password.trim().isEmpty()) {
+            presenter.presentFailure("Password cannot be empty");
+            return;
+        }
+        if (!password.equals(confirm)) {
+            presenter.presentFailure("Passwords do not match");
+            return;
+        }
+
+        // Check uniqueness
+        if (userDataAccess.existsByUsername(username)) {
+            presenter.presentFailure("Username already exists");
+            return;
+        }
+
+        // Create and save user
+        User user = new User.UserBuilder()
+                .setName(username)
+                .setPassword(password)
+                .build();
+        userDataAccess.saveUser(user);
+
+        presenter.presentSuccess(new SignupOutputData(username, true));
+    }
+}
