@@ -24,4 +24,5 @@ public class FridgeState {
     public void setIngredients(List<String> ingredients) {
         this.myFridge = new ArrayList<>(ingredients);
     }
+
 }
