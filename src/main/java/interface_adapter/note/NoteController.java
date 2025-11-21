@@ -1,7 +1,7 @@
 package interface_adapter.note;
 
-import use_case.cookinglist.cookinglist.note.NoteInputBoundary;
-import use_case.cookinglist.cookinglist.note.NoteInputData;
+import use_case.note.NoteInputBoundary;
+import use_case.note.NoteInputData;
 
 /**
  * Controller for our Note related Use Cases.
@@ -22,7 +22,7 @@ public class NoteController {
         if (note != null && !note.isEmpty()) {
             NoteInputData inputData = new NoteInputData(note);
             noteInteractor.execute(inputData);
-        }else {
+        } else {
             noteInteractor.executeRefresh();
         }
     }
