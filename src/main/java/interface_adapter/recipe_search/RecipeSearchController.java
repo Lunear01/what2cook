@@ -15,7 +15,7 @@ public class RecipeSearchController {
         sb.append("Health Score: ").append(recipe.getHealthScore()).append("\n");
         sb.append("Ingredients:\n");
         for (Ingredient ing : recipe.getIngredientNames()) {
-            sb.append("  - ").append(ing.getName()).append("\n");
+            sb.append("  - ").append(ing).append("\n");
         }
         sb.append("\nInstructions:\n").append(recipe.getInstructions());
 
