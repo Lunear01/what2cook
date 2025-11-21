@@ -1,8 +1,5 @@
 package view;
 
-import interface_adapter.login.LoginController;
-import interface_adapter.login.LoginState;
-import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupState;
 import interface_adapter.signup.SignupViewModel;
@@ -13,28 +10,28 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 /**
- * Simple Login View GUI.
- * Allows user to enter username and password to authenticate.
+ * Signup View GUI.
+ * Allows users to create a new account.
  */
-public class LoginView extends JPanel implements PropertyChangeListener {
+public class SignupView extends JPanel implements PropertyChangeListener {
 
-    private final LoginViewModel viewModel;
-    private SignupViewModel signupViewModel;
-    private LoginController loginController;
+    private final SignupViewModel viewModel;
     private SignupController signupController;
-    private Runnable onSwitchToSignup;
+    private Runnable onBackToLogin;
 
     // UI Components
-    private final JLabel titleLabel = new JLabel("Welcome to What2Cook");
+    private final JLabel titleLabel = new JLabel("Create Account");
     private final JLabel usernameLabel = new JLabel("Username:");
     private final JTextField usernameField = new JTextField(20);
     private final JLabel passwordLabel = new JLabel("Password:");
     private final JPasswordField passwordField = new JPasswordField(20);
-    private final JButton loginButton = new JButton("Login");
+    private final JLabel confirmPasswordLabel = new JLabel("Confirm Password:");
+    private final JPasswordField confirmPasswordField = new JPasswordField(20);
     private final JButton signupButton = new JButton("Sign Up");
+    private final JButton backButton = new JButton("Back to Login");
     private final JLabel errorLabel = new JLabel("");
 
-    public LoginView(LoginViewModel viewModel) {
+    public SignupView(SignupViewModel viewModel) {
         this.viewModel = viewModel;
         this.viewModel.addPropertyChangeListener(this);
 
@@ -53,7 +50,7 @@ public class LoginView extends JPanel implements PropertyChangeListener {
         // Input panel
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
-        inputPanel.setMaximumSize(new Dimension(300, 150));
+        inputPanel.setMaximumSize(new Dimension(300, 250));
         inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Username field
@@ -64,20 +61,27 @@ public class LoginView extends JPanel implements PropertyChangeListener {
         passwordLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         passwordField.setMaximumSize(new Dimension(300, 30));
 
+        // Confirm password field
+        confirmPasswordLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        confirmPasswordField.setMaximumSize(new Dimension(300, 30));
+
         inputPanel.add(usernameLabel);
         inputPanel.add(usernameField);
         inputPanel.add(Box.createVerticalStrut(10));
         inputPanel.add(passwordLabel);
         inputPanel.add(passwordField);
+        inputPanel.add(Box.createVerticalStrut(10));
+        inputPanel.add(confirmPasswordLabel);
+        inputPanel.add(confirmPasswordField);
 
         // Button panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        loginButton.addActionListener(e -> handleLogin());
         signupButton.addActionListener(e -> handleSignup());
-        buttonPanel.add(loginButton);
-        buttonPanel.add(Box.createHorizontalStrut(10));
+        backButton.addActionListener(e -> handleBack());
         buttonPanel.add(signupButton);
+        buttonPanel.add(Box.createHorizontalStrut(10));
+        buttonPanel.add(backButton);
 
         // ===== Add Components =====
         this.add(titleLabel);
@@ -90,26 +94,29 @@ public class LoginView extends JPanel implements PropertyChangeListener {
         this.add(Box.createVerticalGlue());
     }
 
-    private void handleLogin() {
+    private void handleSignup() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
+        String confirmPassword = new String(confirmPasswordField.getPassword());
 
-        if (loginController != null) {
-            loginController.login(username, password);
+        if (signupController != null) {
+            signupController.signup(username, password, confirmPassword);
         }
     }
 
-    private void handleSignup() {
-        if (onSwitchToSignup != null) {
-            onSwitchToSignup.run();
+    private void handleBack() {
+        clearFields();
+        errorLabel.setText("");
+        if (onBackToLogin != null) {
+            onBackToLogin.run();
         }
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         Object newState = evt.getNewValue();
-        if (newState instanceof LoginState) {
-            final LoginState state = (LoginState) newState;
+        if (newState instanceof SignupState) {
+            final SignupState state = (SignupState) newState;
 
             if (!state.getErrorMessage().isEmpty()) {
                 errorLabel.setText(state.getErrorMessage());
@@ -118,26 +125,15 @@ public class LoginView extends JPanel implements PropertyChangeListener {
                 errorLabel.setText("");
             }
 
-            if (state.isLoggedIn()) {
+            if (state.isCreated()) {
                 JOptionPane.showMessageDialog(this,
-                        "Login successful! Welcome, " + state.getUsername() + "!",
-                        "Login Success", JOptionPane.INFORMATION_MESSAGE);
-                clearFields();
-            }
-        } else if (newState instanceof SignupState) {
-            final SignupState sState = (SignupState) newState;
-            if (sState.isCreated()) {
-                JOptionPane.showMessageDialog(this,
-                        "Account created! You can now log in, " + sState.getUsername() + ".",
+                        "Account created successfully! You can now log in.",
                         "Signup Success", JOptionPane.INFORMATION_MESSAGE);
-                // prefill username and clear password
-                usernameField.setText(sState.getUsername());
-                passwordField.setText("");
-                errorLabel.setText("");
-            } else if (sState.getErrorMessage() != null && !sState.getErrorMessage().isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                        sState.getErrorMessage(),
-                        "Signup Failed", JOptionPane.ERROR_MESSAGE);
+                clearFields();
+                // Automatically go back to login after successful signup
+                if (onBackToLogin != null) {
+                    onBackToLogin.run();
+                }
             }
         }
     }
@@ -145,25 +141,15 @@ public class LoginView extends JPanel implements PropertyChangeListener {
     private void clearFields() {
         usernameField.setText("");
         passwordField.setText("");
-    }
-
-    public void setLoginController(LoginController controller) {
-        this.loginController = controller;
+        confirmPasswordField.setText("");
+        errorLabel.setText("");
     }
 
     public void setSignupController(SignupController controller) {
         this.signupController = controller;
     }
 
-    public void setSignupViewModel(SignupViewModel signupViewModel) {
-        this.signupViewModel = signupViewModel;
-        if (this.signupViewModel != null) {
-            this.signupViewModel.addPropertyChangeListener(this);
-        }
-    }
-
-    public void setOnSwitchToSignup(Runnable onSwitchToSignup) {
-        this.onSwitchToSignup = onSwitchToSignup;
+    public void setOnBackToLogin(Runnable onBackToLogin) {
+        this.onBackToLogin = onBackToLogin;
     }
 }
-
