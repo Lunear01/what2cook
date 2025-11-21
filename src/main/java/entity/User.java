@@ -10,7 +10,7 @@ public class User {
     private final String name;
     private final String password;
     private final List<Recipe> personalCookingList;
-    private final List<String> refrigerator;
+    private final List<Ingredient> refrigerator;
 
     private User(UserBuilder builder) {
         this.name = builder.name;
@@ -65,7 +65,7 @@ public class User {
         }
     }
 
-    public void addToRefrigerator(String ingredient) {
+    public void addToRefrigerator(Ingredient ingredient) {
         if (!refrigerator.contains(ingredient)) {
             refrigerator.add(ingredient);
         }
