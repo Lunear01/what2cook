@@ -1,8 +1,8 @@
 package interface_adapter.cookinglist;
 
 
-import app.cookinglist.AddToCookingListOutputBoundary;
-import app.cookinglist.AddToCookingListOutputData;
+import use_case.cookinglist.cookinglist.AddToCookingListOutputBoundary;
+import use_case.cookinglist.cookinglist.AddToCookingListOutputData;
 
 
 

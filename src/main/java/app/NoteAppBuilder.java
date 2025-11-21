@@ -4,10 +4,10 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 import dataaccess.UserDataAccessObject;
 
-import app.cookinglist.AddToCookingListInputBoundary;
-import app.cookinglist.AddToCookingListInteractor;
-import app.cookinglist.AddToCookingListOutputBoundary;
-import app.cookinglist.UserDataAccessInterface;
+import use_case.cookinglist.cookinglist.AddToCookingListInputBoundary;
+import use_case.cookinglist.cookinglist.AddToCookingListInteractor;
+import use_case.cookinglist.cookinglist.AddToCookingListOutputBoundary;
+import use_case.cookinglist.cookinglist.UserDataAccessInterface;
 
 import interface_adapter.cookinglist.CookingListViewModel;
 import interface_adapter.cookinglist.AddToCookingListPresenter;
@@ -15,9 +15,9 @@ import interface_adapter.cookinglist.AddToCookingListController;
 import interface_adapter.note.NoteController;
 import interface_adapter.note.NotePresenter;
 import interface_adapter.note.NoteViewModel;
-import interface_adapter.note.NoteDataAccessInterface;
-import interface_adapter.note.NoteInteractor;
-import interface_adapter.note.NoteOutputBoundary;
+import use_case.cookinglist.cookinglist.note.NoteDataAccessInterface;
+import use_case.cookinglist.cookinglist.note.NoteInteractor;
+import use_case.cookinglist.cookinglist.note.NoteOutputBoundary;
 import view.NoteView;
 
 /**

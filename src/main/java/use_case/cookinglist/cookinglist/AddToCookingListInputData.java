@@ -1,4 +1,4 @@
-package app.cookinglist;
+package use_case.cookinglist.cookinglist;
 
 import org.w3c.dom.CDATASection;
 import entity.Recipe;

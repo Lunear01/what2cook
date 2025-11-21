@@ -1,4 +1,4 @@
-package interface_adapter.note;
+package use_case.cookinglist.cookinglist.note;
 
 public class NoteInputData {
     private final String noteContent;

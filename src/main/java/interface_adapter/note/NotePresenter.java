@@ -1,6 +1,9 @@
 package interface_adapter.note;
 
 
+import use_case.cookinglist.cookinglist.note.NoteOutputBoundary;
+import use_case.cookinglist.cookinglist.note.NoteOutputData;
+
 /**
  * The presenter for our Note viewing and editing program.
  */

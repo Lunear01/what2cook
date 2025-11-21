@@ -2,7 +2,7 @@ package app;
 
 
 
-import interface_adapter.note.NoteDataAccessInterface;
+import use_case.cookinglist.cookinglist.note.NoteDataAccessInterface;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;

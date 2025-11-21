@@ -1,6 +1,6 @@
 package app;
 
-import interface_adapter.note.NoteDataAccessInterface;
+import use_case.cookinglist.cookinglist.note.NoteDataAccessInterface;
 
 public class InMemoryNoteDAO implements NoteDataAccessInterface {
 

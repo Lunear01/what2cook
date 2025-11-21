@@ -1,6 +1,7 @@
 package interface_adapter.note;
 
-import interface_adapter.note.NoteInputBoundary;
+import use_case.cookinglist.cookinglist.note.NoteInputBoundary;
+import use_case.cookinglist.cookinglist.note.NoteInputData;
 
 /**
  * Controller for our Note related Use Cases.

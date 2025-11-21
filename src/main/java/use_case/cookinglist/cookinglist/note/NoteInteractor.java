@@ -1,6 +1,6 @@
-package interface_adapter.note;
+package use_case.cookinglist.cookinglist.note;
 
-public class NoteInteractor implements NoteInputBoundary{
+public class NoteInteractor implements NoteInputBoundary {
     private final NoteDataAccessInterface noteDAO;
     private final NoteOutputBoundary presenter;
 
