@@ -10,11 +10,13 @@ public class User {
     private final String name;
     private final String password;
     private final List<Recipe> personalCookingList;
+    private final List<String> refrigerator;
 
     private User(UserBuilder builder) {
         this.name = builder.name;
         this.password = builder.password;
         this.personalCookingList = new ArrayList<>();
+        this.refrigerator = new ArrayList<>();
     }
 
     /* ------------------- Builder ------------------- */
@@ -51,11 +53,21 @@ public class User {
         return Collections.unmodifiableList(personalCookingList);
     }
 
-    /* ------------------- Modify personal cooking list ------------------- */
+    public List<Ingredient> getRefrigerator() {
+        return Collections.unmodifiableList(refrigerator);
+    }
+
+    /* ------------------- Modify list ------------------- */
 
     public void addToPersonalCookingList(Recipe recipe) {
         if (recipe != null && !personalCookingList.contains(recipe)) {
             personalCookingList.add(recipe);
+        }
+    }
+
+    public void addToRefrigerator(String ingredient) {
+        if (!refrigerator.contains(ingredient)) {
+            refrigerator.add(ingredient);
         }
     }
 
