@@ -1,0 +1,21 @@
+package interface_adapter.login;
+
+import app.login.LoginInputBoundary;
+import app.login.LoginInputData;
+
+/**
+ * Controller for the Login use case.
+ */
+public class LoginController {
+    private final LoginInputBoundary interactor;
+
+    public LoginController(LoginInputBoundary interactor) {
+        this.interactor = interactor;
+    }
+
+    public void login(String username, String password) {
+        LoginInputData inputData = new LoginInputData(username, password);
+        interactor.execute(inputData);
+    }
+}
+

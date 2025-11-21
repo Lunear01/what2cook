@@ -18,11 +18,6 @@ public class NoteController {
      * @param note the note to be recorded
      */
     public void execute(String note) {
-        if (note != null) {
-            noteInteractor.executeSave(note);
-        }
-        else {
-            noteInteractor.executeRefresh();
-        }
+        noteInteractor.execute(note);
     }
 }
