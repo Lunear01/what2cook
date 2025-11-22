@@ -1,0 +1,80 @@
+package recipeapi;
+
+import entity.Recipe;
+import org.junit.Test;
+
+import java.util.List;
+
+import static org.junit.Assert.*;
+
+public class SpoonacularRecipeFetcherFailTest {
+    @Test
+    public void testRealAPI() {
+        RecipeFetcher fetcher = new SpoonacularRecipeFetcher();
+
+        /* === Testing getRecipesByIngredients === */
+        try {
+            List<Recipe> recipes = fetcher.getRecipesByIngredients(
+                    List.of("asdf", "asdf"),
+                    3,
+                    1,
+                    true
+            );
+
+            // Print recipe names and images
+            for (Recipe r : recipes) {
+                System.out.println("Recipe: " + r.getTitle() + " (ID: " + r.getId() + ")");
+                System.out.println("Image: " + r.getImage());
+            }
+
+            // Basic assertions to ensure it's not empty
+            assertFalse(recipes.isEmpty());
+
+        } catch (RecipeFetcher.IngredientNotFoundException e) {
+            fail("Ingredient not found: " + e.getMessage());
+        }
+
+        /* === Testing getRecipeInfo === */
+        try {
+            int id = 649985; // Known working recipe ID
+
+            Recipe info = fetcher.getRecipeInfo(id, true, false, false);
+
+            System.out.println("Title: " + info.getTitle());
+            System.out.println("Health Score: " + info.getHealthScore());
+
+            assertNotNull(info.getTitle());
+
+        } catch (RecipeFetcher.RecipeNotFoundException e) {
+            fail("Recipe not found: " + e.getMessage());
+        }
+
+        /* === Testing getRecipeInstructions === */
+        try {
+            int id = 649985;
+
+            Recipe instructions = fetcher.getRecipeInstructions(id, true);
+
+            System.out.println(instructions.getInstructions());
+
+            assertNotNull(instructions.getInstructions());
+
+        } catch (RecipeFetcher.RecipeNotFoundException e) {
+            fail("Recipe not found: " + e.getMessage());
+        }
+
+        /* === Testing getNutrition === */
+        try {
+            int id = 1003464;
+
+            Recipe nutrition = fetcher.getNutrition(id);
+
+            System.out.println("Calories: " + nutrition.getCalories());
+
+            assertTrue(nutrition.getCalories() > 0);
+
+        } catch (RecipeFetcher.RecipeNotFoundException e) {
+            fail("Recipe not found: " + e.getMessage());
+        }
+    }
+}
