@@ -17,8 +17,8 @@ public class LoginInteractor implements LoginInputBoundary {
 
     @Override
     public void execute(LoginInputData inputData) {
-        String username = inputData.getUsername();
-        String password = inputData.getPassword();
+        final String username = inputData.getUsername();
+        final String password = inputData.getPassword();
 
         // Validate input
         if (username == null || username.trim().isEmpty()) {
@@ -32,7 +32,7 @@ public class LoginInteractor implements LoginInputBoundary {
         }
 
         // Get user from data access
-        User user = userDataAccess.get(username);
+        final User user = userDataAccess.get(username);
 
         // Check if user exists and password matches
         if (user == null) {
@@ -46,7 +46,7 @@ public class LoginInteractor implements LoginInputBoundary {
         }
 
         // Success
-        LoginOutputData outputData = new LoginOutputData(username, true);
+        final LoginOutputData outputData = new LoginOutputData(username, true);
         presenter.presentSuccess(outputData);
     }
 }

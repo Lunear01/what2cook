@@ -14,7 +14,7 @@ public class LoginViewModel extends ViewModel<LoginState> {
     }
 
     public void setUsername(String username) {
-        LoginState state = getState();
+        final LoginState state = getState();
         state.setUsername(username);
         setState(state);
         firePropertyChanged("username");
@@ -25,7 +25,7 @@ public class LoginViewModel extends ViewModel<LoginState> {
     }
 
     public void setPassword(String password) {
-        LoginState state = getState();
+        final LoginState state = getState();
         state.setPassword(password);
         setState(state);
         firePropertyChanged("password");
@@ -36,7 +36,7 @@ public class LoginViewModel extends ViewModel<LoginState> {
     }
 
     public void setErrorMessage(String message) {
-        LoginState state = getState();
+        final LoginState state = getState();
         state.setErrorMessage(message);
         setState(state);
         firePropertyChanged("error");
@@ -47,7 +47,7 @@ public class LoginViewModel extends ViewModel<LoginState> {
     }
 
     public void setLoggedIn(boolean loggedIn) {
-        LoginState state = getState();
+        final LoginState state = getState();
         state.setLoggedIn(loggedIn);
         setState(state);
         firePropertyChanged("loggedIn");

@@ -1,16 +1,28 @@
 package view;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+
 import entity.Ingredient;
 import entity.Recipe;
 import interface_adapter.recipe_search.RecipeSearchController;
 import interface_adapter.recipe_search.RecipeSearchState;
 import interface_adapter.recipe_search.RecipeSearchViewModel;
-
-import javax.swing.*;
-import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.List;
 
 public class RecipeSearchView extends JPanel implements PropertyChangeListener {
 
@@ -54,7 +66,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (!(evt.getNewValue() instanceof RecipeSearchState)) return;
-        RecipeSearchState state = (RecipeSearchState) evt.getNewValue();
+        final RecipeSearchState state = (RecipeSearchState) evt.getNewValue();
 
         updateIngredients(state.getIngredients());
         updateRecipes(state.getRecipes());
@@ -72,7 +84,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
             return;
         }
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         for (Ingredient ing : ingredients) {
             sb.append(ing.getName()).append(", ");
         }
@@ -95,27 +107,27 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     }
 
     private void updateResultCount(List<Recipe> recipes) {
-        int count = (recipes == null) ? 0 : recipes.size();
+        final int count = (recipes == null) ? 0 : recipes.size();
         resultsCountLabel.setText(count + " results");
     }
 
     private JPanel createRecipeCard(Recipe recipe) {
-        JPanel card = new JPanel(new BorderLayout());
+        final JPanel card = new JPanel(new BorderLayout());
         card.setPreferredSize(new Dimension(460, 200));
         card.setMaximumSize(new Dimension(Short.MAX_VALUE, 200));
         card.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         ImageIcon icon = new ImageIcon();
-        String path = recipe.getImage();
+        final String path = recipe.getImage();
 
         if (path != null && !path.isEmpty()) {
-            ImageIcon raw = new ImageIcon(path);
-            Image scaled = raw.getImage().getScaledInstance(440, 140, Image.SCALE_SMOOTH);
+            final ImageIcon raw = new ImageIcon(path);
+            final Image scaled = raw.getImage().getScaledInstance(440, 140, Image.SCALE_SMOOTH);
             icon = new ImageIcon(scaled);
         }
 
-        JLabel imgLabel = new JLabel(icon, SwingConstants.CENTER);
-        JLabel title = new JLabel(recipe.getTitle(), SwingConstants.CENTER);
+        final JLabel imgLabel = new JLabel(icon, SwingConstants.CENTER);
+        final JLabel title = new JLabel(recipe.getTitle(), SwingConstants.CENTER);
 
         card.add(imgLabel, BorderLayout.CENTER);
         card.add(title, BorderLayout.SOUTH);

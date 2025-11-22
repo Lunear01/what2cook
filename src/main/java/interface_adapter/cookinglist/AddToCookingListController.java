@@ -13,7 +13,7 @@ public class AddToCookingListController {
     }
 
     public void add(String username, Recipe recipe) {
-        AddToCookingListInputData inputData =
+        final AddToCookingListInputData inputData =
                 new AddToCookingListInputData(username, recipe);
         interactor.execute(inputData);
     }

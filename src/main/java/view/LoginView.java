@@ -1,25 +1,29 @@
 package view;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupViewModel;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-/**
- * Login View.
- * - 显示用户名/密码输入框
- * - 点击 Login 调用 LoginController
- * - 点击 Sign Up 触发 onSwitchToSignup 回调（由 Main 里的 CardLayout 切换界面）
- * - 当 LoginViewModel 中 isLoggedIn == true 时，调用 onLoginSuccess 回调
- */
 public class LoginView extends JPanel implements ActionListener, PropertyChangeListener {
 
     private final LoginViewModel loginViewModel;
@@ -28,11 +32,9 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
     private LoginController loginController;
     private SignupController signupController;
 
-    // 回调：由 Main 注入，用于切换界面
     private Runnable onSwitchToSignup;
     private Runnable onLoginSuccess;
 
-    // UI 组件
     private final JTextField usernameField = new JTextField(20);
     private final JPasswordField passwordField = new JPasswordField(20);
     private final JButton loginButton = new JButton("Login");
@@ -46,19 +48,19 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JLabel title = new JLabel("What2Cook - Login");
+        final JLabel title = new JLabel("What2Cook - Login");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
         title.setFont(title.getFont().deriveFont(Font.BOLD, 18f));
 
-        JPanel userPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        final JPanel userPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         userPanel.add(new JLabel("Username:"));
         userPanel.add(usernameField);
 
-        JPanel passPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        final JPanel passPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         passPanel.add(new JLabel("Password:"));
         passPanel.add(passwordField);
 
-        JPanel buttonPanel = new JPanel();
+        final JPanel buttonPanel = new JPanel();
         buttonPanel.add(loginButton);
         buttonPanel.add(signupButton);
 
@@ -106,12 +108,12 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Object src = e.getSource();
+        final Object src = e.getSource();
 
         if (src == loginButton) {
             if (loginController != null) {
-                String username = usernameField.getText().trim();
-                String password = new String(passwordField.getPassword());
+                final String username = usernameField.getText().trim();
+                final String password = new String(passwordField.getPassword());
                 // 清空错误提示
                 errorLabel.setText(" ");
                 loginController.login(username, password);
@@ -128,18 +130,18 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        Object newVal = evt.getNewValue();
+        final Object newVal = evt.getNewValue();
         if (!(newVal instanceof LoginState)) {
             return;
         }
-        LoginState state = (LoginState) newVal;
+        final LoginState state = (LoginState) newVal;
 
         // 更新文本框（可选）
         usernameField.setText(state.getUsername());
         // 密码一般不回显，这里不设置 passwordField
 
         // 显示错误信息
-        String err = state.getErrorMessage();
+        final String err = state.getErrorMessage();
         if (err != null && !err.isEmpty()) {
             errorLabel.setText(err);
         } else {

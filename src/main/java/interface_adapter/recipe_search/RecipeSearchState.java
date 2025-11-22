@@ -1,10 +1,10 @@
 package interface_adapter.recipe_search;
 
-import entity.Ingredient;
-import entity.Recipe;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import entity.Ingredient;
+import entity.Recipe;
 
 public class RecipeSearchState {
 

@@ -15,7 +15,7 @@ public class LoginPresenter implements LoginOutputBoundary {
 
     @Override
     public void presentSuccess(LoginOutputData outputData) {
-        LoginState state = new LoginState();
+        final LoginState state = new LoginState();
         state.setUsername(outputData.getUsername());
         state.setLoggedIn(true);
         state.setErrorMessage("");

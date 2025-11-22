@@ -1,8 +1,8 @@
 package entity;
 
-import com.sanctionco.jmail.JMail;
-
 import java.util.ArrayList;
+
+import com.sanctionco.jmail.JMail;
 
 public class UserBuilder {
     private String userName;

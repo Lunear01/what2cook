@@ -1,34 +1,32 @@
 package app;
 
-import use_case.login.LoginInteractor;
-import use_case.signup.SignupInteractor;
+import java.awt.CardLayout;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
 import dataaccess.UserDataAccesssObject;
+import entity.Ingredient;
 import entity.User;
 import entity.UserBuilder;
-import entity.Ingredient;
-
+import interface_adapter.ingredient_search.IngredientSearchViewModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginViewModel;
-
+import interface_adapter.recipe_search.RecipeSearchController;
+import interface_adapter.recipe_search.RecipeSearchViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
-
-import interface_adapter.ingredient_search.IngredientSearchViewModel;
-
-import interface_adapter.recipe_search.RecipeSearchController;
-import interface_adapter.recipe_search.RecipeSearchViewModel;
-
-import view.LoginView;
-import view.SignupView;
+import use_case.login.LoginInteractor;
+import use_case.signup.SignupInteractor;
 import view.IngredientSearchView;
+import view.LoginView;
 import view.RecipeSearchView;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import view.SignupView;
 
 public class Main {
     public static void main(String[] args) {
@@ -78,9 +76,11 @@ public class Main {
             recipeSearchView.setController(recipeSearchController);
 
             // --- main frame ---
+            final int frameWidth = 500;
+            final int frameHeight = 450;
             final JFrame frame = new JFrame("What2Cook");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(500, 450);
+            frame.setSize(frameWidth, frameHeight);
             frame.setLocationRelativeTo(null);
 
             // --- views ---

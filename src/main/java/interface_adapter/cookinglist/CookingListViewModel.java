@@ -1,9 +1,9 @@
 package interface_adapter.cookinglist;
 
-import interface_adapter.ViewModel;
-import entity.Recipe;
-
 import java.util.List;
+
+import entity.Recipe;
+import interface_adapter.ViewModel;
 
 public class CookingListViewModel extends ViewModel<CookingListState> {
 
@@ -18,7 +18,7 @@ public class CookingListViewModel extends ViewModel<CookingListState> {
     // 方便 Presenter / View 使用的封装方法：
 
     public void setPersonalCookingList(List<Recipe> recipes) {
-        CookingListState state = getState();
+        final CookingListState state = getState();
         state.setPersonalCookingList(recipes);
         setState(state);                 // 更新状态
         firePropertyChanged("cooking");  // 通知监听者（比如 NoteView）
@@ -29,7 +29,7 @@ public class CookingListViewModel extends ViewModel<CookingListState> {
     }
 
     public void setStatusMessage(String message) {
-        CookingListState state = getState();
+        final CookingListState state = getState();
         state.setStatusMessage(message);
         setState(state);
         firePropertyChanged("statusMessage");
