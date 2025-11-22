@@ -44,6 +44,10 @@ public class IngredientSearchView extends JPanel
         this.viewModel = viewModel;
         this.viewModel.addPropertyChangeListener(this);
 
+        initializeUserInterface();
+    }
+
+    private void initializeUserInterface() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         final int viewModelBorder = 20;
         setBorder(BorderFactory.createEmptyBorder(viewModelBorder, viewModelBorder, viewModelBorder, viewModelBorder));
@@ -103,7 +107,8 @@ public class IngredientSearchView extends JPanel
 
                 inputField.setText("");
             }
-        } else if (src == nextButton) {
+        }
+        else if (src == nextButton) {
             if (onNext != null) {
                 onNext.run();
             }
@@ -113,7 +118,9 @@ public class IngredientSearchView extends JPanel
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         final Object newVal = evt.getNewValue();
-        if (!(newVal instanceof IngredientSearchState)) return;
+        if (!(newVal instanceof IngredientSearchState)) {
+            return;
+        }
 
         final IngredientSearchState state = (IngredientSearchState) newVal;
 
@@ -125,7 +132,8 @@ public class IngredientSearchView extends JPanel
         final String err = state.getError();
         if (err != null && !err.isEmpty()) {
             errorLabel.setText(err);
-        } else {
+        }
+        else {
             errorLabel.setText(" ");
         }
     }

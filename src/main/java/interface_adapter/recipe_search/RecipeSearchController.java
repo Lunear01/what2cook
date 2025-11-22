@@ -87,13 +87,17 @@ public class RecipeSearchController {
             newState.setRecipes(enriched);
             newState.setError(null);
 
-        } catch (Exception e) {
-            newState.setIngredients(
-                    ingredients == null
-                            ? new ArrayList<Ingredient>()
-                            : new ArrayList<>(ingredients));
-            newState.setRecipes(new ArrayList<Recipe>());
-            newState.setError("Failed to fetch recipes: " + e.getMessage());
+        } catch (Exception exe) {
+            final List<Ingredient> safeIngredients;
+            if (ingredients == null) {
+                safeIngredients = new ArrayList<>();
+            }
+            else {
+                safeIngredients = new ArrayList<>(ingredients);
+            }
+            newState.setIngredients(safeIngredients);
+            newState.setRecipes(new ArrayList<>());
+            newState.setError("Failed to fetch recipes: " + exe.getMessage());
         }
 
         viewModel.setState(newState);

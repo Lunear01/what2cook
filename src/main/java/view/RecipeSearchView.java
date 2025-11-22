@@ -66,33 +66,50 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (!(evt.getNewValue() instanceof RecipeSearchState)) return;
-        final RecipeSearchState state = (RecipeSearchState) evt.getNewValue();
+    public void propertyChange(final PropertyChangeEvent evt) {
+        final Object newValue = evt.getNewValue();
 
-        updateIngredients(state.getIngredients());
-        updateRecipes(state.getRecipes());
-        updateResultCount(state.getRecipes());
+        if (newValue instanceof RecipeSearchState) {
+            final RecipeSearchState state = (RecipeSearchState) newValue;
 
-        if (state.getError() != null) {
-            JOptionPane.showMessageDialog(this, state.getError(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            updateIngredients(state.getIngredients());
+            updateRecipes(state.getRecipes());
+            updateResultCount(state.getRecipes());
+
+            if (state.getError() != null) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        state.getError(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
         }
     }
 
     private void updateIngredients(List<Ingredient> ingredients) {
-        if (ingredients == null || ingredients.isEmpty()) {
-            ingredientsArea.setText("");
-            return;
+
+        final String text;
+
+        if (ingredients == null) {
+            text = "";
+        }
+        else if (ingredients.isEmpty()) {
+            text = "";
+        }
+        else {
+            final StringBuilder sb = new StringBuilder();
+            for (Ingredient ing : ingredients) {
+                sb.append(ing.getName());
+                sb.append(", ");
+            }
+            if (sb.length() > 2) {
+                sb.setLength(sb.length() - 2);
+            }
+            text = sb.toString();
         }
 
-        final StringBuilder sb = new StringBuilder();
-        for (Ingredient ing : ingredients) {
-            sb.append(ing.getName()).append(", ");
-        }
-        if (sb.length() > 2) sb.setLength(sb.length() - 2);
-
-        ingredientsArea.setText(sb.toString());
+        ingredientsArea.setText(text);
     }
 
     private void updateRecipes(List<Recipe> recipes) {
@@ -109,7 +126,15 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     }
 
     private void updateResultCount(List<Recipe> recipes) {
-        final int count = (recipes == null) ? 0 : recipes.size();
+        final int count;
+
+        if (recipes == null) {
+            count = 0;
+        }
+        else {
+            count = recipes.size();
+        }
+
         resultsCountLabel.setText(count + " results");
     }
 

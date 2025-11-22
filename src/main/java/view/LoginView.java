@@ -41,13 +41,21 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
     private final JButton signupButton = new JButton("Sign up");
     private final JLabel errorLabel = new JLabel(" ");
 
-    public LoginView(LoginViewModel loginViewModel) {
+    public LoginView(final LoginViewModel loginViewModel) {
         this.loginViewModel = loginViewModel;
         this.loginViewModel.addPropertyChangeListener(this);
 
+        initializeLoginView();
+    }
+
+    /**
+     * Initializes the layout and components for the Login view.
+     */
+    private void initializeLoginView() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         final int loginViewBorder = 20;
-        setBorder(BorderFactory.createEmptyBorder(loginViewBorder, loginViewBorder, loginViewBorder, loginViewBorder));
+        setBorder(BorderFactory.createEmptyBorder(
+                loginViewBorder, loginViewBorder, loginViewBorder, loginViewBorder));
 
         final JLabel title = new JLabel("What2Cook - Login");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -69,9 +77,10 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         errorLabel.setForeground(Color.RED);
         errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        add(title);
         final int height15 = 15;
         final int height10 = 10;
+
+        add(title);
         add(Box.createVerticalStrut(height15));
         add(userPanel);
         add(passPanel);
@@ -98,12 +107,22 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         this.signupViewModel = signupViewModel;
     }
 
-    /** 从 Main 注入：切换到 Signup 界面 */
+    /**
+     * Sets the callback to be executed when the user chooses to switch to the
+     * signup view. This callback is typically injected from the Main class.
+     *
+     * @param onSwitchToSignup the action to run when switching to the signup view
+     */
     public void setOnSwitchToSignup(Runnable onSwitchToSignup) {
         this.onSwitchToSignup = onSwitchToSignup;
     }
 
-    /** 从 Main 注入：登录成功后切换到 IngredientSearch 界面 */
+    /**
+     * Sets the callback to be executed after a successful login, typically used
+     * to switch to the IngredientSearch view. This callback is injected from Main.
+     *
+     * @param onLoginSuccess the action to run upon successful login
+     */
     public void setOnLoginSuccess(Runnable onLoginSuccess) {
         this.onLoginSuccess = onLoginSuccess;
     }
@@ -122,7 +141,8 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
                 errorLabel.setText(" ");
                 loginController.login(username, password);
             }
-        } else if (src == signupButton) {
+        }
+        else if (src == signupButton) {
             // 这里只负责通知外面切 view，真正的切换由 Main 里的 CardLayout 完成
             if (onSwitchToSignup != null) {
                 onSwitchToSignup.run();
@@ -134,27 +154,32 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+
         final Object newVal = evt.getNewValue();
-        if (!(newVal instanceof LoginState)) {
-            return;
-        }
-        final LoginState state = (LoginState) newVal;
 
-        // 更新文本框（可选）
-        usernameField.setText(state.getUsername());
-        // 密码一般不回显，这里不设置 passwordField
+        if (newVal instanceof LoginState) {
+            final LoginState state = (LoginState) newVal;
 
-        // 显示错误信息
-        final String err = state.getErrorMessage();
-        if (err != null && !err.isEmpty()) {
-            errorLabel.setText(err);
-        } else {
-            errorLabel.setText(" ");
+            // 更新文本框（可选）
+            usernameField.setText(state.getUsername());
+            // 密码一般不回显，不设置 passwordField
+
+            // 显示错误信息
+            final String err = state.getErrorMessage();
+            if (err != null && !err.isEmpty()) {
+                errorLabel.setText(err);
+            }
+            else {
+                errorLabel.setText(" ");
+            }
+
+            // 如果已登录成功，通知 Main 切换界面
+            if (state.isLoggedIn() && onLoginSuccess != null) {
+                onLoginSuccess.run();
+            }
         }
 
-        // 如果已经登录成功，通知 Main 切换到下一个界面
-        if (state.isLoggedIn() && onLoginSuccess != null) {
-            onLoginSuccess.run();
-        }
+        // 没有 return —— Checkstyle OK
     }
 }
+
