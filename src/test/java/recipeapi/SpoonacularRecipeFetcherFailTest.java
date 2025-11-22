@@ -31,7 +31,7 @@ public class SpoonacularRecipeFetcherFailTest {
             assertFalse(recipes.isEmpty());
 
         } catch (RecipeFetcher.IngredientNotFoundException e) {
-            fail("Ingredient not found: " + e.getMessage());
+            fail(e.getMessage());
         }
 
         /* === Testing getRecipeInfo === */
@@ -46,7 +46,7 @@ public class SpoonacularRecipeFetcherFailTest {
             assertNotNull(info.getTitle());
 
         } catch (RecipeFetcher.RecipeNotFoundException e) {
-            fail("Recipe not found: " + e.getMessage());
+            fail(e.getMessage());
         }
 
         /* === Testing getRecipeInstructions === */
@@ -60,7 +60,7 @@ public class SpoonacularRecipeFetcherFailTest {
             assertNotNull(instructions.getInstructions());
 
         } catch (RecipeFetcher.RecipeNotFoundException e) {
-            fail("Recipe not found: " + e.getMessage());
+            fail(e.getMessage());
         }
 
         /* === Testing getNutrition === */
@@ -74,7 +74,7 @@ public class SpoonacularRecipeFetcherFailTest {
             assertTrue(nutrition.getCalories() > 0);
 
         } catch (RecipeFetcher.RecipeNotFoundException e) {
-            fail("Recipe not found: " + e.getMessage());
+            fail(e.getMessage());
         }
     }
 }
