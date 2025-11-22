@@ -1,7 +1,7 @@
 package interface_adapter.signup;
 
-import app.signup.SignupOutputBoundary;
-import app.signup.SignupOutputData;
+import use_case.signup.SignupOutputBoundary;
+import use_case.signup.SignupOutputData;
 
 public class SignupPresenter implements SignupOutputBoundary {
     private final SignupViewModel viewModel;

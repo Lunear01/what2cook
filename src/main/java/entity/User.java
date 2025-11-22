@@ -1,54 +1,28 @@
 package entity;
 
-import java.util.ArrayList;
 import java.util.Collections;
-
 import java.util.List;
 
 public final class User {
 
     private final String name;
     private final String password;
+    private final String email;
     private final List<Recipe> personalCookingList;
     private final List<Ingredient> refrigerator;
 
-    private User(UserBuilder builder) {
-        this.name = builder.name;
-        this.password = builder.password;
-        this.personalCookingList = new ArrayList<>();
-        this.refrigerator = new ArrayList<>();
+    // Private constructor
+    User(String name, String password, String email, List<Recipe> personalCookingList, List<Ingredient> refrigerator) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.personalCookingList = personalCookingList;
+        this.refrigerator = refrigerator;
     }
 
-    /* ------------------- Builder ------------------- */
-    public static class UserBuilder {
-        private String name;
-        private String password;
-
-        /**
-         * Sets the name for this UserBuilder.
-         *
-         * @param name the name of the user
-         * @return this builder
-         */
-        public UserBuilder setName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        /**
-         * Sets the password for this UserBuilder.
-         *
-         * @param password the user's password
-         * @return this builder
-         */
-        public UserBuilder setPassword(String password) {
-            this.password = password;
-            return this;
-        }
-
-        public User build() {
-            return new User(this);
-        }
+    // Builder instance for User
+    public static UserBuilder builder() {
+        return new UserBuilder();
     }
 
     /* ------------------- Getters ------------------- */
@@ -59,6 +33,10 @@ public final class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public List<Recipe> getPersonalCookingList() {
