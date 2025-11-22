@@ -1,4 +1,4 @@
-package app.login;
+package use_case.login;
 
 import entity.User;
 
@@ -32,7 +32,7 @@ public class LoginInteractor implements LoginInputBoundary {
         }
 
         // Get user from data access
-        User user = userDataAccess.getUser(username);
+        User user = userDataAccess.get(username);
 
         // Check if user exists and password matches
         if (user == null) {
