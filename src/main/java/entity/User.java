@@ -1,22 +1,28 @@
 package entity;
 
-import java.util.ArrayList;
 import java.util.Collections;
-
 import java.util.List;
 
 public final class User {
 
     private final String name;
     private final String password;
+    private final String email;
     private final List<Recipe> personalCookingList;
     private final List<Ingredient> refrigerator;
 
-    protected User(UserBuilder builder) {
-        this.name = builder.getName();
-        this.password = builder.getPassword();
-        this.personalCookingList = new ArrayList<>();
-        this.refrigerator = new ArrayList<>();
+    // Private constructor
+    User(String name, String password, String email, List<Recipe> personalCookingList, List<Ingredient> refrigerator) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.personalCookingList = personalCookingList;
+        this.refrigerator = refrigerator;
+    }
+
+    // Builder instance for User
+    public static UserBuilder builder() {
+        return new UserBuilder();
     }
 
     /* ------------------- Getters ------------------- */
@@ -27,6 +33,10 @@ public final class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public List<Recipe> getPersonalCookingList() {

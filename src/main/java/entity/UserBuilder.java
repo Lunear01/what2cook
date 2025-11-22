@@ -1,18 +1,22 @@
 package entity;
 
-/* ------------------- Builder ------------------- */
+import com.sanctionco.jmail.JMail;
+
+import java.util.ArrayList;
+
 public class UserBuilder {
-    private String name;
-    private String password;
+    private String userName;
+    private String userPassword;
+    private String userEmail;
 
     /**
-     * Sets the name for this UserBuilder.
+     * Sets the password for this UserBuilder.
      *
-     * @param name the name of the user
+     * @param name the user's name
      * @return this builder
      */
-    public UserBuilder setName(String name) {
-        this.name = name;
+    public UserBuilder withName(String name) {
+        this.userName = name;
         return this;
     }
 
@@ -22,21 +26,43 @@ public class UserBuilder {
      * @param password the user's password
      * @return this builder
      */
-    public UserBuilder setPassword(String password) {
-        this.password = password;
+    public UserBuilder withPassword(String password) {
+        this.userPassword = password;
         return this;
     }
 
+    /**
+     * Sets the password for this UserBuilder.
+     *
+     * @param email the user's email
+     * @return this builder
+     */
+    public UserBuilder withEmail(String email) {
+        this.userEmail = email;
+        return this;
+    }
+
+    /**
+     * Build the user.
+     *
+     * @return User
+     */
     public User build() {
-        return new User(this);
-    }
-    /* ------------------- Getters ------------------- */
 
-    public String getName() {
-        return name;
+        if (userName == null || userName.trim().isEmpty()) {
+            throw new IllegalStateException("User name is required");
+        }
+
+        if (userEmail == null || userEmail.trim().isEmpty()) {
+            throw new IllegalStateException("Email is required");
+        }
+        // Validate email format
+        if (!JMail.isValid(userEmail)) {
+            throw new IllegalStateException("Invalid email format: " + userEmail);
+        }
+
+        return new User(userName, userPassword, userEmail, new ArrayList<>(), new ArrayList<>());
+
     }
 
-    public String getPassword() {
-        return password;
-    }
 }

@@ -14,7 +14,7 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 /**
- * Main GUI page for "What2Cook".
+ * app.Main GUI page for "What2Cook".
  * Top: current ingredients (list of Strings),
  * Center: scrollable list of recipe cards (image + title),
  * Bottom: number of search results.

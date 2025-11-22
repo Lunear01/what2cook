@@ -1,8 +1,7 @@
-import app.login.LoginInputBoundary;
-import app.login.LoginInteractor;
-import app.login.LoginUserDataAccessInterface;
-import app.signup.SignupInteractor;
-import app.signup.SignupUserDataAccessInterface;
+package app;
+
+import use_case.login.LoginInteractor;
+import use_case.signup.SignupInteractor;
 import dataaccess.UserDataAccesssObject;
 import entity.User;
 import entity.UserBuilder;
@@ -19,7 +18,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Main entry point for What2Cook application.
+ * app.Main entry point for What2Cook application.
  * Demonstrates the Login and Signup GUI with sample users.
  */
 public class Main {
@@ -27,20 +26,27 @@ public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             // Setup data access
+
+            // In memory version
             final UserDataAccesssObject userDAO = new UserDataAccesssObject();
+
+            // Local storage version
+            // final FileUserDataAccesssObject userDAO = new FileUserDataAccesssObject();
 
             // Create sample users
             final User user1 = new UserBuilder()
-                    .setName("jonathan_calver2")
-                    .setPassword("password123")
+                    .withName("jonathan_calver2")
+                    .withPassword("password123")
+                    .withEmail("39485@adf.com")
                     .build();
             final User user2 = new UserBuilder()
-                    .setName("david")
-                    .setPassword("pass456")
+                    .withName("david")
+                    .withPassword("pass456")
+                    .withEmail("dkh.kim@mail.utoronto.com")
                     .build();
 
-            userDAO.saveUser(user1);
-            userDAO.saveUser(user2);
+            userDAO.save(user1);
+            userDAO.save(user2);
 
             // Setup Login Use Case
             final LoginViewModel loginViewModel = new LoginViewModel();

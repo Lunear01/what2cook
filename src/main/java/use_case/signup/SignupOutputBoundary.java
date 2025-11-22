@@ -1,4 +1,4 @@
-package app.signup;
+package use_case.signup;
 
 public interface SignupOutputBoundary {
     void presentSuccess(SignupOutputData outputData);

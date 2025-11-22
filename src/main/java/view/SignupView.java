@@ -23,6 +23,8 @@ public class SignupView extends JPanel implements PropertyChangeListener {
     private final JLabel titleLabel = new JLabel("Create Account");
     private final JLabel usernameLabel = new JLabel("Username:");
     private final JTextField usernameField = new JTextField(20);
+    private final JLabel emailLabel = new JLabel("Email:");
+    private final JTextField emailField = new JTextField(20);
     private final JLabel passwordLabel = new JLabel("Password:");
     private final JPasswordField passwordField = new JPasswordField(20);
     private final JLabel confirmPasswordLabel = new JLabel("Confirm Password:");
@@ -48,7 +50,7 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         errorLabel.setForeground(Color.RED);
 
         // Input panel
-        JPanel inputPanel = new JPanel();
+        final JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
         inputPanel.setMaximumSize(new Dimension(300, 250));
         inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -56,6 +58,10 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         // Username field
         usernameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         usernameField.setMaximumSize(new Dimension(300, 30));
+
+        // Email field
+        emailLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        emailField.setMaximumSize(new Dimension(300, 30));
 
         // Password field
         passwordLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -68,6 +74,9 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         inputPanel.add(usernameLabel);
         inputPanel.add(usernameField);
         inputPanel.add(Box.createVerticalStrut(10));
+        inputPanel.add(emailLabel);
+        inputPanel.add(emailField);
+        inputPanel.add(Box.createVerticalStrut(10));
         inputPanel.add(passwordLabel);
         inputPanel.add(passwordField);
         inputPanel.add(Box.createVerticalStrut(10));
@@ -75,7 +84,7 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         inputPanel.add(confirmPasswordField);
 
         // Button panel
-        JPanel buttonPanel = new JPanel();
+        final JPanel buttonPanel = new JPanel();
         buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         signupButton.addActionListener(e -> handleSignup());
         backButton.addActionListener(e -> handleBack());
@@ -95,12 +104,13 @@ public class SignupView extends JPanel implements PropertyChangeListener {
     }
 
     private void handleSignup() {
-        String username = usernameField.getText();
-        String password = new String(passwordField.getPassword());
-        String confirmPassword = new String(confirmPasswordField.getPassword());
+        final String username = usernameField.getText();
+        final String email = emailField.getText();
+        final String password = new String(passwordField.getPassword());
+        final String confirmPassword = new String(confirmPasswordField.getPassword());
 
         if (signupController != null) {
-            signupController.signup(username, password, confirmPassword);
+            signupController.signup(username, email, password, confirmPassword);
         }
     }
 
@@ -114,7 +124,7 @@ public class SignupView extends JPanel implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        Object newState = evt.getNewValue();
+        final Object newState = evt.getNewValue();
         if (newState instanceof SignupState) {
             final SignupState state = (SignupState) newState;
 

@@ -2,10 +2,9 @@
 //package dataaccess;
 //
 //import entity.User;
-//import entity.UserFactory;
-//import use_case.change_password.ChangePasswordUserDataAccessInterface;
+//import entity.UserBuilder;
 //import use_case.login.LoginUserDataAccessInterface;
-//import use_case.logout.LogoutUserDataAccessInterface;
+//import use_case.cookinglist.UserDataAccessInterface;
 //import use_case.signup.SignupUserDataAccessInterface;
 //
 //import java.io.*;
@@ -17,11 +16,8 @@
 // * DAO for user data implemented using a File to persist the data.
 // */
 //
-//
-//public class FileUserDataAccessObject implements SignupUserDataAccessInterface,
-//        LoginUserDataAccessInterface,
-//        ChangePasswordUserDataAccessInterface,
-//        LogoutUserDataAccessInterface {
+//public class FileUserDataAccessObject implements UserDataAccessInterface, SignupUserDataAccessInterface,
+//        LoginUserDataAccessInterface {
 //
 //    private static final String HEADER = "username,password";
 //
@@ -34,10 +30,10 @@
 //    /**
 //     * Construct this DAO for saving to and reading from a local file.
 //     * @param csvPath the path of the file to save to
-//     * @param userFactory factory for creating user objects
+//     * @param userBuilder builder for creating user objects
 //     * @throws RuntimeException if there is an IOException when accessing the file
 //     */
-//    public FileUserDataAccessObject(String csvPath, UserFactory userFactory) {
+//    public FileUserDataAccessObject(String csvPath, UserBuilder userBuilder) {
 //
 //        csvFile = new File(csvPath);
 //        headers.put("username", 0);
@@ -59,8 +55,9 @@
 //                while ((row = reader.readLine()) != null) {
 //                    final String[] col = row.split(",");
 //                    final String username = String.valueOf(col[headers.get("username")]);
+//                    final String email = String.valueOf(col[headers.get("email")]);
 //                    final String password = String.valueOf(col[headers.get("password")]);
-//                    final User user = userFactory.create(username, password);
+//                    final User user = userBuilder.build();
 //                    accounts.put(username, user);
 //                }
 //            }
@@ -96,7 +93,7 @@
 //    public void save(User user) {
 //        accounts.put(user.getName(), user);
 //        this.save();
-//    }A
+//    }
 //
 //    @Override
 //    public User get(String username) {
@@ -125,4 +122,3 @@
 //        save();
 //    }
 //}
-//*/

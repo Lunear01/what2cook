@@ -1,4 +1,4 @@
-package app.signup;
+package use_case.signup;
 
 import entity.User;
 import entity.UserBuilder;
@@ -19,6 +19,7 @@ public class SignupInteractor implements SignupInputBoundary {
     @Override
     public void execute(SignupInputData inputData) {
         final String username = inputData.getUsername();
+        final String email = inputData.getEmail();
         final String password = inputData.getPassword();
         final String confirm = inputData.getConfirmPassword();
 
@@ -37,17 +38,18 @@ public class SignupInteractor implements SignupInputBoundary {
         }
 
         // Check uniqueness
-        if (userDataAccess.existsByUsername(username)) {
+        if (userDataAccess.existsByName(username)) {
             presenter.presentFailure("Username already exists");
             return;
         }
 
         // Create and save user
         final User user = new UserBuilder()
-                .setName(username)
-                .setPassword(password)
+                .withName(username)
+                .withPassword(password)
+                .withEmail(email)
                 .build();
-        userDataAccess.saveUser(user);
+        userDataAccess.save(user);
 
         presenter.presentSuccess(new SignupOutputData(username, true));
     }

@@ -1,4 +1,4 @@
-package app.signup;
+package use_case.signup;
 
 public class SignupOutputData {
     private final String username;
