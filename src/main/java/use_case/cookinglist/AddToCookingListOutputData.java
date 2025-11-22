@@ -1,6 +1,8 @@
 package use_case.cookinglist;
-import entity.Recipe;
+
 import java.util.List;
+
+import entity.Recipe;
 
 public class AddToCookingListOutputData {
     private final List<Recipe> updatedCookingList;
