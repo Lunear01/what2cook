@@ -1,64 +1,75 @@
-import app.login.LoginInputBoundary;
+package app;
+
 import app.login.LoginInteractor;
-import app.login.LoginUserDataAccessInterface;
 import app.signup.SignupInteractor;
-import app.signup.SignupUserDataAccessInterface;
 import dataaccess.UserDataAccesssObject;
 import entity.User;
+import entity.Ingredient;
+
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginViewModel;
+
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
+
+import interface_adapter.ingredient_search.IngredientSearchViewModel;
+
+import interface_adapter.recipe_search.RecipeSearchController;
+import interface_adapter.recipe_search.RecipeSearchViewModel;
+
 import view.LoginView;
 import view.SignupView;
+import view.IngredientSearchView;
+import view.RecipeSearchView;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Main entry point for What2Cook application.
- * Demonstrates the Login and Signup GUI with sample users.
- */
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            // Setup data access
+
+            // --- data access ---
             UserDataAccesssObject userDAO = new UserDataAccesssObject();
+            userDAO.saveUser(new User.UserBuilder()
+                    .setName("jonathan_calver2").setPassword("password123").build());
+            userDAO.saveUser(new User.UserBuilder()
+                    .setName("david").setPassword("pass456").build());
 
-            // Create sample users
-            User user1 = new User.UserBuilder()
-                    .setName("jonathan_calver2")
-                    .setPassword("password123")
-                    .build();
-            User user2 = new User.UserBuilder()
-                    .setName("david")
-                    .setPassword("pass456")
-                    .build();
-
-            userDAO.saveUser(user1);
-            userDAO.saveUser(user2);
-
-            // Setup Login Use Case
+            // --- login setup ---
             LoginViewModel loginViewModel = new LoginViewModel();
             LoginPresenter loginPresenter = new LoginPresenter(loginViewModel);
             LoginInteractor loginInteractor = new LoginInteractor(userDAO, loginPresenter);
             LoginController loginController = new LoginController(loginInteractor);
 
-            // Setup Signup Use Case
+            // --- signup setup ---
             SignupViewModel signupViewModel = new SignupViewModel();
             SignupPresenter signupPresenter = new SignupPresenter(signupViewModel);
             SignupInteractor signupInteractor = new SignupInteractor(userDAO, signupPresenter);
             SignupController signupController = new SignupController(signupInteractor);
 
-            // Create and setup JFrame
+            // --- ingredient search setup ---
+            IngredientSearchViewModel ingredientSearchViewModel = new IngredientSearchViewModel();
+            IngredientSearchView ingredientSearchView = new IngredientSearchView(ingredientSearchViewModel);
+
+            // --- recipe search setup ---
+            RecipeSearchViewModel recipeSearchViewModel = new RecipeSearchViewModel();
+            RecipeSearchView recipeSearchView = new RecipeSearchView(recipeSearchViewModel);
+            RecipeSearchController recipeSearchController =
+                    new RecipeSearchController(recipeSearchViewModel);
+            recipeSearchView.setController(recipeSearchController);
+
+            // --- main frame ---
             JFrame frame = new JFrame("What2Cook");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(500, 450);
             frame.setLocationRelativeTo(null);
 
-            // Setup Views
+            // --- views ---
             LoginView loginView = new LoginView(loginViewModel);
             loginView.setLoginController(loginController);
             loginView.setSignupController(signupController);
@@ -67,13 +78,15 @@ public class Main {
             SignupView signupView = new SignupView(signupViewModel);
             signupView.setSignupController(signupController);
 
-            // CardLayout for view switching
             CardLayout cardLayout = new CardLayout();
             JPanel cardPanel = new JPanel(cardLayout);
+
             cardPanel.add(loginView, "login");
             cardPanel.add(signupView, "signup");
+            cardPanel.add(ingredientSearchView, "ingredient");
+            cardPanel.add(recipeSearchView, "recipe");
 
-            // Setup navigation
+            // --- navigation ---
             loginView.setOnSwitchToSignup(() -> {
                 frame.setTitle("What2Cook - Sign Up");
                 cardLayout.show(cardPanel, "signup");
@@ -82,6 +95,33 @@ public class Main {
             signupView.setOnBackToLogin(() -> {
                 frame.setTitle("What2Cook - Login");
                 cardLayout.show(cardPanel, "login");
+            });
+
+            loginView.setOnLoginSuccess(() -> {
+                frame.setTitle("What2Cook - Ingredients");
+                cardLayout.show(cardPanel, "ingredient");
+            });
+
+            // --- core logic: go from IngredientSearch → RecipeSearch ---
+            ingredientSearchView.setOnNext(() -> {
+                // 1. 从 IngredientSearchViewModel 取得用户输入的食材名（String）
+                List<String> names = ingredientSearchViewModel.getState().getIngredients();
+
+                // 2. 转成 Ingredient 对象形式（RecipeSearch 使用这个）
+                List<Ingredient> ingredients = new ArrayList<>();
+                for (String name : names) {
+                    ingredients.add(new Ingredient(name));
+                }
+
+                // 3. 把 ingredients 放进 RecipeSearchViewModel → 让 RecipeSearchView 显示
+                recipeSearchViewModel.setCurrentIngredients(ingredients);
+
+                // 4. 调用 controller 搜索（现在用的是 demo 数据）
+                recipeSearchController.searchByIngredients(ingredients);
+
+                // 5. 切到 recipe 界面
+                frame.setTitle("What2Cook - Recipes");
+                cardLayout.show(cardPanel, "recipe");
             });
 
             frame.add(cardPanel);
