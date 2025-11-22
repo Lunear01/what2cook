@@ -1,9 +1,10 @@
 package app;
 
-import app.login.LoginInteractor;
-import app.signup.SignupInteractor;
+import use_case.login.LoginInteractor;
+import use_case.signup.SignupInteractor;
 import dataaccess.UserDataAccesssObject;
 import entity.User;
+import entity.UserBuilder;
 import entity.Ingredient;
 
 import interface_adapter.login.LoginController;
@@ -33,53 +34,66 @@ public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
 
-            // --- data access ---
-            UserDataAccesssObject userDAO = new UserDataAccesssObject();
-            userDAO.saveUser(new User.UserBuilder()
-                    .setName("jonathan_calver2").setPassword("password123").build());
-            userDAO.saveUser(new User.UserBuilder()
-                    .setName("david").setPassword("pass456").build());
+            // In memory version
+            final UserDataAccesssObject userDAO = new UserDataAccesssObject();
 
+            // Local storage version
+            // final FileUserDataAccesssObject userDAO = new FileUserDataAccesssObject();
+
+            // Create sample users
+            final User user1 = new UserBuilder()
+                    .withName("jonathan_calver2")
+                    .withPassword("password123")
+                    .withEmail("39485@adf.com")
+                    .build();
+            final User user2 = new UserBuilder()
+                    .withName("david")
+                    .withPassword("pass456")
+                    .withEmail("dkh.kim@mail.utoronto.com")
+                    .build();
+
+            userDAO.save(user1);
+            userDAO.save(user2);
             // --- login setup ---
-            LoginViewModel loginViewModel = new LoginViewModel();
-            LoginPresenter loginPresenter = new LoginPresenter(loginViewModel);
-            LoginInteractor loginInteractor = new LoginInteractor(userDAO, loginPresenter);
-            LoginController loginController = new LoginController(loginInteractor);
+            final LoginViewModel loginViewModel = new LoginViewModel();
+            final LoginPresenter loginPresenter = new LoginPresenter(loginViewModel);
+            final LoginInteractor loginInteractor = new LoginInteractor(userDAO, loginPresenter);
+            final LoginController loginController = new LoginController(loginInteractor);
 
             // --- signup setup ---
-            SignupViewModel signupViewModel = new SignupViewModel();
-            SignupPresenter signupPresenter = new SignupPresenter(signupViewModel);
-            SignupInteractor signupInteractor = new SignupInteractor(userDAO, signupPresenter);
-            SignupController signupController = new SignupController(signupInteractor);
+            final SignupViewModel signupViewModel = new SignupViewModel();
+            final SignupPresenter signupPresenter = new SignupPresenter(signupViewModel);
+            final SignupInteractor signupInteractor = new SignupInteractor(userDAO, signupPresenter);
+            final SignupController signupController = new SignupController(signupInteractor);
 
             // --- ingredient search setup ---
-            IngredientSearchViewModel ingredientSearchViewModel = new IngredientSearchViewModel();
-            IngredientSearchView ingredientSearchView = new IngredientSearchView(ingredientSearchViewModel);
+            final IngredientSearchViewModel ingredientSearchViewModel = new IngredientSearchViewModel();
+            final IngredientSearchView ingredientSearchView = new IngredientSearchView(ingredientSearchViewModel);
 
             // --- recipe search setup ---
-            RecipeSearchViewModel recipeSearchViewModel = new RecipeSearchViewModel();
-            RecipeSearchView recipeSearchView = new RecipeSearchView(recipeSearchViewModel);
-            RecipeSearchController recipeSearchController =
+            final RecipeSearchViewModel recipeSearchViewModel = new RecipeSearchViewModel();
+            final RecipeSearchView recipeSearchView = new RecipeSearchView(recipeSearchViewModel);
+            final RecipeSearchController recipeSearchController =
                     new RecipeSearchController(recipeSearchViewModel);
             recipeSearchView.setController(recipeSearchController);
 
             // --- main frame ---
-            JFrame frame = new JFrame("What2Cook");
+            final JFrame frame = new JFrame("What2Cook");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(500, 450);
             frame.setLocationRelativeTo(null);
 
             // --- views ---
-            LoginView loginView = new LoginView(loginViewModel);
+            final LoginView loginView = new LoginView(loginViewModel);
             loginView.setLoginController(loginController);
             loginView.setSignupController(signupController);
             loginView.setSignupViewModel(signupViewModel);
 
-            SignupView signupView = new SignupView(signupViewModel);
+            final SignupView signupView = new SignupView(signupViewModel);
             signupView.setSignupController(signupController);
 
-            CardLayout cardLayout = new CardLayout();
-            JPanel cardPanel = new JPanel(cardLayout);
+            final CardLayout cardLayout = new CardLayout();
+            final JPanel cardPanel = new JPanel(cardLayout);
 
             cardPanel.add(loginView, "login");
             cardPanel.add(signupView, "signup");
@@ -105,10 +119,10 @@ public class Main {
             // --- core logic: go from IngredientSearch → RecipeSearch ---
             ingredientSearchView.setOnNext(() -> {
                 // 1. 从 IngredientSearchViewModel 取得用户输入的食材名（String）
-                List<String> names = ingredientSearchViewModel.getState().getIngredients();
+                final List<String> names = ingredientSearchViewModel.getState().getIngredients();
 
                 // 2. 转成 Ingredient 对象形式（RecipeSearch 使用这个）
-                List<Ingredient> ingredients = new ArrayList<>();
+                final List<Ingredient> ingredients = new ArrayList<>();
                 for (String name : names) {
                     ingredients.add(new Ingredient(name));
                 }
