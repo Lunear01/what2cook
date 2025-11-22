@@ -1,34 +1,32 @@
 package app;
 
-import use_case.login.LoginInteractor;
-import use_case.signup.SignupInteractor;
+import java.awt.CardLayout;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
 import dataaccess.UserDataAccesssObject;
+import entity.Ingredient;
 import entity.User;
 import entity.UserBuilder;
-import entity.Ingredient;
-
+import interface_adapter.ingredient_search.IngredientSearchViewModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginViewModel;
-
+import interface_adapter.recipe_search.RecipeSearchController;
+import interface_adapter.recipe_search.RecipeSearchViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
-
-import interface_adapter.ingredient_search.IngredientSearchViewModel;
-
-import interface_adapter.recipe_search.RecipeSearchController;
-import interface_adapter.recipe_search.RecipeSearchViewModel;
-
-import view.LoginView;
-import view.SignupView;
+import use_case.login.LoginInteractor;
+import use_case.signup.SignupInteractor;
 import view.IngredientSearchView;
+import view.LoginView;
 import view.RecipeSearchView;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import view.SignupView;
 
 public class Main {
     public static void main(String[] args) {
