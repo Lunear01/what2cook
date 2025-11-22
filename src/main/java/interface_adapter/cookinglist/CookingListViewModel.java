@@ -11,23 +11,32 @@ public class CookingListViewModel extends ViewModel<CookingListState> {
 
     public CookingListViewModel() {
         super(VIEW_NAME);
-        // 初始化 state，避免一开始 getState() 为 null
         this.setState(new CookingListState());
     }
 
-    // 方便 Presenter / View 使用的封装方法：
-
+    /**
+     * Updates the personal cooking list in the view model and
+     * notifies listeners that the cooking list has changed.
+     *
+     * @param recipes the new personal cooking list.
+     */
     public void setPersonalCookingList(List<Recipe> recipes) {
         final CookingListState state = getState();
         state.setPersonalCookingList(recipes);
-        setState(state);                 // 更新状态
-        firePropertyChanged("cooking");  // 通知监听者（比如 NoteView）
+        setState(state);
+        firePropertyChanged("cooking");
     }
 
     public List<Recipe> getPersonalCookingList() {
         return getState().getPersonalCookingList();
     }
 
+    /**
+     * Sets the status message in the view model and notifies listeners
+     * that the status message has changed.
+     *
+     * @param message the new status message.
+     */
     public void setStatusMessage(String message) {
         final CookingListState state = getState();
         state.setStatusMessage(message);

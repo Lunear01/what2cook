@@ -16,9 +16,9 @@ public final class Main {
     }
 
     /**
-     * Launches the application.
+     * Launches the What2Cook application.
      *
-     * @param args command-line arguments (unused).
+     * @param args the command-line arguments.
      */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -27,3 +27,4 @@ public final class Main {
         });
     }
 }
+

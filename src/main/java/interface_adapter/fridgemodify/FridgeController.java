@@ -21,6 +21,8 @@ public class FridgeController {
 
     /**
      * Adds an ingredient and triggers UI update.
+     *
+     * @param name the name of the ingredient to add.
      */
     public void addIngredient(String name) {
         addUc.addToList(name);
@@ -29,6 +31,8 @@ public class FridgeController {
 
     /**
      * Delete an ingredient and triggers UI update.
+     *
+     * @param name the name of the ingredient to delete.
      */
     public void deleteIngredient(String name) {
         deleteUc.deleteToList(name);

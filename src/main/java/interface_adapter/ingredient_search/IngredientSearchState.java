@@ -9,7 +9,9 @@ public class IngredientSearchState {
     private String currentInput = "";
     private String error;
 
-    public IngredientSearchState() {}
+    public IngredientSearchState() {
+
+    }
 
     // copy constructor
     public IngredientSearchState(IngredientSearchState copy) {

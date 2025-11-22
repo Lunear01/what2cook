@@ -30,6 +30,12 @@ public class RecipeSearchViewModel extends ViewModel<RecipeSearchState> {
         support.firePropertyChange("state", null, getState());
     }
 
+    /**
+     * Updates the current ingredient list in the view model state and
+     * notifies listeners that the state has changed.
+     *
+     * @param ingredients the list of current ingredients.
+     */
     public void setCurrentIngredients(List<Ingredient> ingredients) {
         final RecipeSearchState newState = new RecipeSearchState(getState());
         newState.setIngredients(new ArrayList<>(ingredients));
@@ -37,6 +43,12 @@ public class RecipeSearchViewModel extends ViewModel<RecipeSearchState> {
         firePropertyChanged();
     }
 
+    /**
+     * Updates the list of recipes in the view model state and
+     * notifies listeners that the state has changed.
+     *
+     * @param recipes the list of recipes to set.
+     */
     public void setRecipes(List<Recipe> recipes) {
         final RecipeSearchState newState = new RecipeSearchState(getState());
         newState.setRecipes(new ArrayList<>(recipes));
@@ -44,6 +56,12 @@ public class RecipeSearchViewModel extends ViewModel<RecipeSearchState> {
         firePropertyChanged();
     }
 
+    /**
+     * Sets the error message in the view model state and
+     * notifies listeners that the state has changed.
+     *
+     * @param error the error message to set.
+     */
     public void setError(String error) {
         final RecipeSearchState newState = new RecipeSearchState(getState());
         newState.setError(error);

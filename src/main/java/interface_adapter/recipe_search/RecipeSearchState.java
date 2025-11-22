@@ -12,7 +12,9 @@ public class RecipeSearchState {
     private List<Recipe> recipes = new ArrayList<>();
     private String error;
 
-    public RecipeSearchState() {}
+    public RecipeSearchState() {
+
+    }
 
     // copy constructor
     public RecipeSearchState(RecipeSearchState copy) {

@@ -25,7 +25,7 @@ public class LoginPresenter implements LoginOutputBoundary {
 
     @Override
     public void presentFailure(String errorMessage) {
-        LoginState state = viewModel.getState();
+        final LoginState state = viewModel.getState();
         state.setErrorMessage(errorMessage);
         state.setLoggedIn(false);
         viewModel.setState(state);

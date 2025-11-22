@@ -43,9 +43,12 @@ public class UserBuilder {
     }
 
     /**
-     * Build the user.
+     * Builds and returns a new User instance.
      *
-     * @return User
+     * @return the constructed {@code User}.
+     * @throws IllegalStateException if the userName is missing,
+     *                               if the email is missing,
+     *                               or if the email format is invalid.
      */
     public User build() {
 
