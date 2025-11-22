@@ -54,7 +54,9 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         ingredientsArea.setWrapStyleWord(true);
 
         recipesPanel.setLayout(new BoxLayout(recipesPanel, BoxLayout.Y_AXIS));
-        recipesScrollPane.setPreferredSize(new Dimension(500, 350));
+        final int recipesWidth = 500;
+        final int recipesHeight = 350;
+        recipesScrollPane.setPreferredSize(new Dimension(recipesWidth, recipesHeight));
 
         add(titleLabel);
         add(ingredientsTitleLabel);
@@ -113,9 +115,12 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
 
     private JPanel createRecipeCard(Recipe recipe) {
         final JPanel card = new JPanel(new BorderLayout());
-        card.setPreferredSize(new Dimension(460, 200));
-        card.setMaximumSize(new Dimension(Short.MAX_VALUE, 200));
-        card.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        final int cardWidth = 460;
+        final int cardHeight = 200;
+        card.setPreferredSize(new Dimension(cardWidth, cardHeight));
+        card.setMaximumSize(new Dimension(Short.MAX_VALUE, cardHeight));
+        final int cardBorder = 10;
+        card.setBorder(BorderFactory.createEmptyBorder(cardBorder, cardBorder, cardBorder, cardBorder));
 
         ImageIcon icon = new ImageIcon();
         final String path = recipe.getImage();

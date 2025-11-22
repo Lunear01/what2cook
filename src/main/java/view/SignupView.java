@@ -1,13 +1,25 @@
 package view;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupState;
 import interface_adapter.signup.SignupViewModel;
-
-import javax.swing.*;
-import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 /**
  * Signup View GUI.
@@ -39,11 +51,16 @@ public class SignupView extends JPanel implements PropertyChangeListener {
 
         // ===== Layout Setup =====
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        final int borderTop = 20;
+        final int borderBottom = 20;
+        final int borderLeft = 20;
+        final int borderRight = 20;
+        this.setBorder(BorderFactory.createEmptyBorder(borderTop, borderLeft, borderBottom, borderRight));
 
         // Title
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        final int fontSize = 20;
+        titleLabel.setFont(new Font("Arial", Font.BOLD, fontSize));
 
         // Error label
         errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -52,34 +69,46 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         // Input panel
         final JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
-        inputPanel.setMaximumSize(new Dimension(300, 250));
+        final int inputPanelWidth = 300;
+        final int inputPanelHeight = 300;
+        inputPanel.setMaximumSize(new Dimension(inputPanelWidth, inputPanelHeight));
         inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Username field
         usernameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        usernameField.setMaximumSize(new Dimension(300, 30));
+        final int usernameLabelWidth = 300;
+        final int usernameLabelHeight = 30;
+        usernameField.setMaximumSize(new Dimension(usernameLabelWidth, usernameLabelHeight));
 
         // Email field
         emailLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        emailField.setMaximumSize(new Dimension(300, 30));
+        final int emailLabelWidth = 300;
+        final int emailLabelHeight = 30;
+        emailField.setMaximumSize(new Dimension(emailLabelWidth, emailLabelHeight));
 
         // Password field
         passwordLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        passwordField.setMaximumSize(new Dimension(300, 30));
+        final int passwordLabelWidth = 300;
+        final int passwordLabelHeight = 30;
+        passwordField.setMaximumSize(new Dimension(passwordLabelWidth, passwordLabelHeight));
 
         // Confirm password field
         confirmPasswordLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        confirmPasswordField.setMaximumSize(new Dimension(300, 30));
+        final int confirmPasswordLabelWidth = 300;
+        final int confirmPasswordLabelHeight = 30;
+        confirmPasswordField.setMaximumSize(new Dimension(confirmPasswordLabelWidth, confirmPasswordLabelHeight));
 
         inputPanel.add(usernameLabel);
         inputPanel.add(usernameField);
-        inputPanel.add(Box.createVerticalStrut(10));
+        final int height10 = 10;
+        final int height20 = 20;
+        inputPanel.add(Box.createVerticalStrut(height10));
         inputPanel.add(emailLabel);
         inputPanel.add(emailField);
-        inputPanel.add(Box.createVerticalStrut(10));
+        inputPanel.add(Box.createVerticalStrut(height10));
         inputPanel.add(passwordLabel);
         inputPanel.add(passwordField);
-        inputPanel.add(Box.createVerticalStrut(10));
+        inputPanel.add(Box.createVerticalStrut(height10));
         inputPanel.add(confirmPasswordLabel);
         inputPanel.add(confirmPasswordField);
 
@@ -89,16 +118,16 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         signupButton.addActionListener(e -> handleSignup());
         backButton.addActionListener(e -> handleBack());
         buttonPanel.add(signupButton);
-        buttonPanel.add(Box.createHorizontalStrut(10));
+        buttonPanel.add(Box.createHorizontalStrut(height10));
         buttonPanel.add(backButton);
 
         // ===== Add Components =====
         this.add(titleLabel);
-        this.add(Box.createVerticalStrut(20));
+        this.add(Box.createVerticalStrut(height20));
         this.add(errorLabel);
-        this.add(Box.createVerticalStrut(10));
+        this.add(Box.createVerticalStrut(height10));
         this.add(inputPanel);
-        this.add(Box.createVerticalStrut(20));
+        this.add(Box.createVerticalStrut(height20));
         this.add(buttonPanel);
         this.add(Box.createVerticalGlue());
     }

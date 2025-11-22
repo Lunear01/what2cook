@@ -46,11 +46,13 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         this.loginViewModel.addPropertyChangeListener(this);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        final int loginViewBorder = 20;
+        setBorder(BorderFactory.createEmptyBorder(loginViewBorder, loginViewBorder, loginViewBorder, loginViewBorder));
 
         final JLabel title = new JLabel("What2Cook - Login");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        title.setFont(title.getFont().deriveFont(Font.BOLD, 18f));
+        final float titleSize = 18f;
+        title.setFont(title.getFont().deriveFont(Font.BOLD, titleSize));
 
         final JPanel userPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         userPanel.add(new JLabel("Username:"));
@@ -68,12 +70,14 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         add(title);
-        add(Box.createVerticalStrut(15));
+        final int height15 = 15;
+        final int height10 = 10;
+        add(Box.createVerticalStrut(height15));
         add(userPanel);
         add(passPanel);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(height10));
         add(buttonPanel);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(height10));
         add(errorLabel);
 
         loginButton.addActionListener(this);

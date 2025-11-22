@@ -45,10 +45,12 @@ public class IngredientSearchView extends JPanel
         this.viewModel.addPropertyChangeListener(this);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        final int viewModelBorder = 20;
+        setBorder(BorderFactory.createEmptyBorder(viewModelBorder, viewModelBorder, viewModelBorder, viewModelBorder));
 
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 16f));
+        final float titleLabelSize = 16f;
+        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, titleLabelSize));
 
         final JPanel inputPanel = new JPanel();
         inputPanel.add(new JLabel("Ingredient:"));
@@ -56,7 +58,9 @@ public class IngredientSearchView extends JPanel
         inputPanel.add(addButton);
 
         final JScrollPane scrollPane = new JScrollPane(ingredientList);
-        scrollPane.setPreferredSize(new Dimension(400, 200));
+        final int scrollPaneWidth = 400;
+        final int scrollPaneHeight = 200;
+        scrollPane.setPreferredSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
 
         nextButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -64,13 +68,14 @@ public class IngredientSearchView extends JPanel
         errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         add(titleLabel);
-        add(Box.createVerticalStrut(10));
+        final int height10 = 10;
+        add(Box.createVerticalStrut(height10));
         add(inputPanel);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(height10));
         add(scrollPane);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(height10));
         add(nextButton);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(height10));
         add(errorLabel);
 
         addButton.addActionListener(this);
@@ -88,8 +93,8 @@ public class IngredientSearchView extends JPanel
         if (src == addButton) {
             final String text = inputField.getText().trim();
             if (!text.isEmpty()) {
-                IngredientSearchState oldState = viewModel.getState();
-                IngredientSearchState newState = new IngredientSearchState(oldState);
+                final IngredientSearchState oldState = viewModel.getState();
+                final IngredientSearchState newState = new IngredientSearchState(oldState);
                 newState.getIngredients().add(text);
                 newState.setCurrentInput("");
                 newState.setError(null);
@@ -110,7 +115,7 @@ public class IngredientSearchView extends JPanel
         final Object newVal = evt.getNewValue();
         if (!(newVal instanceof IngredientSearchState)) return;
 
-        IngredientSearchState state = (IngredientSearchState) newVal;
+        final IngredientSearchState state = (IngredientSearchState) newVal;
 
         listModel.clear();
         for (String ing : state.getIngredients()) {
