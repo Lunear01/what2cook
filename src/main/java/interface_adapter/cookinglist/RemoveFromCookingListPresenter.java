@@ -1,7 +1,7 @@
 package interface_adapter.cookinglist;
 
-import app.cookinglist.RemoveFromCookingListOutputBoundary;
-import app.cookinglist.RemoveFromCookingListOutputData;
+import use_case.cookinglist.RemoveFromCookingListOutputBoundary;
+import use_case.cookinglist.RemoveFromCookingListOutputData;
 
 /**
  * Presenter for removing a recipe from the cooking list.

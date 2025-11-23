@@ -1,4 +1,4 @@
-package app.cookinglist;
+package use_case.cookinglist;
 
 import entity.Recipe;
 import java.util.List;

@@ -20,8 +20,8 @@ import interface_adapter.cookinglist.CookingListViewModel;
 import interface_adapter.cookinglist.RemoveFromCookingListController;
 import interface_adapter.cookinglist.RemoveFromCookingListPresenter;
 
-import app.cookinglist.AddToCookingListInteractor;
-import app.cookinglist.RemoveFromCookingListInteractor;
+import use_case.cookinglist.AddToCookingListInteractor;
+import use_case.cookinglist.RemoveFromCookingListInteractor;
 
 import recipeapi.RecipeFetcher;
 import recipeapi.SpoonacularRecipeFetcher;

@@ -1,5 +1,5 @@
 package dataaccess;
-import app.cookinglist.UserDataAccessInterface;
+import use_case.cookinglist.UserDataAccessInterface;
 import app.login.LoginUserDataAccessInterface;
 import app.signup.SignupUserDataAccessInterface;
 import entity.User;

@@ -1,7 +1,7 @@
 package interface_adapter.cookinglist;
 
-import app.cookinglist.RemoveFromCookingListInputBoundary;
-import app.cookinglist.RemoveFromCookingListInputData;
+import use_case.cookinglist.RemoveFromCookingListInputBoundary;
+import use_case.cookinglist.RemoveFromCookingListInputData;
 import entity.Recipe;
 
 /**
