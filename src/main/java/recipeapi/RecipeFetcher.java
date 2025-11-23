@@ -57,7 +57,7 @@ public interface RecipeFetcher {
      * @return Ingredient
      * @throws IngredientNotFoundException if ingredient is not found
      */
-//    Ingredient searchIngredient(String name) throws IngredientNotFoundException;
+    //Ingredient searchIngredient(String name) throws IngredientNotFoundException;
 
     class RecipeNotFoundException extends Exception {
         public RecipeNotFoundException(String recipe) {

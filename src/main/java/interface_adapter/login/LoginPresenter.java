@@ -1,7 +1,7 @@
 package interface_adapter.login;
 
-import app.login.LoginOutputBoundary;
-import app.login.LoginOutputData;
+import use_case.login.LoginOutputBoundary;
+import use_case.login.LoginOutputData;
 
 /**
  * Presenter for the Login use case.
@@ -15,7 +15,7 @@ public class LoginPresenter implements LoginOutputBoundary {
 
     @Override
     public void presentSuccess(LoginOutputData outputData) {
-        LoginState state = new LoginState();
+        final LoginState state = new LoginState();
         state.setUsername(outputData.getUsername());
         state.setLoggedIn(true);
         state.setErrorMessage("");
@@ -25,7 +25,7 @@ public class LoginPresenter implements LoginOutputBoundary {
 
     @Override
     public void presentFailure(String errorMessage) {
-        LoginState state = viewModel.getState();
+        final LoginState state = viewModel.getState();
         state.setErrorMessage(errorMessage);
         state.setLoggedIn(false);
         viewModel.setState(state);

@@ -1,4 +1,4 @@
-package app.login;
+package use_case.login;
 
 public class LoginOutputData {
     private final String username;

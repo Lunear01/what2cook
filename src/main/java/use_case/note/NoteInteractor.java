@@ -13,7 +13,7 @@ public class NoteInteractor implements NoteInputBoundary {
     public void execute(String note) {
         if (note == null) {
             // Load note
-            String loadedNote = dataAccess.getNote("default_user");
+            final String loadedNote = dataAccess.getNote("default_user");
             presenter.prepareSuccessView(loadedNote != null ? loadedNote : "");
         } else {
             // Save note

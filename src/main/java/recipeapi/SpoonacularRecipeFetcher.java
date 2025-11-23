@@ -1,13 +1,18 @@
 package recipeapi;
 
-import entity.Ingredient;
-import entity.Recipe;
-import okhttp3.*;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import entity.Ingredient;
+import entity.Recipe;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
@@ -241,9 +246,9 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
     // Parse JSON response
     private static JSONArray parseResponse(List<String> ingredients, Response response)
             throws IngredientNotFoundException, IOException {
-
+        final int notFoundCode = 404;
         if (!response.isSuccessful()) {
-            if (response.code() == 404) {
+            if (response.code() == notFoundCode) {
                 throw new IngredientNotFoundException("Ingredients not found: " + ingredients);
             }
             throw new IOException("HTTP error " + response.code() + ": " + response.message());

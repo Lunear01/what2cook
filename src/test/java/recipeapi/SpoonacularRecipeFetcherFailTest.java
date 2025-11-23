@@ -1,10 +1,13 @@
 package recipeapi;
+
 import entity.Recipe;
 import org.junit.Test;
+
 import java.util.List;
+
 import static org.junit.Assert.*;
 
-public class SpoonacularRecipeFetcherTest {
+public class SpoonacularRecipeFetcherFailTest {
     @Test
     public void testRealAPI() {
         RecipeFetcher fetcher = new SpoonacularRecipeFetcher();
@@ -12,7 +15,7 @@ public class SpoonacularRecipeFetcherTest {
         /* === Testing getRecipesByIngredients === */
         try {
             List<Recipe> recipes = fetcher.getRecipesByIngredients(
-                    List.of("chicken", "rice"),
+                    List.of("asdf", "asdf"),
                     3,
                     1,
                     true

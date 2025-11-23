@@ -18,3 +18,10 @@ API infused recipe recommendation/search engine based on user provided ingredien
 - Mohan Yuan
 - Han kong
 - David Kang-hee Kim
+
+### Notes:
+- Due to limited free access to Spoonacular API, it may possible to happen situation of "Failed to fetch recipes"
+- Try changing the API in SpoonacularRecipeFetcher
+- 4932d6f2116641318a14ddc9f10fd899
+- a8caa3ad56aa4b7ba4a935fda8cfabdd
+- 92add0099ace49b29ee16b5e1fb7b6ea

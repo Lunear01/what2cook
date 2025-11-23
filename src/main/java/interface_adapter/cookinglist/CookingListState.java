@@ -1,11 +1,10 @@
 package interface_adapter.cookinglist;
 
-
+import java.util.ArrayList;
+import java.util.List;
 
 import entity.Recipe;
 
-import java.util.ArrayList;
-import java.util.List;
 public class CookingListState {
     private List<Recipe> personalCookingList = new ArrayList<>();
 

@@ -1,6 +1,7 @@
 package interface_adapter.fridgemodify;
 
 import use_case.AddIngredientUseCase;
+import use_case.DeleteIngredientUseCase;
 import use_case.GetIngredientUseCase;
 
 /**
@@ -8,26 +9,39 @@ import use_case.GetIngredientUseCase;
  */
 public class FridgeController {
 
-    private final AddIngredientUseCase addUC;
-    private final GetIngredientUseCase getUC;
+    private final AddIngredientUseCase addUc;
+    private final GetIngredientUseCase getUc;
+    private final DeleteIngredientUseCase deleteUc;
 
-    public FridgeController(AddIngredientUseCase addUC, GetIngredientUseCase getUC) {
-        this.addUC = addUC;
-        this.getUC = getUC;
+    public FridgeController(AddIngredientUseCase addUc, GetIngredientUseCase getUc, DeleteIngredientUseCase deleteUc) {
+        this.addUc = addUc;
+        this.getUc = getUc;
+        this.deleteUc = deleteUc;
     }
 
     /**
      * Adds an ingredient and triggers UI update.
+     *
+     * @param name the name of the ingredient to add.
      */
     public void addIngredient(String name) {
-        addUC.addToList(name);
-        getUC.execute();
+        addUc.addToList(name);
+        getUc.execute();
+    }
+
+    /**
+     * Delete an ingredient and triggers UI update.
+     *
+     * @param name the name of the ingredient to delete.
+     */
+    public void deleteIngredient(String name) {
+        deleteUc.deleteToList(name);
     }
 
     /**
      * Refreshes the ingredient list.
      */
     public void refresh() {
-        getUC.execute();
+        getUc.execute();
     }
 }

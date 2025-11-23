@@ -7,7 +7,7 @@ public class LoginState {
     private String username = "";
     private String password = "";
     private String errorMessage = "";
-    private boolean isLoggedIn = false;
+    private boolean isLoggedIn;
 
     public String getUsername() {
         return username;
