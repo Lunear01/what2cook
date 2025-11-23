@@ -17,37 +17,43 @@ public class LoginInteractor implements LoginInputBoundary {
 
     @Override
     public void execute(LoginInputData inputData) {
+
+        String errorMessage = null;
+        LoginOutputData outputData = null;
+
         final String username = inputData.getUsername();
         final String password = inputData.getPassword();
 
         // Validate input
         if (username == null || username.trim().isEmpty()) {
-            presenter.presentFailure("Username cannot be empty");
-            return;
+            errorMessage = "Username cannot be empty";
+        }
+        else if (password == null || password.trim().isEmpty()) {
+            errorMessage = "Password cannot be empty";
+        }
+        else {
+            // Get user
+            final User user = userDataAccess.get(username);
+
+            if (user == null) {
+                errorMessage = "User not found";
+            }
+            else if (!user.getPassword().equals(password)) {
+                errorMessage = "Incorrect password";
+            }
+            else {
+                // Success
+                outputData = new LoginOutputData(username, true);
+            }
         }
 
-        if (password == null || password.trim().isEmpty()) {
-            presenter.presentFailure("Password cannot be empty");
-            return;
+        // Now exactly ONE return path
+        if (errorMessage != null) {
+            presenter.presentFailure(errorMessage);
         }
-
-        // Get user from data access
-        final User user = userDataAccess.get(username);
-
-        // Check if user exists and password matches
-        if (user == null) {
-            presenter.presentFailure("User not found");
-            return;
+        else {
+            presenter.presentSuccess(outputData);
         }
-
-        if (!user.getPassword().equals(password)) {
-            presenter.presentFailure("Incorrect password");
-            return;
-        }
-
-        // Success
-        final LoginOutputData outputData = new LoginOutputData(username, true);
-        presenter.presentSuccess(outputData);
     }
 }
 
