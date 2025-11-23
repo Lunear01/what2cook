@@ -3,54 +3,85 @@ package entity;
 import java.util.List;
 
 public class Recipe {
-    private final String title;
-    private final List<String> ingredientNames;
-    private final int calories;
-    private final int healthScore;
-    private final String instructions;
+    private int id;
+    private String title;
+    private List<Ingredient> ingredientNames;
+    private double calories;
+    private int healthScore;
+    private String instructions;
+    private String image;
 
-    private Recipe(RecipeBuilder builder) {
-        this.title = builder.title;
-        this.ingredientNames = builder.ingredientNames;
-        this.calories = builder.calories;
-        this.healthScore = builder.healthScore;
-        this.instructions = builder.instructions;
+    public Recipe() {
     }
 
-    public static class RecipeBuilder {
-        private String title;
-        private List<String> ingredientNames;
-        private int calories;
-        private int healthScore;
-        private String instructions;
+    public Recipe(int id, String title,
+                  List<Ingredient> ingredientNames,
+                  double calories,
+                  int healthScore,
+                  String instructions) {
+        this.id = id;
+        this.title = title;
+        this.ingredientNames = ingredientNames;
+        this.calories = calories;
+        this.healthScore = healthScore;
+        this.instructions = instructions;
+        this.image = "";
+    }
 
-        public RecipeBuilder setTitle(String title) {
-            this.title = title;
-            return this;
-        }
+    public int getId() {
+        return id;
+    }
 
-        public RecipeBuilder setIngredientNames(List<String> ingredientNames) {
-            this.ingredientNames = ingredientNames;
-            return this;
-        }
+    public String getTitle() {
+        return title;
+    }
 
-        public RecipeBuilder setCalories(int calories) {
-            this.calories = calories;
-            return this;
-        }
+    public List<Ingredient> getIngredientNames() {
+        return ingredientNames;
+    }
 
-        public RecipeBuilder setHealthScore(int healthScore) {
-            this.healthScore = healthScore;
-            return this;
-        }
+    public double getCalories() {
+        return calories;
+    }
 
-        public RecipeBuilder setInstructions(String instructions) {
-            this.instructions = instructions;
-            return this;
-        }
+    public int getHealthScore() {
+        return healthScore;
+    }
 
-        public Recipe build() {
-            return new Recipe(this);
-        }
+    public String getInstructions() {
+        return instructions;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setIngredientNames(List<Ingredient> ingredientNames) {
+
+        this.ingredientNames = ingredientNames;
+    }
+
+    public void setCalories(int calories) {
+        this.calories = calories;
+    }
+
+    public void setHealthScore(int healthScore) {
+        this.healthScore = healthScore;
+    }
+
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

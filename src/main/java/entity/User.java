@@ -1,42 +1,32 @@
 package entity;
 
-import java.util.ArrayList;
 import java.util.Collections;
-
 import java.util.List;
 
-public class User {
+public final class User {
 
     private final String name;
     private final String password;
+    private final String email;
     private final List<Recipe> personalCookingList;
-    private final List<String> refrigerator;
+    private final List<Ingredient> refrigerator;
 
-    private User(UserBuilder builder) {
-        this.name = builder.name;
-        this.password = builder.password;
-        this.personalCookingList = new ArrayList<>();
-        this.refrigerator = new ArrayList<>();
+    // Private constructor
+    User(String name, String password, String email, List<Recipe> personalCookingList, List<Ingredient> refrigerator) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.personalCookingList = personalCookingList;
+        this.refrigerator = refrigerator;
     }
 
-    /* ------------------- Builder ------------------- */
-    public static class UserBuilder {
-        private String name;
-        private String password;
-
-        public UserBuilder setName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public UserBuilder setPassword(String password) {
-            this.password = password;
-            return this;
-        }
-
-        public User build() {
-            return new User(this);
-        }
+    /**
+     * Returns a new builder instance for creating a User.
+     *
+     * @return a new {@code UserBuilder}.
+     */
+    public static UserBuilder builder() {
+        return new UserBuilder();
     }
 
     /* ------------------- Getters ------------------- */
@@ -49,6 +39,10 @@ public class User {
         return password;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
     public List<Recipe> getPersonalCookingList() {
         return Collections.unmodifiableList(personalCookingList);
     }
@@ -58,19 +52,34 @@ public class User {
     }
 
     /* ------------------- Modify list ------------------- */
-
+    /**
+     * Adds a recipe to the user's personal cooking list if it is not already present.
+     *
+     * @param recipe the recipe to add.
+     */
     public void addToPersonalCookingList(Recipe recipe) {
         if (recipe != null && !personalCookingList.contains(recipe)) {
             personalCookingList.add(recipe);
         }
     }
 
-    public void addToRefrigerator(String ingredient) {
+    /**
+     * Adds an ingredient to the user's refrigerator if it is not already present.
+     *
+     * @param ingredient the ingredient to add.
+     */
+    public void addToRefrigerator(Ingredient ingredient) {
         if (!refrigerator.contains(ingredient)) {
             refrigerator.add(ingredient);
         }
     }
 
+    /**
+     * Removes the given recipe from the user's personal cooking list
+     * if it is present.
+     *
+     * @param recipe the recipe to remove.
+     */
     public void removeFromPersonalCookingList(Recipe recipe) {
         personalCookingList.remove(recipe);
     }

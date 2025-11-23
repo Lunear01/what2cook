@@ -10,12 +10,20 @@ public class FridgeViewModel {
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private FridgeState state = new FridgeState();
 
+    /**
+     * Adds a property change listener to observe state updates.
+     *
+     * @param listener the listener to add.
+     */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);
     }
 
     /**
-     * Called by the presenter to update the ViewModel with the latest ingredient list.
+     * Updates the ViewModel with the given list of ingredients.
+     * Creates a new state instance and notifies property change listeners.
+     *
+     * @param ingredients the updated ingredient list.
      */
     public void update(List<String> ingredients) {
 

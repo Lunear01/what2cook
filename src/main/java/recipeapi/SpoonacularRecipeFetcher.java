@@ -1,13 +1,18 @@
 package recipeapi;
 
-import entity.Recipe;
-import okhttp3.*;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import entity.Ingredient;
+import entity.Recipe;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
@@ -15,7 +20,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
     private static final String API_KEY = System.getenv().getOrDefault(
             "SPOONACULAR_API_KEY",
-            "a8caa3ad56aa4b7ba4a935fda8cfabdd"
+            "3edf2d268b314f25afbee7ea2f92cbee"
     );
 
     private static final String BASE_URL = "https://api.spoonacular.com/recipes";
@@ -57,20 +62,24 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 final Recipe recipe = new Recipe();
                 recipe.setId(obj.getInt("id"));
                 recipe.setTitle(obj.getString("title"));
+                recipe.setImage(obj.getString("image"));
 
                 // Extract ingredient names
-                final List<String> ingNames = new ArrayList<>();
+                final List<Ingredient> ingList = new ArrayList<>();
                 final JSONArray used = obj.getJSONArray("usedIngredients");
                 final JSONArray missed = obj.getJSONArray("missedIngredients");
 
                 for (int u = 0; u < used.length(); u++) {
-                    ingNames.add(used.getJSONObject(u).getString("name"));
+                    final String ingredientName = used.getJSONObject(u).getString("name");
+                    ingList.add(new Ingredient(ingredientName));
+
                 }
                 for (int m = 0; m < missed.length(); m++) {
-                    ingNames.add(missed.getJSONObject(m).getString("name"));
+                    final String ingredientName = missed.getJSONObject(m).getString("name");
+                    ingList.add(new Ingredient(ingredientName));
                 }
 
-                recipe.setIngredientNames(ingNames);
+                recipe.setIngredientNames(ingList);
 
                 results.add(recipe);
             }
@@ -117,27 +126,17 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
             recipe.setTitle(obj.getString("title"));
 
             // Ingredient names
-            final List<String> ingredients = new ArrayList<>();
+            final List<Ingredient> ingredients = new ArrayList<>();
             final JSONArray ingArray = obj.getJSONArray("extendedIngredients");
+
             for (int i = 0; i < ingArray.length(); i++) {
-                ingredients.add(ingArray.getJSONObject(i).getString("name"));
+                final String ingredientName = ingArray.getJSONObject(i).getString("name");
+                ingredients.add(new Ingredient(ingredientName));
             }
             recipe.setIngredientNames(ingredients);
 
             // Health score
             recipe.setHealthScore(obj.optInt("healthScore", 0));
-
-            // Calories if included
-            if (includeNutrition && obj.has("nutrition")) {
-                final JSONObject nutrition = obj.getJSONObject("nutrition");
-                final JSONArray nutrients = nutrition.getJSONArray("nutrients");
-                for (int i = 0; i < nutrients.length(); i++) {
-                    final JSONObject n = nutrients.getJSONObject(i);
-                    if (n.getString("name").equalsIgnoreCase("Calories")) {
-                        recipe.setCalories((int) n.getDouble("amount"));
-                    }
-                }
-            }
 
             return recipe;
 
@@ -247,9 +246,9 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
     // Parse JSON response
     private static JSONArray parseResponse(List<String> ingredients, Response response)
             throws IngredientNotFoundException, IOException {
-
+        final int notFoundCode = 404;
         if (!response.isSuccessful()) {
-            if (response.code() == 404) {
+            if (response.code() == notFoundCode) {
                 throw new IngredientNotFoundException("Ingredients not found: " + ingredients);
             }
             throw new IOException("HTTP error " + response.code() + ": " + response.message());
