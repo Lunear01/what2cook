@@ -1,131 +1,133 @@
 package interface_adapter.recipe_search;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 
 import entity.Ingredient;
 import entity.Recipe;
 import recipeapi.RecipeFetcher;
-import recipeapi.SpoonacularRecipeFetcher;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class RecipeSearchController {
-
-    private static final int DEFAULT_NUMBER = 10;
-    private static final int DEFAULT_RANKING = 1;
-    private static final boolean DEFAULT_IGNORE_PANTRY = true;
 
     private final RecipeSearchViewModel viewModel;
     private final RecipeFetcher fetcher;
 
-    public RecipeSearchController(RecipeSearchViewModel viewModel) {
-        this(viewModel, new SpoonacularRecipeFetcher());
-    }
-
+    // ✅ 构造：用于搜索 + 更新VM
     public RecipeSearchController(RecipeSearchViewModel viewModel, RecipeFetcher fetcher) {
         this.viewModel = viewModel;
         this.fetcher = fetcher;
     }
 
     /**
-     * Search recipes using API based on the given ingredients.
-     *
-     * @param ingredients list of ingredients selected by the user.
+     * 通过输入的食材字符串搜索菜品。
+     * input 示例: "apple, flour, milk"
      */
-    public void searchByIngredients(List<Ingredient> ingredients) {
-        final RecipeSearchState newState = new RecipeSearchState(viewModel.getState());
+    public void searchByIngredients(String input) {
+        if (input == null) input = "";
+        input = input.trim();
 
-        if (ingredients == null || ingredients.isEmpty()) {
-            newState.setIngredients(new ArrayList<>());
-            newState.setRecipes(new ArrayList<>());
-            newState.setError("Please add at least one ingredient before searching.");
-            viewModel.setState(newState);
-            viewModel.firePropertyChanged();
-            return;
+        // 1) 解析输入 => ingredients list
+        List<String> ingredients = new ArrayList<>();
+        if (!input.isEmpty()) {
+            ingredients = Arrays.stream(input.split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .collect(Collectors.toList());
+
         }
 
         try {
-            final List<String> names = new ArrayList<>();
-            for (Ingredient ing : ingredients) {
-                names.add(ing.getName());
-            }
+            // 2) 调 Spoonacular：最多 10 个结果，ranking=1, ignorePantry=true
+            List<Recipe> results = fetcher.getRecipesByIngredients(
+                    ingredients, 10, 1, true
+            );
 
-            final List<Recipe> basic =
-                    fetcher.getRecipesByIngredients(
-                            names,
-                            DEFAULT_NUMBER,
-                            DEFAULT_RANKING,
-                            DEFAULT_IGNORE_PANTRY
-                    );
+            // 3) 写回 ViewModel
+            RecipeSearchState state = new RecipeSearchState(viewModel.getState());
+            state.setIngredients(ingredients);
+            state.setRecipes(results);
+            state.setError(null);
 
-            final List<Recipe> enriched = new ArrayList<>();
-            for (Recipe r : basic) {
-                final int id = r.getId();
+            viewModel.setState(state);
+            viewModel.firePropertyChanged();
 
-                final Recipe nutrition = fetcher.getNutrition(id);
-                r.setCalories((int) nutrition.getCalories());
+        } catch (RecipeFetcher.IngredientNotFoundException e) {
+            RecipeSearchState state = new RecipeSearchState(viewModel.getState());
+            state.setIngredients(ingredients);
+            state.setRecipes(new ArrayList<>());
+            state.setError(e.getMessage());
 
-                final Recipe info = fetcher.getRecipeInfo(id, true, false, false);
-                r.setHealthScore(info.getHealthScore());
-                r.setIngredientNames(info.getIngredientNames());
+            viewModel.setState(state);
+            viewModel.firePropertyChanged();
 
-                final Recipe instructions = fetcher.getRecipeInstructions(id, true);
-                r.setInstructions(instructions.getInstructions());
+        } catch (Exception e) {
+            RecipeSearchState state = new RecipeSearchState(viewModel.getState());
+            state.setIngredients(ingredients);
+            state.setRecipes(new ArrayList<>());
+            state.setError("Search failed: " + e.getMessage());
 
-                enriched.add(r);
-            }
-
-            newState.setIngredients(new ArrayList<>(ingredients));
-            newState.setRecipes(enriched);
-            newState.setError(null);
-
+            viewModel.setState(state);
+            viewModel.firePropertyChanged();
         }
-        catch (Exception exe) {
-            final List<Ingredient> safeIngredients;
-            if (ingredients == null) {
-                safeIngredients = new ArrayList<>();
-            }
-            else {
-                safeIngredients = new ArrayList<>(ingredients);
-            }
-            newState.setIngredients(safeIngredients);
-            newState.setRecipes(new ArrayList<>());
-            newState.setError("Failed to fetch recipes: " + exe.getMessage());
-        }
-
-        viewModel.setState(newState);
-        viewModel.firePropertyChanged();
     }
 
     /**
-     * Opens a dialog showing detailed recipe information.
-     *
-     * @param recipe the selected recipe.
+     * 点击 recipe card 弹详情。
+     * findByIngredients 返回的 recipe 不完整，
+     * 这里用 id 再补全 info / nutrition / instructions。
      */
     public void openRecipe(Recipe recipe) {
-        if (recipe == null) {
-            return;
+        if (recipe == null) return;
+
+        try {
+            int id = recipe.getId();
+
+            // ---- 补全 info（healthScore, ingredients详细等）----
+            Recipe info = fetcher.getRecipeInfo(id, false, false, false);
+            if (info.getHealthScore() != 0) {
+                recipe.setHealthScore(info.getHealthScore());
+            }
+            if (info.getIngredientNames() != null && !info.getIngredientNames().isEmpty()) {
+                recipe.setIngredientNames(info.getIngredientNames());
+            }
+
+            // ---- 补全 nutrition（calories）----
+            Recipe nutri = fetcher.getNutrition(id);
+            if (nutri.getCalories() != 0) {
+                // 注意：setCalories(int) 需要强转
+                recipe.setCalories((int) nutri.getCalories());
+            }
+
+            // ---- 补全 instructions ----
+            Recipe instr = fetcher.getRecipeInstructions(id, true);
+            if (instr.getInstructions() != null && !instr.getInstructions().isEmpty()) {
+                recipe.setInstructions(instr.getInstructions());
+            }
+
+        } catch (Exception e) {
+            // 拉不到也没关系，继续用已有字段弹窗
         }
 
         final StringBuilder sb = new StringBuilder();
         sb.append("Title: ").append(recipe.getTitle()).append("\n");
         sb.append("Calories: ").append(recipe.getCalories()).append("\n");
         sb.append("Health Score: ").append(recipe.getHealthScore()).append("\n");
+        sb.append("Ingredients:\n");
 
-        sb.append("\nIngredients:\n");
-        for (Ingredient ing : recipe.getIngredientNames()) {
-            sb.append("  - ").append(ing.getName()).append("\n");
+        if (recipe.getIngredientNames() != null) {
+            for (Ingredient ing : recipe.getIngredientNames()) {
+                sb.append("  - ").append(ing.getName()).append("\n");
+            }
         }
 
-        sb.append("\nInstructions:\n");
-        sb.append(recipe.getInstructions());
+        sb.append("\nInstructions:\n")
+                .append(recipe.getInstructions() == null ? "No instructions." : recipe.getInstructions());
 
-        JOptionPane.showMessageDialog(
-                null,
-                sb.toString(),
-                recipe.getTitle(),
-                JOptionPane.INFORMATION_MESSAGE
-        );
+        JOptionPane.showMessageDialog(null, sb.toString(),
+                recipe.getTitle(), JOptionPane.INFORMATION_MESSAGE);
     }
 }

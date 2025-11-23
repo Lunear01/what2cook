@@ -1,7 +1,8 @@
 package use_case.cookinglist;
-
 import entity.Recipe;
 import entity.User;
+
+
 
 public class AddToCookingListInteractor implements AddToCookingListInputBoundary {
     private final UserDataAccessInterface userDao;
@@ -15,11 +16,11 @@ public class AddToCookingListInteractor implements AddToCookingListInputBoundary
 
     @Override
     public void execute(AddToCookingListInputData inputData) {
-        final User user = userDao.get(inputData.getUsername());
-        final Recipe recipe = inputData.getRecipe();
+        User user = userDao.getUser(inputData.getUsername());
+        Recipe recipe = inputData.getRecipe();
 
         user.addToPersonalCookingList(recipe);
-        userDao.save(user);
+        userDao.saveUser(user);
 
         presenter.present(
                 new AddToCookingListOutputData(

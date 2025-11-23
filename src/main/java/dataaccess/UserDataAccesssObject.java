@@ -1,7 +1,7 @@
 package dataaccess;
 import use_case.cookinglist.UserDataAccessInterface;
-import use_case.login.LoginUserDataAccessInterface;
-import use_case.signup.SignupUserDataAccessInterface;
+import app.login.LoginUserDataAccessInterface;
+import app.signup.SignupUserDataAccessInterface;
 import entity.User;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,17 +11,17 @@ public class UserDataAccesssObject implements UserDataAccessInterface, LoginUser
     private final Map<String, User> users = new HashMap<>();
 
     @Override
-    public User get(String username) {
+    public User getUser(String username) {
         return users.get(username);
     }
 
     @Override
-    public void save(User user) {
+    public void saveUser(User user) {
         users.put(user.getName(), user);
     }
 
     @Override
-    public boolean existsByName(String username) {
+    public boolean existsByUsername(String username) {
         return users.containsKey(username);
     }
 }
