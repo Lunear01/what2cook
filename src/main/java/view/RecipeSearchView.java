@@ -4,6 +4,7 @@ import entity.Recipe;
 import interface_adapter.recipe_search.RecipeSearchController;
 import interface_adapter.recipe_search.RecipeSearchState;
 import interface_adapter.recipe_search.RecipeSearchViewModel;
+import interface_adapter.cookinglist.AddToCookingListController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,8 +16,8 @@ import java.util.List;
 
 /**
  * Main GUI page for "What2Cook".
- * Top: current ingredients (list of Strings),
- * Center: scrollable list of recipe cards (image + title),
+ * Top: search bar + current ingredients,
+ * Center: scrollable list of recipe cards,
  * Bottom: number of search results.
  */
 public class RecipeSearchView extends JPanel implements PropertyChangeListener {
@@ -25,6 +26,9 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
 
     // Title
     private final JLabel titleLabel = new JLabel("What2Cook");
+
+    private final JTextField searchField = new JTextField(24);
+    private final JButton searchButton = new JButton("Search");
 
     // Top: ingredients display
     private final JLabel ingredientsTitleLabel = new JLabel("Current ingredients:");
@@ -39,6 +43,10 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
 
     // Controller (set externally)
     private RecipeSearchController controller;
+
+    // Add to cooking list controller + current user
+    private AddToCookingListController addToCookingListController;
+    private String currentUsername;
 
     public RecipeSearchView(RecipeSearchViewModel viewModel) {
         this.viewModel = viewModel;
@@ -61,8 +69,24 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         recipesScrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
         recipesScrollPane.setPreferredSize(new Dimension(500, 350));
 
+        // ✅ 搜索面板
+        JPanel searchPanel = new JPanel();
+        searchPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        searchPanel.add(new JLabel("Ingredients (comma separated): "));
+        searchPanel.add(searchField);
+        searchPanel.add(searchButton);
+
+        searchButton.addActionListener(e -> {
+            if (controller != null) {
+                controller.searchByIngredients(searchField.getText().trim());
+            }
+        });
+
         // ===== Add components =====
         this.add(titleLabel);
+        this.add(Box.createVerticalStrut(8));
+        this.add(searchPanel);
+        this.add(Box.createVerticalStrut(8));
         this.add(ingredientsTitleLabel);
         this.add(ingredientsArea);
         this.add(recipesScrollPane);
@@ -81,8 +105,6 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    /* ------------------- Update UI ------------------- */
 
     private void updateIngredients(List<String> ingredients) {
         if (ingredients != null && !ingredients.isEmpty()) {
@@ -111,8 +133,6 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         resultsCountLabel.setText(count + " results");
     }
 
-    /* ------------------- Recipe Card ------------------- */
-
     private JPanel createRecipeCard(Recipe recipe) {
         final JPanel card = new JPanel(new BorderLayout());
         card.setPreferredSize(new Dimension(460, 200));
@@ -120,9 +140,9 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         card.setAlignmentX(Component.CENTER_ALIGNMENT);
         card.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // ===== image =====
+        // image
         final ImageIcon icon;
-        final String path = recipe.getImage(); // Recipe.getImage()
+        final String path = recipe.getImage();
 
         if (path != null && !path.isEmpty()) {
             final ImageIcon raw = new ImageIcon(path);
@@ -130,26 +150,36 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
             icon = new ImageIcon(scaled);
         }
         else {
-            icon = new ImageIcon(); // empty placeholder
+            icon = new ImageIcon();
         }
 
         final JLabel imgLabel = new JLabel(icon);
         imgLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // ===== title =====
-        JLabel titleLabel = new JLabel(recipe.getTitle());
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        // title
+        JLabel tLabel = new JLabel(recipe.getTitle());
+        tLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // add to card
+        // add button
+        JButton addBtn = new JButton("Add to Cooking List");
+        addBtn.addActionListener(e -> {
+            if (addToCookingListController != null && currentUsername != null) {
+                addToCookingListController.add(currentUsername, recipe);
+            }
+        });
+
+        JPanel bottom = new JPanel(new BorderLayout());
+        bottom.add(tLabel, BorderLayout.CENTER);
+        bottom.add(addBtn, BorderLayout.EAST);
+
         card.add(imgLabel, BorderLayout.CENTER);
-        card.add(titleLabel, BorderLayout.SOUTH);
+        card.add(bottom, BorderLayout.SOUTH);
 
-        // clickable behavior
         card.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (controller != null) {
-                    controller.openRecipe(recipe); // go to detail page
+                    controller.openRecipe(recipe);
                 }
             }
         });
@@ -159,6 +189,12 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
 
     public void setController(RecipeSearchController controller) {
         this.controller = controller;
+    }
+
+    public void setAddToCookingListController(AddToCookingListController controller,
+                                              String username) {
+        this.addToCookingListController = controller;
+        this.currentUsername = username;
     }
 }
 

@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.function.Consumer;
 
 /**
  * Simple Login View GUI.
@@ -23,6 +24,8 @@ public class LoginView extends JPanel implements PropertyChangeListener {
     private LoginController loginController;
     private SignupController signupController;
     private Runnable onSwitchToSignup;
+
+    private Consumer<String> onLoginSuccess;
 
     // UI Components
     private final JLabel titleLabel = new JLabel("Welcome to What2Cook");
@@ -108,6 +111,7 @@ public class LoginView extends JPanel implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         Object newState = evt.getNewValue();
+
         if (newState instanceof LoginState) {
             final LoginState state = (LoginState) newState;
 
@@ -123,7 +127,12 @@ public class LoginView extends JPanel implements PropertyChangeListener {
                         "Login successful! Welcome, " + state.getUsername() + "!",
                         "Login Success", JOptionPane.INFORMATION_MESSAGE);
                 clearFields();
+
+                if (onLoginSuccess != null) {
+                    onLoginSuccess.accept(state.getUsername());
+                }
             }
+
         } else if (newState instanceof SignupState) {
             final SignupState sState = (SignupState) newState;
             if (sState.isCreated()) {
@@ -165,5 +174,10 @@ public class LoginView extends JPanel implements PropertyChangeListener {
     public void setOnSwitchToSignup(Runnable onSwitchToSignup) {
         this.onSwitchToSignup = onSwitchToSignup;
     }
+
+    public void setOnLoginSuccess(Consumer<String> onLoginSuccess) {
+        this.onLoginSuccess = onLoginSuccess;
+    }
 }
+
 
