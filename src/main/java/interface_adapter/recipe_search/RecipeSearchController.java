@@ -29,7 +29,7 @@ public class RecipeSearchController {
     }
 
     /**
-     * Search recipes using Spoonacular API based on the given ingredients.
+     * Search recipes using API based on the given ingredients.
      *
      * @param ingredients list of ingredients selected by the user.
      */
@@ -37,8 +37,8 @@ public class RecipeSearchController {
         final RecipeSearchState newState = new RecipeSearchState(viewModel.getState());
 
         if (ingredients == null || ingredients.isEmpty()) {
-            newState.setIngredients(new ArrayList<Ingredient>());
-            newState.setRecipes(new ArrayList<Recipe>());
+            newState.setIngredients(new ArrayList<>());
+            newState.setRecipes(new ArrayList<>());
             newState.setError("Please add at least one ingredient before searching.");
             viewModel.setState(newState);
             viewModel.firePropertyChanged();
@@ -46,13 +46,11 @@ public class RecipeSearchController {
         }
 
         try {
-            // 1. 把 Ingredient 转成名字列表传给 API
             final List<String> names = new ArrayList<>();
             for (Ingredient ing : ingredients) {
                 names.add(ing.getName());
             }
 
-            // 2. 调用 Spoonacular：按食材搜食谱
             final List<Recipe> basic =
                     fetcher.getRecipesByIngredients(
                             names,
@@ -61,22 +59,17 @@ public class RecipeSearchController {
                             DEFAULT_IGNORE_PANTRY
                     );
 
-            // 3. 对每个食谱补充：热量、健康分数、详细食材和步骤
             final List<Recipe> enriched = new ArrayList<>();
             for (Recipe r : basic) {
                 final int id = r.getId();
 
-                // 营养信息：calories
                 final Recipe nutrition = fetcher.getNutrition(id);
-                // 这里显式从 double 转成 int，修复你现在的编译错误
                 r.setCalories((int) nutrition.getCalories());
 
-                // 详细信息：healthScore + ingredientNames
                 final Recipe info = fetcher.getRecipeInfo(id, true, false, false);
                 r.setHealthScore(info.getHealthScore());
                 r.setIngredientNames(info.getIngredientNames());
 
-                // 步骤说明
                 final Recipe instructions = fetcher.getRecipeInstructions(id, true);
                 r.setInstructions(instructions.getInstructions());
 
@@ -87,7 +80,8 @@ public class RecipeSearchController {
             newState.setRecipes(enriched);
             newState.setError(null);
 
-        } catch (Exception exe) {
+        }
+        catch (Exception exe) {
             final List<Ingredient> safeIngredients;
             if (ingredients == null) {
                 safeIngredients = new ArrayList<>();
