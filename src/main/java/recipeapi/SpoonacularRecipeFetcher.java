@@ -20,7 +20,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
     private static final String API_KEY = System.getenv().getOrDefault(
             "SPOONACULAR_API_KEY",
-            "aaf0737aa46b4cb19096928025c49552"
+            "92add0099ace49b29ee16b5e1fb7b6ea"
     );
 
     private static final String BASE_URL = "https://api.spoonacular.com/recipes";
