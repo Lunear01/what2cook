@@ -23,34 +23,30 @@ public class SignupInteractor implements SignupInputBoundary {
         final String password = inputData.getPassword();
         final String confirm = inputData.getConfirmPassword();
 
-        // Basic validations
         if (username == null || username.trim().isEmpty()) {
             presenter.presentFailure("Username cannot be empty");
-            return;
         }
-        if (password == null || password.trim().isEmpty()) {
+        else if (password == null || password.trim().isEmpty()) {
             presenter.presentFailure("Password cannot be empty");
-            return;
         }
-        if (!password.equals(confirm)) {
+        else if (!password.equals(confirm)) {
             presenter.presentFailure("Passwords do not match");
-            return;
         }
-
-        // Check uniqueness
-        if (userDataAccess.existsByName(username)) {
+        else if (userDataAccess.existsByName(username)) {
+            // Check uniqueness
             presenter.presentFailure("Username already exists");
-            return;
         }
+        else {
+            final User user = new UserBuilder()
+                    .withName(username)
+                    .withPassword(password)
+                    .withEmail(email)
+                    .build();
 
-        // Create and save user
-        final User user = new UserBuilder()
-                .withName(username)
-                .withPassword(password)
-                .withEmail(email)
-                .build();
-        userDataAccess.save(user);
+            userDataAccess.save(user);
 
-        presenter.presentSuccess(new SignupOutputData(username, true));
+            presenter.presentSuccess(new SignupOutputData(username, true));
+        }
     }
 }
+

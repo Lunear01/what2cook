@@ -13,7 +13,8 @@ public class AddIngredientUseCase {
     }
 
     /**
-     * Add the new Ingredient to MyList
+     * Add the new Ingredient to MyList.
+     *
      * @param ingredient the new ingredient
      */
     public void addToList(String ingredient) {

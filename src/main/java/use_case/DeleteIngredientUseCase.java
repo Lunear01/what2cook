@@ -13,7 +13,7 @@ public class DeleteIngredientUseCase {
     }
 
     /**
-     * Delete the Ingredient to MyList
+     * Delete the Ingredient to MyList.
      * @param ingredient the new ingredient
      */
     public void deleteToList(String ingredient) {
