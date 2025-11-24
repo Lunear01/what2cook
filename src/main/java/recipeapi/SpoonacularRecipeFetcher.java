@@ -20,7 +20,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
     private static final String API_KEY = System.getenv().getOrDefault(
             "SPOONACULAR_API_KEY",
-            "3edf2d268b314f25afbee7ea2f92cbee"
+            "aaf0737aa46b4cb19096928025c49552"
     );
 
     private static final String BASE_URL = "https://api.spoonacular.com/recipes";
@@ -136,7 +136,8 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
             recipe.setIngredientNames(ingredients);
 
             // Health score
-            recipe.setHealthScore(obj.optInt("healthScore", 0));
+            recipe.setHealthScore(obj.optInt("healthScore", -1));
+            recipe.setCalories(extractCalories(obj, includeNutrition));
 
             return recipe;
 
@@ -154,6 +155,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
         // Construct request URL
         final HttpUrl url = HttpUrl.parse(BASE_URL + "/" + id + "/analyzedInstructions").newBuilder()
                 .addQueryParameter("apiKey", API_KEY)
+                .addQueryParameter("stepBreakdown", String.valueOf(stepBreakdown))
                 .build();
 
         // Construct request
@@ -189,10 +191,10 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 final String text = step.getString("step");
 
                 if (stepBreakdown) {
-                    sb.append(number).append(". ").append(text).append("\n");
+                    sb.append(number).append(". ").append(wrapAt60(text)).append("\n");
                 }
                 else {
-                    sb.append(text).append(" ");
+                    sb.append(wrapAt60(text)).append("\n");
                 }
             }
 
@@ -202,42 +204,6 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
         }
         catch (IOException error) {
             throw new RecipeNotFoundException("Error retrieving instructions: " + error.getMessage());
-        }
-    }
-
-    // Get recipe nutrition
-    @Override
-    public Recipe getNutrition(int id) throws RecipeNotFoundException {
-
-        // Construct request URL
-        final HttpUrl url = HttpUrl.parse(BASE_URL + "/" + id + "/nutritionWidget.json").newBuilder()
-                .addQueryParameter("apiKey", API_KEY)
-                .build();
-
-        // Construct request
-        final Request request = new Request.Builder().url(url).build();
-
-        // Execute request and parse response
-        try (Response response = CLIENT.newCall(request).execute()) {
-
-            if (!response.isSuccessful()) {
-                throw new RecipeNotFoundException("Nutrition for recipe ID " + id + " not found");
-            }
-
-            final String json = response.body().string();
-            final JSONObject obj = new JSONObject(json);
-
-            final Recipe recipe = new Recipe();
-            recipe.setId(id);
-
-            // Calorie field
-            recipe.setCalories(obj.optInt("calories", 0));
-
-            return recipe;
-
-        }
-        catch (IOException error) {
-            throw new RecipeNotFoundException("Error retrieving nutrition: " + error.getMessage());
         }
     }
 
@@ -266,4 +232,46 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
         return new JSONArray(json);
     }
+
+    private int extractCalories(JSONObject obj, boolean includeNutrition) {
+
+        if (!includeNutrition || !obj.has("nutrition")) {
+            return -1;
+        }
+
+        final JSONObject nutrition = obj.getJSONObject("nutrition");
+
+        if (!nutrition.has("nutrients")) {
+            return -1;
+        }
+
+        final JSONArray nutrients = nutrition.getJSONArray("nutrients");
+
+        for (int i = 0; i < nutrients.length(); i++) {
+            final JSONObject nut = nutrients.getJSONObject(i);
+            if ("Calories".equalsIgnoreCase(nut.getString("name"))) {
+                return (int) Math.round(nut.getDouble("amount"));
+            }
+        }
+
+        return -1;
+    }
+
+    // Helper method for instruction parsing, capping each line at 60 characters
+    private String wrapAt60(String text) {
+        final StringBuilder wrapped = new StringBuilder();
+        int lineLength = 0;
+
+        for (String word : text.split(" ")) {
+            if (lineLength + word.length() + 1 > 60) {
+                wrapped.append("\n");
+                lineLength = 0;
+            }
+            wrapped.append(word).append(" ");
+            lineLength += word.length() + 1;
+        }
+
+        return wrapped.toString().trim();
+    }
+
 }

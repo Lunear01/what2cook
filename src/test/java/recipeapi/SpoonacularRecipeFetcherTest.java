@@ -39,6 +39,7 @@ public class SpoonacularRecipeFetcherTest {
 
             System.out.println("Title: " + info.getTitle());
             System.out.println("Health Score: " + info.getHealthScore());
+            System.out.println("Calories: " + info.getCalories());
 
             assertNotNull(info.getTitle());
 
@@ -55,20 +56,6 @@ public class SpoonacularRecipeFetcherTest {
             System.out.println(instructions.getInstructions());
 
             assertNotNull(instructions.getInstructions());
-
-        } catch (RecipeFetcher.RecipeNotFoundException e) {
-            fail(e.getMessage());
-        }
-
-        /* === Testing getNutrition === */
-        try {
-            int id = 1003464;
-
-            Recipe nutrition = fetcher.getNutrition(id);
-
-            System.out.println("Calories: " + nutrition.getCalories());
-
-            assertTrue(nutrition.getCalories() > 0);
 
         } catch (RecipeFetcher.RecipeNotFoundException e) {
             fail(e.getMessage());

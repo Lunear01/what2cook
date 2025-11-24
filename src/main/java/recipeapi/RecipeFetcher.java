@@ -43,22 +43,6 @@ public interface RecipeFetcher {
      */
     Recipe getRecipeInstructions(int id, boolean stepBreakdown) throws RecipeNotFoundException;
 
-    /**
-     * Gets nutrition information for a recipe.
-     * @param id the recipe ID
-     * @return recipe with nutrition data
-     * @throws RecipeNotFoundException if recipe ID is not found
-     */
-    Recipe getNutrition(int id) throws RecipeNotFoundException;
-
-    /**
-     * Checks whether the Ingredient being inputted is valid.
-     * @param name the ingredient's name
-     * @return Ingredient
-     * @throws IngredientNotFoundException if ingredient is not found
-     */
-    //Ingredient searchIngredient(String name) throws IngredientNotFoundException;
-
     class RecipeNotFoundException extends Exception {
         public RecipeNotFoundException(String recipe) {
             super("Recipe not found: " + recipe);
