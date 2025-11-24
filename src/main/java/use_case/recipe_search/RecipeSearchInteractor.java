@@ -48,12 +48,10 @@ public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
             for (Recipe r : basic) {
                 final int id = r.getId();
 
-                final Recipe nutrition = fetcher.getNutrition(id);
-                r.setCalories((int) nutrition.getCalories());
-
                 final Recipe info = fetcher.getRecipeInfo(id, true, false, false);
                 r.setHealthScore(info.getHealthScore());
                 r.setIngredientNames(info.getIngredientNames());
+                r.setCalories(info.getCalories());
 
                 final Recipe instructions = fetcher.getRecipeInstructions(id, true);
                 r.setInstructions(instructions.getInstructions());

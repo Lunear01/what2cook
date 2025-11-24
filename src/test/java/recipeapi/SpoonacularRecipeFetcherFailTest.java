@@ -62,19 +62,5 @@ public class SpoonacularRecipeFetcherFailTest {
         } catch (RecipeFetcher.RecipeNotFoundException e) {
             fail(e.getMessage());
         }
-
-        /* === Testing getNutrition === */
-        try {
-            int id = 1003464;
-
-            Recipe nutrition = fetcher.getNutrition(id);
-
-            System.out.println("Calories: " + nutrition.getCalories());
-
-            assertTrue(nutrition.getCalories() > 0);
-
-        } catch (RecipeFetcher.RecipeNotFoundException e) {
-            fail(e.getMessage());
-        }
     }
 }
