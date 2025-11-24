@@ -16,12 +16,17 @@ import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.recipe_search.RecipeSearchController;
+import interface_adapter.recipe_search.RecipeSearchPresenter;
 import interface_adapter.recipe_search.RecipeSearchViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
+import recipeapi.RecipeFetcher;
+import recipeapi.SpoonacularRecipeFetcher;
 import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
+import use_case.recipe_search.RecipeSearchInputBoundary;
+import use_case.recipe_search.RecipeSearchInteractor;
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
 import view.IngredientSearchView;
@@ -82,13 +87,21 @@ public final class RecipeAppBuilder {
         final IngredientSearchView ingredientSearchView =
                 new IngredientSearchView(ingredientSearchViewModel);
 
-        // --- Recipe search wiring ---
+        // --- Recipe search wiring (Clean Architecture) ---
         final RecipeSearchViewModel recipeSearchViewModel =
                 new RecipeSearchViewModel();
+        final RecipeSearchPresenter recipeSearchPresenter =
+                new RecipeSearchPresenter(recipeSearchViewModel);
+
+        final RecipeFetcher fetcher = new SpoonacularRecipeFetcher();
+        final RecipeSearchInputBoundary recipeSearchInteractor =
+                new RecipeSearchInteractor(fetcher, recipeSearchPresenter);
+
+        final RecipeSearchController recipeSearchController =
+                new RecipeSearchController(recipeSearchInteractor);
+
         final RecipeSearchView recipeSearchView =
                 new RecipeSearchView(recipeSearchViewModel);
-        final RecipeSearchController recipeSearchController =
-                new RecipeSearchController(recipeSearchViewModel);
         recipeSearchView.setController(recipeSearchController);
 
         // --- Frame and card layout ---
@@ -112,15 +125,19 @@ public final class RecipeAppBuilder {
         signupView.setSignupController(signupController);
 
         final String login = "login";
+        final String signup = "signup";
+        final String ingredient = "ingredient";
+        final String recipe = "recipe";
+
         cardPanel.add(loginView, login);
-        cardPanel.add(signupView, "signup");
-        cardPanel.add(ingredientSearchView, "ingredient");
-        cardPanel.add(recipeSearchView, "recipe");
+        cardPanel.add(signupView, signup);
+        cardPanel.add(ingredientSearchView, ingredient);
+        cardPanel.add(recipeSearchView, recipe);
 
         // --- Navigation wiring ---
         loginView.setOnSwitchToSignup(() -> {
             frame.setTitle("What2Cook - Sign Up");
-            cardLayout.show(cardPanel, "signup");
+            cardLayout.show(cardPanel, signup);
         });
 
         signupView.setOnBackToLogin(() -> {
@@ -130,7 +147,7 @@ public final class RecipeAppBuilder {
 
         loginView.setOnLoginSuccess(() -> {
             frame.setTitle("What2Cook - Ingredients");
-            cardLayout.show(cardPanel, "ingredient");
+            cardLayout.show(cardPanel, ingredient);
         });
 
         // --- Ingredient → Recipe flow ---
@@ -147,12 +164,12 @@ public final class RecipeAppBuilder {
             recipeSearchController.searchByIngredients(ingredients);
 
             frame.setTitle("What2Cook - Recipes");
-            cardLayout.show(cardPanel, "recipe");
+            cardLayout.show(cardPanel, recipe);
         });
 
         frame.add(cardPanel);
         frame.setTitle("What2Cook - Login");
-        cardLayout.show(cardPanel, "login");
+        cardLayout.show(cardPanel, login);
 
         return frame;
     }
