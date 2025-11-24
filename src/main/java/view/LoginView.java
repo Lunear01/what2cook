@@ -1,160 +1,99 @@
 package view;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupController;
-import interface_adapter.signup.SignupState;
 import interface_adapter.signup.SignupViewModel;
 
-import javax.swing.*;
-import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.function.Consumer;
+public class LoginView extends JPanel implements ActionListener, PropertyChangeListener {
 
-/**
- * Simple Login View GUI.
- * Allows user to enter username and password to authenticate.
- */
-public class LoginView extends JPanel implements PropertyChangeListener {
+    private final LoginViewModel loginViewModel;
 
-    private final LoginViewModel viewModel;
     private SignupViewModel signupViewModel;
     private LoginController loginController;
     private SignupController signupController;
+
     private Runnable onSwitchToSignup;
+    private Runnable onLoginSuccess;
 
-    private Consumer<String> onLoginSuccess;
-
-    // UI Components
-    private final JLabel titleLabel = new JLabel("Welcome to What2Cook");
-    private final JLabel usernameLabel = new JLabel("Username:");
     private final JTextField usernameField = new JTextField(20);
-    private final JLabel passwordLabel = new JLabel("Password:");
     private final JPasswordField passwordField = new JPasswordField(20);
     private final JButton loginButton = new JButton("Login");
-    private final JButton signupButton = new JButton("Sign Up");
-    private final JLabel errorLabel = new JLabel("");
+    private final JButton signupButton = new JButton("Sign up");
+    private final JLabel errorLabel = new JLabel(" ");
 
-    public LoginView(LoginViewModel viewModel) {
-        this.viewModel = viewModel;
-        this.viewModel.addPropertyChangeListener(this);
+    public LoginView(final LoginViewModel loginViewModel) {
+        this.loginViewModel = loginViewModel;
+        this.loginViewModel.addPropertyChangeListener(this);
 
-        // ===== Layout Setup =====
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        initializeLoginView();
+    }
 
-        // Title
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+    /**
+     * Initializes the layout and components for the Login view.
+     */
+    private void initializeLoginView() {
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        final int loginViewBorder = 20;
+        setBorder(BorderFactory.createEmptyBorder(
+                loginViewBorder, loginViewBorder, loginViewBorder, loginViewBorder));
 
-        // Error label
-        errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        errorLabel.setForeground(Color.RED);
+        final JLabel title = new JLabel("What2Cook - Login");
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        final float titleSize = 18f;
+        title.setFont(title.getFont().deriveFont(Font.BOLD, titleSize));
 
-        // Input panel
-        JPanel inputPanel = new JPanel();
-        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
-        inputPanel.setMaximumSize(new Dimension(300, 150));
-        inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        final JPanel userPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        userPanel.add(new JLabel("Username:"));
+        userPanel.add(usernameField);
 
-        // Username field
-        usernameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        usernameField.setMaximumSize(new Dimension(300, 30));
+        final JPanel passPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        passPanel.add(new JLabel("Password:"));
+        passPanel.add(passwordField);
 
-        // Password field
-        passwordLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        passwordField.setMaximumSize(new Dimension(300, 30));
-
-        inputPanel.add(usernameLabel);
-        inputPanel.add(usernameField);
-        inputPanel.add(Box.createVerticalStrut(10));
-        inputPanel.add(passwordLabel);
-        inputPanel.add(passwordField);
-
-        // Button panel
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        loginButton.addActionListener(e -> handleLogin());
-        signupButton.addActionListener(e -> handleSignup());
+        final JPanel buttonPanel = new JPanel();
         buttonPanel.add(loginButton);
-        buttonPanel.add(Box.createHorizontalStrut(10));
         buttonPanel.add(signupButton);
 
-        // ===== Add Components =====
-        this.add(titleLabel);
-        this.add(Box.createVerticalStrut(20));
-        this.add(errorLabel);
-        this.add(Box.createVerticalStrut(10));
-        this.add(inputPanel);
-        this.add(Box.createVerticalStrut(20));
-        this.add(buttonPanel);
-        this.add(Box.createVerticalGlue());
+        errorLabel.setForeground(Color.RED);
+        errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        final int height15 = 15;
+        final int height10 = 10;
+
+        add(title);
+        add(Box.createVerticalStrut(height15));
+        add(userPanel);
+        add(passPanel);
+        add(Box.createVerticalStrut(height10));
+        add(buttonPanel);
+        add(Box.createVerticalStrut(height10));
+        add(errorLabel);
+
+        loginButton.addActionListener(this);
+        signupButton.addActionListener(this);
     }
 
-    private void handleLogin() {
-        String username = usernameField.getText();
-        String password = new String(passwordField.getPassword());
-
-        if (loginController != null) {
-            loginController.login(username, password);
-        }
-    }
-
-    private void handleSignup() {
-        if (onSwitchToSignup != null) {
-            onSwitchToSignup.run();
-        }
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        Object newState = evt.getNewValue();
-
-        if (newState instanceof LoginState) {
-            final LoginState state = (LoginState) newState;
-
-            if (!state.getErrorMessage().isEmpty()) {
-                errorLabel.setText(state.getErrorMessage());
-                errorLabel.setForeground(Color.RED);
-            } else {
-                errorLabel.setText("");
-            }
-
-            if (state.isLoggedIn()) {
-                JOptionPane.showMessageDialog(this,
-                        "Login successful! Welcome, " + state.getUsername() + "!",
-                        "Login Success", JOptionPane.INFORMATION_MESSAGE);
-                clearFields();
-
-                if (onLoginSuccess != null) {
-                    onLoginSuccess.accept(state.getUsername());
-                }
-            }
-
-        } else if (newState instanceof SignupState) {
-            final SignupState sState = (SignupState) newState;
-            if (sState.isCreated()) {
-                JOptionPane.showMessageDialog(this,
-                        "Account created! You can now log in, " + sState.getUsername() + ".",
-                        "Signup Success", JOptionPane.INFORMATION_MESSAGE);
-                // prefill username and clear password
-                usernameField.setText(sState.getUsername());
-                passwordField.setText("");
-                errorLabel.setText("");
-            } else if (sState.getErrorMessage() != null && !sState.getErrorMessage().isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                        sState.getErrorMessage(),
-                        "Signup Failed", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-    private void clearFields() {
-        usernameField.setText("");
-        passwordField.setText("");
-    }
+    /* ========= setters for controllers & callbacks ========= */
 
     public void setLoginController(LoginController controller) {
         this.loginController = controller;
@@ -166,18 +105,81 @@ public class LoginView extends JPanel implements PropertyChangeListener {
 
     public void setSignupViewModel(SignupViewModel signupViewModel) {
         this.signupViewModel = signupViewModel;
-        if (this.signupViewModel != null) {
-            this.signupViewModel.addPropertyChangeListener(this);
-        }
     }
 
+    /**
+     * Sets the callback to be executed when the user chooses to switch to the
+     * signup view. This callback is typically injected from the Main class.
+     *
+     * @param onSwitchToSignup the action to run when switching to the signup view
+     */
     public void setOnSwitchToSignup(Runnable onSwitchToSignup) {
         this.onSwitchToSignup = onSwitchToSignup;
     }
 
-    public void setOnLoginSuccess(Consumer<String> onLoginSuccess) {
+    /**
+     * Sets the callback to be executed after a successful login, typically used
+     * to switch to the IngredientSearch view. This callback is injected from Main.
+     *
+     * @param onLoginSuccess the action to run upon successful login
+     */
+    public void setOnLoginSuccess(Runnable onLoginSuccess) {
         this.onLoginSuccess = onLoginSuccess;
     }
-}
 
+    /* ================== 事件处理 ================== */
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        final Object src = e.getSource();
+
+        if (src == loginButton) {
+            if (loginController != null) {
+                final String username = usernameField.getText().trim();
+                final String password = new String(passwordField.getPassword());
+                // 清空错误提示
+                errorLabel.setText(" ");
+                loginController.login(username, password);
+            }
+        }
+        else if (src == signupButton) {
+            // 这里只负责通知外面切 view，真正的切换由 Main 里的 CardLayout 完成
+            if (onSwitchToSignup != null) {
+                onSwitchToSignup.run();
+            }
+        }
+    }
+
+    /* ========== ViewModel 改变时，刷新界面 ========== */
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+
+        final Object newVal = evt.getNewValue();
+
+        if (newVal instanceof LoginState) {
+            final LoginState state = (LoginState) newVal;
+
+            // 更新文本框（可选）
+            usernameField.setText(state.getUsername());
+            // 密码一般不回显，不设置 passwordField
+
+            // 显示错误信息
+            final String err = state.getErrorMessage();
+            if (err != null && !err.isEmpty()) {
+                errorLabel.setText(err);
+            }
+            else {
+                errorLabel.setText(" ");
+            }
+
+            // 如果已登录成功，通知 Main 切换界面
+            if (state.isLoggedIn() && onLoginSuccess != null) {
+                onLoginSuccess.run();
+            }
+        }
+
+        // 没有 return —— Checkstyle OK
+    }
+}
 
