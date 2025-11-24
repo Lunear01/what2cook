@@ -67,7 +67,8 @@ public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
                     null
             ));
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             presenter.prepareFailView(new RecipeSearchOutputData(
                     new ArrayList<>(ingredients),
                     new ArrayList<>(),

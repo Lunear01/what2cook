@@ -19,6 +19,8 @@ public class RecipeSearchController {
 
     /**
      * Called by the view when user clicks "Search".
+     *
+     * @param ingredients the input ingredients.
      */
     public void searchByIngredients(List<Ingredient> ingredients) {
         final RecipeSearchInputData inputData =
@@ -32,28 +34,28 @@ public class RecipeSearchController {
      * @param recipe the selected recipe.
      */
     public void openRecipe(Recipe recipe) {
-        if (recipe == null) {
-            return;
+        if (recipe != null) {
+
+            final StringBuilder sb = new StringBuilder();
+            sb.append("Title: ").append(recipe.getTitle()).append("\n");
+            sb.append("Calories: ").append(recipe.getCalories()).append("\n");
+            sb.append("Health Score: ").append(recipe.getHealthScore()).append("\n");
+
+            sb.append("\nIngredients:\n");
+            for (Ingredient ing : recipe.getIngredientNames()) {
+                sb.append("  - ").append(ing.getName()).append("\n");
+            }
+
+            sb.append("\nInstructions:\n");
+            sb.append(recipe.getInstructions());
+
+            JOptionPane.showMessageDialog(
+                    null,
+                    sb.toString(),
+                    recipe.getTitle(),
+                    JOptionPane.INFORMATION_MESSAGE
+            );
         }
-
-        final StringBuilder sb = new StringBuilder();
-        sb.append("Title: ").append(recipe.getTitle()).append("\n");
-        sb.append("Calories: ").append(recipe.getCalories()).append("\n");
-        sb.append("Health Score: ").append(recipe.getHealthScore()).append("\n");
-
-        sb.append("\nIngredients:\n");
-        for (Ingredient ing : recipe.getIngredientNames()) {
-            sb.append("  - ").append(ing.getName()).append("\n");
-        }
-
-        sb.append("\nInstructions:\n");
-        sb.append(recipe.getInstructions());
-
-        JOptionPane.showMessageDialog(
-                null,
-                sb.toString(),
-                recipe.getTitle(),
-                JOptionPane.INFORMATION_MESSAGE
-        );
     }
 }
+
