@@ -1,13 +1,15 @@
 package dataaccess;
-import use_case.cookinglist.UserDataAccessInterface;
-import use_case.login.LoginUserDataAccessInterface;
-import use_case.signup.SignupUserDataAccessInterface;
-import entity.User;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import entity.User;
+import use_case.cookinglist.UserDataAccessInterface;
+import use_case.login.LoginUserDataAccessInterface;
+import use_case.signup.SignupUserDataAccessInterface;
 
-public class UserDataAccesssObject implements UserDataAccessInterface, LoginUserDataAccessInterface, SignupUserDataAccessInterface {
+public class UserDataAccesssObject implements UserDataAccessInterface,
+        LoginUserDataAccessInterface, SignupUserDataAccessInterface {
     private final Map<String, User> users = new HashMap<>();
 
     @Override
