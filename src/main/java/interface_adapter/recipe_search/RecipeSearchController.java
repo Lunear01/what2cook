@@ -2,7 +2,7 @@ package interface_adapter.recipe_search;
 
 import java.util.List;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import entity.Ingredient;
 import entity.Recipe;
@@ -36,6 +36,11 @@ public class RecipeSearchController {
     public void openRecipe(Recipe recipe) {
         if (recipe != null) {
 
+            ImageIcon icon = null;
+            if (recipe.getImage() != null) {
+                icon = loadImage(recipe.getImage());
+            }
+
             final StringBuilder sb = new StringBuilder();
             sb.append("Title: ").append(recipe.getTitle()).append("\n");
             sb.append("Calories: ").append(recipe.getCalories()).append("\n");
@@ -53,8 +58,24 @@ public class RecipeSearchController {
                     null,
                     sb.toString(),
                     recipe.getTitle(),
-                    JOptionPane.INFORMATION_MESSAGE
+                    JOptionPane.INFORMATION_MESSAGE,
+                    icon
             );
+        }
+    }
+    private ImageIcon loadImage(String urlStr) {
+        try {
+            java.net.URL url = new java.net.URL(urlStr);
+            java.awt.Image img = javax.imageio.ImageIO.read(url);
+
+            // Scaling if needed
+            img = img.getScaledInstance(300, -1, java.awt.Image.SCALE_SMOOTH);
+
+            return new ImageIcon(img);
+        }
+        catch (Exception e) {
+            System.out.println("Failed to load image: " + e.getMessage());
+            return null;
         }
     }
 }
