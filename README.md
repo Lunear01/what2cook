@@ -11,6 +11,19 @@ API infused recipe recommendation/search engine based on user provided ingredien
 - [ ] 7. As a user, I want to add a recipe to my personal cooking list, so that I can keep track of the dishes I plan to cook.
 - [ ] 8. As a user, I want to add recipes to my favorites list, so that I can easily find and revisit the recipes I like the most.
 
+### Backend Framework:
+Client (Java APP / Android) <--HTTP/JSON--> API Gateway (Express index.js)
+├── routes/ (userRoutes, ingredientRoutes, recipeRoutes)
+├── controllers/ (userController, ingredientController, recipeController)
+├── services/ (userService, ingredientService, recipeService)
+└── db.js (mysql2 connection pool)
+
+MySQL Database (what2cook)
+├── users / users table
+├── ingredients (master list)
+├── user_ingredients (user's ingredient list)
+└── user_recipes (user's saved recipes)
+
 ### Group Memebers:
 - Haiwen Yi
 - Iker Huang
