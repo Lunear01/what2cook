@@ -10,6 +10,7 @@ API infused recipe recommendation/search engine based on user provided ingredien
 - [ ] 6. As a user, I want to get the health score for each dish, so that I can understand the nutritional value of the foods I have.
 - [ ] 7. As a user, I want to add a recipe to my personal cooking list, so that I can keep track of the dishes I plan to cook.
 - [ ] 8. As a user, I want to add recipes to my favorites list, so that I can easily find and revisit the recipes I like the most.
+- [ ] 9. As a user, I want to search my recipes without waiting for so long, so I can save more time in cooking the recipes.
 
 ### Group Memebers:
 - Haiwen Yi
