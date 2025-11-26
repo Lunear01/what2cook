@@ -10,8 +10,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/user', require('./routes/userRoutes'));
-//app.use('/ingredient', require('./Routes/ingredientRoutes'));
-//app.use('/recipe', require('./routes/recipeRoutes'));
+app.use('/ingredient', require('./Routes/ingredientRoutes'));
+app.use('/recipe', require('./routes/recipeRoutes'));
 
 // Health check
 app.get('/', (req, res) => res.send('What2Cook backend is running!'));
