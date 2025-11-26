@@ -1,7 +1,7 @@
 const db = require("../config/db");
 
-const ingredientServices = {
-    async addIngredient(user_name, ingredient_name, Ingredients){
+const recipeServices = {
+    async addRecipe(user_name, recipe_name, recipes){
         const [userRows] = await db.execute(
             "SELECT user_id FROM user WHERE user_name = ?",
             [user_name]
@@ -14,13 +14,13 @@ const ingredientServices = {
         const user_id = userRows[0].user_id;
 
         const [result] = await db.execute(
-            "INSERT INTO ingredient (user_id, ingredient_name, Ingredients) VALUES (?, ?, ?)",
-            [user_id, ingredient_name, Ingredients]
+            "INSERT INTO recipe (user_id, recipe_name, recipes) VALUES (?, ?, ?)",
+            [user_id, recipe_name, recipes]
         );
         return result;
     },
 
-    async getIngredientsByUser(user_name) {
+    async getRecipesByUser(user_name) {
 
         const [userRows] = await db.execute(
             "SELECT user_id FROM user WHERE user_name = ?",
@@ -34,19 +34,19 @@ const ingredientServices = {
         const user_id = userRows[0].user_id;
 
         const [rows] = await db.execute(
-            "SELECT ingredient_id, Ingredients FROM ingredient WHERE user_id = ?",
+            "SELECT recipe_id, recipes FROM recipe WHERE user_id = ?",
             [user_id]
         );
 
         return rows.map(r => ({
-            ingredient_id: r.ingredient_id,
-            ingredients: r.Ingredients
+            recipe_id: r.recipe_id,
+            recipes: r.recipes
         }));
     },
 
     //TODO
-    // Modify it into delete according to the ingredient id
-    async deleteIngredient(user_name, ingredient_name) {
+    // Modify it into delete according to the recipe id
+    async deleteRecipe(user_name, recipe_name) {
 
         const [userRows] = await db.execute(
             "SELECT user_id FROM user WHERE user_name = ?",
@@ -60,12 +60,12 @@ const ingredientServices = {
         const user_id = userRows[0].user_id;
 
         const [result] = await db.execute(
-            "DELETE FROM ingredient WHERE user_id = ? AND ingredient_name = ?",
-            [user_id, ingredient_name]
+            "DELETE FROM recipe WHERE user_id = ? AND recipe_name = ?",
+            [user_id, recipe_name]
         );
 
         return result;
     }
 };
 
-module.exports = ingredientServices;
+module.exports = recipeServices;

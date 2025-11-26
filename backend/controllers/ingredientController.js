@@ -1,4 +1,4 @@
-const IngredientsService = require("../services/ingredientServices");
+const ingredientService = require("../services/ingredientServices");
 const db = require("../config/db");
 
 exports.addIngredient = async (req, res) => {
@@ -9,7 +9,7 @@ exports.addIngredient = async (req, res) => {
             return res.status(400).json({ error: "Missing fields" });
         }
 
-        const result = await IngredientsService.addIngredient(user_name, ingredient_name, Ingredients);
+        const result = await ingredientService.addIngredient(user_name, ingredient_name, Ingredients);
 
         res.json({
             success: true,
@@ -27,7 +27,7 @@ exports.getIngredients = async (req, res) => {
     try {
         const { user_name } = req.params;
 
-        const ingredientsList = await IngredientsService.getIngredientsByUser(user_name);
+        const ingredientsList = await ingredientService.getIngredientsByUser(user_name);
 
         res.json({ success: true, ingredients: ingredientsList });
     } catch (err) {
@@ -45,7 +45,7 @@ exports.deleteIngredient = async (req, res) => {
             return res.status(400).json({ error: "Missing fields" });
         }
 
-        const result = await IngredientsService.deleteIngredient(user_name, ingredient_name);
+        const result = await ingredientService.deleteIngredient(user_name, ingredient_name);
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ error: "Ingredient not found" });
