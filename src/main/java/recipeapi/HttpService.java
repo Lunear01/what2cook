@@ -8,7 +8,6 @@ import java.io.IOException;
 
 /**
  * Service responsible for performing HTTP GET requests.
- * Minimal, reuses client's lifecycle as your original code does.
  */
 public class HttpService {
     private static final OkHttpClient CLIENT = new OkHttpClient();
