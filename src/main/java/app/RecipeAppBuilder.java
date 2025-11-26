@@ -21,6 +21,7 @@ import interface_adapter.recipe_search.RecipeSearchViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
+import recipeapi.CachingRecipeFetcher;
 import recipeapi.RecipeFetcher;
 import recipeapi.SpoonacularRecipeFetcher;
 import use_case.login.LoginInputBoundary;
@@ -93,7 +94,7 @@ public final class RecipeAppBuilder {
         final RecipeSearchPresenter recipeSearchPresenter =
                 new RecipeSearchPresenter(recipeSearchViewModel);
 
-        final RecipeFetcher fetcher = new SpoonacularRecipeFetcher();
+        final RecipeFetcher fetcher = new CachingRecipeFetcher(new SpoonacularRecipeFetcher());
         final RecipeSearchInputBoundary recipeSearchInteractor =
                 new RecipeSearchInteractor(fetcher, recipeSearchPresenter);
 

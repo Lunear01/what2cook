@@ -1,9 +1,11 @@
 package recipeapi;
 
+import java.io.IOException;
 import java.util.List;
 
-import entity.Ingredient;
 import entity.Recipe;
+import recipeapi.exceptions.IngredientNotFoundException;
+import recipeapi.exceptions.RecipeNotFoundException;
 
 /**
  * Interface for the service of getting relevant recipe information.
@@ -20,7 +22,7 @@ public interface RecipeFetcher {
      * @throws IngredientNotFoundException if the ingredient does not exist
      */
     List<Recipe> getRecipesByIngredients(List<String> ingredients, int number, int ranking,
-                                         boolean ignorePantry) throws IngredientNotFoundException;
+                                         boolean ignorePantry) throws IngredientNotFoundException, IOException;
 
     /**
      * Gets detailed information for a specific recipe.
@@ -32,7 +34,7 @@ public interface RecipeFetcher {
      * @throws RecipeNotFoundException if recipe ID is not found
      */
     Recipe getRecipeInfo(int id, boolean includeNutrition, boolean addWinePairing,
-                         boolean addTasteData) throws RecipeNotFoundException;
+                         boolean addTasteData) throws RecipeNotFoundException, IOException;
 
     /**
      * Gets cooking instructions for a recipe.
@@ -41,17 +43,6 @@ public interface RecipeFetcher {
      * @return recipe with instructions
      * @throws RecipeNotFoundException if recipe ID is not found
      */
-    Recipe getRecipeInstructions(int id, boolean stepBreakdown) throws RecipeNotFoundException;
+    Recipe getRecipeInstructions(int id, boolean stepBreakdown) throws RecipeNotFoundException, IOException;
 
-    class RecipeNotFoundException extends Exception {
-        public RecipeNotFoundException(String recipe) {
-            super("Recipe not found: " + recipe);
-        }
-    }
-
-    class IngredientNotFoundException extends Exception {
-        public IngredientNotFoundException(String ingredient) {
-            super("Ingredient not found: " + ingredient);
-        }
-    }
 }

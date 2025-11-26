@@ -9,21 +9,24 @@ import org.json.JSONObject;
 
 import entity.Ingredient;
 import entity.Recipe;
+import recipeapi.exceptions.IngredientNotFoundException;
+import recipeapi.exceptions.RecipeNotFoundException;
 import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
-    private static final OkHttpClient CLIENT = new OkHttpClient();
-
     private static final String API_KEY = System.getenv().getOrDefault(
             "SPOONACULAR_API_KEY",
-            "1d96247defbd4a5baaeb28cbbd6a8972"
+            "aaf0737aa46b4cb19096928025c49552"
     );
 
     private static final String BASE_URL = "https://api.spoonacular.com/recipes";
+    private final HttpService httpService;
+
+    // Constructor for HttpService
+    public SpoonacularRecipeFetcher() {
+        this.httpService = new HttpService();
+    }
 
     // Get Recipes by Ingredients
     @Override
@@ -42,13 +45,10 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 .addQueryParameter("ignorePantry", String.valueOf(ignorePantry))
                 .build();
 
-        // Construct request
-        final Request request = new Request.Builder().url(url).build();
-
         // Execute request and parse response
-        try (Response response = CLIENT.newCall(request).execute()) {
-
-            final JSONArray array = parseResponse(ingredients, response);
+        try {
+            final String json = httpService.get(url);
+            final JSONArray array = parseResponse(ingredients, json);
 
             if (array.isEmpty()) {
                 throw new IngredientNotFoundException("No recipes found for ingredients: " + ingredients);
@@ -108,17 +108,9 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 .addQueryParameter("addTasteData", String.valueOf(addTasteData))
                 .build();
 
-        // Construct request
-        final Request request = new Request.Builder().url(url).build();
-
         // Execute request and parse response
-        try (Response response = CLIENT.newCall(request).execute()) {
-
-            if (!response.isSuccessful()) {
-                throw new RecipeNotFoundException("Recipe with ID " + id + " not found");
-            }
-
-            final String json = response.body().string();
+        try {
+            final String json = httpService.get(url);
             final JSONObject obj = new JSONObject(json);
 
             final Recipe recipe = new Recipe();
@@ -158,17 +150,9 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 .addQueryParameter("stepBreakdown", String.valueOf(stepBreakdown))
                 .build();
 
-        // Construct request
-        final Request request = new Request.Builder().url(url).build();
-
         // Execute request and parse response
-        try (Response response = CLIENT.newCall(request).execute()) {
-
-            if (!response.isSuccessful()) {
-                throw new RecipeNotFoundException("Recipe instructions for ID " + id + " not found");
-            }
-
-            final String json = response.body().string();
+        try {
+            final String json = httpService.get(url);
             final JSONArray array = new JSONArray(json);
 
             final Recipe recipe = new Recipe();
@@ -207,22 +191,11 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
         }
     }
 
-    // Response Parser
-    // Check for API call integrity
-    // Parse JSON response
-    private static JSONArray parseResponse(List<String> ingredients, Response response)
+    // Helper: Parse JSON response
+    private static JSONArray parseResponse(List<String> ingredients, String json)
             throws IngredientNotFoundException, IOException {
-        final int notFoundCode = 404;
-        if (!response.isSuccessful()) {
-            if (response.code() == notFoundCode) {
-                throw new IngredientNotFoundException("Ingredients not found: " + ingredients);
-            }
-            throw new IOException("HTTP error " + response.code() + ": " + response.message());
-        }
 
-        final String json = response.body().string();
-
-        // Spoonacular errors sometimes return JSON with status=failure
+        // Spoonacular errors returns JSON with status = "failure"
         if (json.trim().startsWith("{")) {
             final JSONObject obj = new JSONObject(json);
             if (obj.optString("status").equals("failure")) {
@@ -257,7 +230,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
         return -1;
     }
 
-    // Helper method for instruction parsing, capping each line at 60 characters
+    // Helper: instruction parsing, capping each line at 60 characters
     private String wrapAt60(String text) {
         final StringBuilder wrapped = new StringBuilder();
         int lineLength = 0;

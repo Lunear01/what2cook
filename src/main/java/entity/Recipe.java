@@ -1,6 +1,8 @@
 package entity;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Recipe {
     private int id;
@@ -37,7 +39,7 @@ public class Recipe {
     }
 
     public List<Ingredient> getIngredientNames() {
-        return ingredientNames;
+        return Objects.requireNonNullElse(ingredientNames, Collections.emptyList());
     }
 
     public double getCalories() {
@@ -65,7 +67,6 @@ public class Recipe {
     }
 
     public void setIngredientNames(List<Ingredient> ingredientNames) {
-
         this.ingredientNames = ingredientNames;
     }
 

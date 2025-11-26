@@ -6,7 +6,6 @@ import java.util.List;
 import entity.Ingredient;
 import entity.Recipe;
 import recipeapi.RecipeFetcher;
-import recipeapi.SpoonacularRecipeFetcher;
 
 public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
 
