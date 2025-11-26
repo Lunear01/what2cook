@@ -1,8 +1,12 @@
 package recipeapi;
 
 import entity.Recipe;
+import recipeapi.*;
 import org.junit.Test;
+import recipeapi.exceptions.IngredientNotFoundException;
+import recipeapi.exceptions.RecipeNotFoundException;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -30,7 +34,7 @@ public class SpoonacularRecipeFetcherFailTest {
             // Basic assertions to ensure it's not empty
             assertFalse(recipes.isEmpty());
 
-        } catch (RecipeFetcher.IngredientNotFoundException e) {
+        } catch (IngredientNotFoundException | IOException e) {
             fail(e.getMessage());
         }
 
@@ -45,7 +49,7 @@ public class SpoonacularRecipeFetcherFailTest {
 
             assertNotNull(info.getTitle());
 
-        } catch (RecipeFetcher.RecipeNotFoundException e) {
+        } catch (RecipeNotFoundException | IOException e) {
             fail(e.getMessage());
         }
 
@@ -59,7 +63,7 @@ public class SpoonacularRecipeFetcherFailTest {
 
             assertNotNull(instructions.getInstructions());
 
-        } catch (RecipeFetcher.RecipeNotFoundException e) {
+        } catch (RecipeNotFoundException | IOException e) {
             fail(e.getMessage());
         }
     }
