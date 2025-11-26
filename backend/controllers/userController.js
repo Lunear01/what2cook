@@ -1,4 +1,5 @@
 const userServices = require("../services/userServices");
+// const db = requir("../config/db");
 
 exports.signup = async (req, res) => {
     const { user_name, email, password } = req.body;
