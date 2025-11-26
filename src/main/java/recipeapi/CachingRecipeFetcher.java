@@ -1,23 +1,29 @@
 package recipeapi;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import entity.Ingredient;
 import entity.Recipe;
 import recipeapi.exceptions.IngredientNotFoundException;
 import recipeapi.exceptions.RecipeNotFoundException;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.io.IOException;
-import java.util.*;
 
 public class CachingRecipeFetcher implements RecipeFetcher {
-    private final RecipeFetcher delegate;
-
+    private static final String KEY_SEPARATOR = "|";
+    private static final String KEY = "key";
     private static final String INGREDIENTS_CACHE_FILE = "cache_recipesByIngredients.json";
     private static final String INFO_CACHE_FILE = "cache_recipeInfo.json";
     private static final String INSTRUCTIONS_CACHE_FILE = "cache_recipeInstructions.json";
+
+    private final RecipeFetcher delegate;
 
     private final Map<String, List<Recipe>> recipesByIngredientsCache;
     private final Map<String, Recipe> recipeInfoCache;
@@ -31,41 +37,72 @@ public class CachingRecipeFetcher implements RecipeFetcher {
     }
 
     @Override
-    public List<Recipe> getRecipesByIngredients(List<String> ingredients, int number, int ranking, boolean ignorePantry)
+    public List<Recipe> getRecipesByIngredients(
+            List<String> ingredients, int number, int ranking, boolean ignorePantry)
             throws IngredientNotFoundException, IOException {
-        final String key = String.join(",", ingredients) + "|" + number + "|" + ranking + "|" + ignorePantry;
+
+        final List<Recipe> result;
+
+        final String key = String.join(",", ingredients)
+                + KEY_SEPARATOR + number + KEY_SEPARATOR + ranking + KEY_SEPARATOR + ignorePantry;
+
         if (recipesByIngredientsCache.containsKey(key)) {
-            return recipesByIngredientsCache.get(key);
+            result = recipesByIngredientsCache.get(key);
         }
-        final List<Recipe> result = delegate.getRecipesByIngredients(ingredients, number, ranking, ignorePantry);
-        recipesByIngredientsCache.put(key, result);
-        saveRecipesListCacheToJson(recipesByIngredientsCache, INGREDIENTS_CACHE_FILE);
+        else {
+            result = delegate.getRecipesByIngredients(ingredients, number, ranking, ignorePantry);
+            recipesByIngredientsCache.put(key, result);
+            saveRecipesListCacheToJson(recipesByIngredientsCache, INGREDIENTS_CACHE_FILE);
+        }
+
         return result;
     }
 
     @Override
-    public Recipe getRecipeInfo(int id, boolean includeNutrition, boolean addWinePairing, boolean addTasteData)
+    public Recipe getRecipeInfo(
+            int id,
+            boolean includeNutrition,
+            boolean addWinePairing,
+            boolean addTasteData)
             throws RecipeNotFoundException, IOException {
-        final String key = id + "|" + includeNutrition + "|" + addWinePairing + "|" + addTasteData;
+
+        final Recipe result;
+
+        final String key =
+                id + KEY_SEPARATOR
+                        + includeNutrition + KEY_SEPARATOR
+                        + addWinePairing + KEY_SEPARATOR
+                        + addTasteData;
+
         if (recipeInfoCache.containsKey(key)) {
-            return recipeInfoCache.get(key);
+            result = recipeInfoCache.get(key);
         }
-        final Recipe result = delegate.getRecipeInfo(id, includeNutrition, addWinePairing, addTasteData);
-        recipeInfoCache.put(key, result);
-        saveRecipeCacheToJson(recipeInfoCache, INFO_CACHE_FILE);
+        else {
+            result = delegate.getRecipeInfo(id, includeNutrition, addWinePairing, addTasteData);
+            recipeInfoCache.put(key, result);
+            saveRecipeCacheToJson(recipeInfoCache, INFO_CACHE_FILE);
+        }
+
         return result;
     }
 
     @Override
     public Recipe getRecipeInstructions(int id, boolean stepBreakdown)
             throws RecipeNotFoundException, IOException {
-        final String key = id + "|" + stepBreakdown;
+
+        final Recipe result;
+
+        final String key = id + KEY_SEPARATOR + stepBreakdown;
+
         if (recipeInstructionsCache.containsKey(key)) {
-            return recipeInstructionsCache.get(key);
+            result = recipeInstructionsCache.get(key);
         }
-        final Recipe result = delegate.getRecipeInstructions(id, stepBreakdown);
-        recipeInstructionsCache.put(key, result);
-        saveRecipeCacheToJson(recipeInstructionsCache, INSTRUCTIONS_CACHE_FILE);
+        else {
+            result = delegate.getRecipeInstructions(id, stepBreakdown);
+            recipeInstructionsCache.put(key, result);
+            saveRecipeCacheToJson(recipeInstructionsCache, INSTRUCTIONS_CACHE_FILE);
+        }
+
         return result;
     }
 
@@ -79,7 +116,7 @@ public class CachingRecipeFetcher implements RecipeFetcher {
             final JSONArray array = new JSONArray(content);
             for (int i = 0; i < array.length(); i++) {
                 final JSONObject obj = array.getJSONObject(i);
-                final String key = obj.getString("key");
+                final String key = obj.getString(KEY);
                 final List<Recipe> recipes = parseRecipeList(obj.getJSONArray("recipes"));
                 cache.put(key, recipes);
             }
@@ -98,7 +135,7 @@ public class CachingRecipeFetcher implements RecipeFetcher {
             final JSONArray array = new JSONArray(content);
             for (int i = 0; i < array.length(); i++) {
                 final JSONObject obj = array.getJSONObject(i);
-                final String key = obj.getString("key");
+                final String key = obj.getString(KEY);
                 final Recipe recipe = parseRecipe(obj.getJSONObject("recipe"));
                 cache.put(key, recipe);
             }
@@ -113,7 +150,7 @@ public class CachingRecipeFetcher implements RecipeFetcher {
         final JSONArray array = new JSONArray();
         for (Map.Entry<String, List<Recipe>> entry : cache.entrySet()) {
             final JSONObject obj = new JSONObject();
-            obj.put("key", entry.getKey());
+            obj.put(KEY, entry.getKey());
             obj.put("recipes", serializeRecipeList(entry.getValue()));
             array.put(obj);
         }
@@ -129,7 +166,7 @@ public class CachingRecipeFetcher implements RecipeFetcher {
         final JSONArray array = new JSONArray();
         for (Map.Entry<String, Recipe> entry : cache.entrySet()) {
             final JSONObject obj = new JSONObject();
-            obj.put("key", entry.getKey());
+            obj.put(KEY, entry.getKey());
             obj.put("recipe", serializeRecipe(entry.getValue()));
             array.put(obj);
         }

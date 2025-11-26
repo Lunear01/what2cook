@@ -9,9 +9,9 @@ import org.json.JSONObject;
 
 import entity.Ingredient;
 import entity.Recipe;
+import okhttp3.HttpUrl;
 import recipeapi.exceptions.IngredientNotFoundException;
 import recipeapi.exceptions.RecipeNotFoundException;
-import okhttp3.HttpUrl;
 
 public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
@@ -208,26 +208,27 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
     private int extractCalories(JSONObject obj, boolean includeNutrition) {
 
-        if (!includeNutrition || !obj.has("nutrition")) {
-            return -1;
-        }
+        int result = -1;
 
-        final JSONObject nutrition = obj.getJSONObject("nutrition");
+        if (includeNutrition && obj.has("nutrition")) {
 
-        if (!nutrition.has("nutrients")) {
-            return -1;
-        }
+            final JSONObject nutrition = obj.getJSONObject("nutrition");
 
-        final JSONArray nutrients = nutrition.getJSONArray("nutrients");
+            if (nutrition.has("nutrients")) {
 
-        for (int i = 0; i < nutrients.length(); i++) {
-            final JSONObject nut = nutrients.getJSONObject(i);
-            if ("Calories".equalsIgnoreCase(nut.getString("name"))) {
-                return (int) Math.round(nut.getDouble("amount"));
+                final JSONArray nutrients = nutrition.getJSONArray("nutrients");
+
+                for (int i = 0; i < nutrients.length(); i++) {
+                    final JSONObject nut = nutrients.getJSONObject(i);
+                    if ("Calories".equalsIgnoreCase(nut.getString("name"))) {
+                        result = (int) Math.round(nut.getDouble("amount"));
+                        break;
+                    }
+                }
             }
         }
 
-        return -1;
+        return result;
     }
 
     // Helper: instruction parsing, capping each line at 60 characters
@@ -236,7 +237,8 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
         int lineLength = 0;
 
         for (String word : text.split(" ")) {
-            if (lineLength + word.length() + 1 > 60) {
+            final int maxLength = 60;
+            if (lineLength + word.length() + 1 > maxLength) {
                 wrapped.append("\n");
                 lineLength = 0;
             }

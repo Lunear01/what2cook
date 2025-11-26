@@ -118,9 +118,6 @@ public class IngredientSearchView extends JPanel
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         final Object newVal = evt.getNewValue();
-        if (!(newVal instanceof IngredientSearchState)) {
-            return;
-        }
 
         final IngredientSearchState state = (IngredientSearchState) newVal;
 
