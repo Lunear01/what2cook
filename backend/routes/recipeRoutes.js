@@ -4,7 +4,7 @@ const RecipeController = require("../controllers/RecipeController");
 
 router.post("/add", RecipeController.addRecipe);
 
-router.get("/:user_name", RecipeController.getRecipe);
+router.get("/:user_name", RecipeController.getRecipes);
 
 router.delete("/delete", RecipeController.deleteRecipe);
 
