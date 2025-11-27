@@ -1,7 +1,7 @@
 const db = require("../config/db");
 
 const ingredientServices = {
-    async addIngredient(user_name, ingredient_name, Ingredients){
+    async addIngredient(user_name, ingredient_name, ingredient_id){
         const [userRows] = await db.execute(
             "SELECT user_id FROM user WHERE user_name = ?",
             [user_name]
@@ -14,8 +14,8 @@ const ingredientServices = {
         const user_id = userRows[0].user_id;
 
         const [result] = await db.execute(
-            "INSERT INTO ingredient (user_id, ingredient_name, Ingredients) VALUES (?, ?, ?)",
-            [user_id, ingredient_name, Ingredients]
+            "INSERT INTO ingredient (user_id, ingredient_name, ingredient_id) VALUES (?, ?, ?)",
+            [user_id, ingredient_name, ingredient_id]
         );
         return result;
     },
@@ -34,19 +34,19 @@ const ingredientServices = {
         const user_id = userRows[0].user_id;
 
         const [rows] = await db.execute(
-            "SELECT ingredient_id, Ingredients FROM ingredient WHERE user_id = ?",
+            "SELECT ingredient_id, ingredient_name FROM ingredient WHERE user_id = ?",
             [user_id]
         );
 
         return rows.map(r => ({
             ingredient_id: r.ingredient_id,
-            ingredients: r.Ingredients
+            ingredient_name: r.ingredient_name
         }));
     },
 
     //TODO
     // Modify it into delete according to the ingredient id
-    async deleteIngredient(user_name, ingredient_name) {
+    async deleteIngredient(user_name, ingredient_id) {
 
         const [userRows] = await db.execute(
             "SELECT user_id FROM user WHERE user_name = ?",
@@ -61,7 +61,7 @@ const ingredientServices = {
 
         const [result] = await db.execute(
             "DELETE FROM ingredient WHERE user_id = ? AND ingredient_name = ?",
-            [user_id, ingredient_name]
+            [user_id, ingredient_id]
         );
 
         return result;

@@ -1,7 +1,7 @@
 const db = require("../config/db");
 
 const recipeServices = {
-    async addRecipe(user_name, recipe_name, recipes){
+    async addRecipe(user_name, recipe_name, recipe_id, recipes){
         const [userRows] = await db.execute(
             "SELECT user_id FROM user WHERE user_name = ?",
             [user_name]
@@ -14,8 +14,8 @@ const recipeServices = {
         const user_id = userRows[0].user_id;
 
         const [result] = await db.execute(
-            "INSERT INTO recipe (user_id, recipe_name, recipes) VALUES (?, ?, ?)",
-            [user_id, recipe_name, recipes]
+            "INSERT INTO recipe (user_id, recipe_name, recipe_id, recipes) VALUES (?, ?, ?, ?)",
+            [user_id, recipe_name, recipe_id, recipes]
         );
         return result;
     },
@@ -44,9 +44,7 @@ const recipeServices = {
         }));
     },
 
-    //TODO
-    // Modify it into delete according to the recipe id
-    async deleteRecipe(user_name, recipe_name) {
+    async deleteRecipe(user_name, recipe_id) {
 
         const [userRows] = await db.execute(
             "SELECT user_id FROM user WHERE user_name = ?",
@@ -60,8 +58,8 @@ const recipeServices = {
         const user_id = userRows[0].user_id;
 
         const [result] = await db.execute(
-            "DELETE FROM recipe WHERE user_id = ? AND recipe_name = ?",
-            [user_id, recipe_name]
+            "DELETE FROM recipe WHERE user_id = ? AND recipe_id = ?",
+            [user_id, recipe_id]
         );
 
         return result;
