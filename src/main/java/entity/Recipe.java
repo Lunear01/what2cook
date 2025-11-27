@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Recipe {
-    private int id;
+    private int recipeID;
     private String title;
     private List<Ingredient> ingredientNames;
     private double calories;
@@ -16,12 +16,12 @@ public class Recipe {
     public Recipe() {
     }
 
-    public Recipe(int id, String title,
+    public Recipe(int recipeID, String title,
                   List<Ingredient> ingredientNames,
                   double calories,
                   int healthScore,
                   String instructions) {
-        this.id = id;
+        this.recipeID = recipeID;
         this.title = title;
         this.ingredientNames = ingredientNames;
         this.calories = calories;
@@ -31,7 +31,7 @@ public class Recipe {
     }
 
     public int getId() {
-        return id;
+        return recipeID;
     }
 
     public String getTitle() {
@@ -59,7 +59,7 @@ public class Recipe {
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.recipeID = id;
     }
 
     public void setTitle(String title) {
