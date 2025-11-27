@@ -18,14 +18,14 @@ public class AddToCookingListInteractor implements AddToCookingListInputBoundary
         final User user = userDao.get(inputData.getUsername());
         final Recipe recipe = inputData.getRecipe();
 
-        user.addToPersonalCookingList(recipe);
-        userDao.save(user);
-
-        presenter.present(
-                new AddToCookingListOutputData(
-                        user.getPersonalCookingList(),
-                        recipe.getTitle() + " added to your cooking list!"
-                )
-        );
+//        user.addToPersonalCookingList(recipe);
+//        userDao.save(user);
+//
+//        presenter.present(
+//                new AddToCookingListOutputData(
+//                        user.getPersonalCookingList(),
+//                        recipe.getTitle() + " added to your cooking list!"
+//                )
+//        );
     }
 }
