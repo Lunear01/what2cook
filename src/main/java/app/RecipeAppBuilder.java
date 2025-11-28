@@ -28,8 +28,7 @@ import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.recipe_search.RecipeSearchInputBoundary;
 import use_case.recipe_search.RecipeSearchInteractor;
-import use_case.signup.SignupInputBoundary;
-import use_case.signup.SignupInteractor;
+import use_case.signup.*;
 import view.IngredientSearchView;
 import view.LoginView;
 import view.RecipeSearchView;
@@ -77,8 +76,10 @@ public final class RecipeAppBuilder {
         // --- Signup wiring ---
         final SignupViewModel signupViewModel = new SignupViewModel();
         final SignupPresenter signupPresenter = new SignupPresenter(signupViewModel);
+        final EmailValidation emailValidator = new JmailValidationService();
+        final PasswordValidation passwordValidator = new PasswordValidationService();
         final SignupInputBoundary signupInteractor =
-                new SignupInteractor(userDao, signupPresenter);
+                new SignupInteractor(userDao, signupPresenter, emailValidator, passwordValidator);
         final SignupController signupController =
                 new SignupController(signupInteractor);
 
