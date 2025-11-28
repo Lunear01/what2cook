@@ -59,13 +59,6 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
             for (int i = 0; i < array.length(); i++) {
                 final JSONObject obj = array.getJSONObject(i);
 
-                // Build basic recipe (id, title, image)
-                Recipe recipe = Recipe.builder()
-                        .setId(obj.getInt("id"))
-                        .setTitle(obj.getString("title"))
-                        .setImage(obj.getString("image"))
-                        .build();
-
                 // Extract ingredient names
                 final List<Ingredient> ingList = new ArrayList<>();
                 final JSONArray used = obj.getJSONArray("usedIngredients");
@@ -97,9 +90,12 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                     );
                 }
 
-                // Replace the old recipe with a new one that includes ingredientNames
-                recipe = recipe.builder() //issue!! fix later
+                // build recipe
+                Recipe recipe = Recipe.builder()
+                        .setId(obj.getInt("recipeID"))
+                        .setTitle(obj.getString("title"))
                         .setIngredientNames(ingList)
+                        .setImage(obj.getString("image"))
                         .build();
 
                 results.add(recipe);
@@ -153,7 +149,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
 // 用 Builder 一次性把 Recipe 所有字段设好
             final Recipe recipe = Recipe.builder()
-                    .setId(obj.optInt("recipeID"))
+                    .setId(obj.getInt("recipeID"))
                     .setTitle(obj.getString("title"))
                     .setIngredientNames(ingredients)
                     .setCalories(extractCalories(obj, includeNutrition))
