@@ -13,6 +13,17 @@ public class Recipe {
     private final String instructions;
     private final String image;
 
+    Recipe(int recipeID, String title, List<Ingredient> ingredientNames, double calories,
+           int healthScore, String instructions, String image){
+        this.recipeID = recipeID;
+        this.title = title;
+        this.ingredientNames = ingredientNames;
+        this.calories = calories;
+        this.healthScore = healthScore;
+        this.instructions = instructions;
+        this.image = image;
+    }
+
     public int getId() {
         return recipeID;
     }
