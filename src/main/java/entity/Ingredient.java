@@ -5,9 +5,9 @@ public class Ingredient {
     private final String name;
     private final int ingredientId;
 
-    private Ingredient(Builder builder) {
-        this.name = builder.name;
-        this.ingredientId = builder.ingredientId;
+    Ingredient(String name, int ingredientId) {
+        this.name = name
+        this.ingredientId = ingredientId;
     }
 
     /**
