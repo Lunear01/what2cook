@@ -1,9 +1,10 @@
 const userServices = require("../services/userServices");
+// const db = requir("../config/db");
 
 exports.signup = async (req, res) => {
-    const { user_name, email, password } = req.body;
-
     try {
+        const { user_name, email, password } = req.body;
+
         const exists = await userServices.findUser(user_name);
         if (exists) return res.status(400).json({ message: "User already exists" });
 
@@ -16,9 +17,10 @@ exports.signup = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-    const { user_name, password } = req.body;
 
     try {
+        const { user_name, password } = req.body;
+
         const user = await userServices.findUser(user_name);
         if (!user) return res.status(400).json({ message: "User not found" });
 
