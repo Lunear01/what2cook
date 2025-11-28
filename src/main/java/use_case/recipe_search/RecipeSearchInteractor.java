@@ -44,6 +44,29 @@ public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
 
             final List<Recipe> enriched = new ArrayList<>();
 
+
+
+
+
+
+            for (Recipe r : basic) {
+                final int id = r.getId();
+                final String title = r.getTitle();
+                final String image = r.getImage();
+
+                final Recipe info = fetcher.getRecipeInfo(id, true, false, false);
+
+                // 用 toBuilder() 在原本的 r 上更新 fields
+                Recipe updated = r.toBuilder()
+                        .setHealthScore(info.getHealthScore())
+                        .setIngredientNames(info.getIngredientNames())
+                        .setCalories(info.getCalories())
+                        .setInstructions(instructions.getInstructions())
+                        .build();
+
+                enriched.add(updated);
+            }
+          
             for (Recipe r : basic) {
                 final int id = r.getId();
 
@@ -51,7 +74,7 @@ public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
                 final Recipe info = fetcher.getRecipeInfo(id, true, false, false);
 
                 // 用 toBuilder() 在原本的 r 上更新 fields
-                Recipe updated = r.toBuilder()
+                Recipe updated = r.builder()
                         .setHealthScore(info.getHealthScore())
                         .setIngredientNames(info.getIngredientNames())
                         .setCalories(info.getCalories())
