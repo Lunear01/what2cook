@@ -4,14 +4,15 @@ import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInputData;
 
 public class SignupController {
-    private final SignupInputBoundary interactor;
 
-    public SignupController(SignupInputBoundary interactor) {
-        this.interactor = interactor;
+    private final SignupInputBoundary signupInteractor;
+
+    public SignupController(SignupInputBoundary signupInteractor) {
+        this.signupInteractor = signupInteractor;
     }
 
     public void signup(String username, String email, String password, String confirmPassword) {
-        final SignupInputData input = new SignupInputData(username, email, password, confirmPassword);
-        interactor.execute(input);
+        SignupInputData data = new SignupInputData(username, email, password, confirmPassword);
+        signupInteractor.execute(data);
     }
 }

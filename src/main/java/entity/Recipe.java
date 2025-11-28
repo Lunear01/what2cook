@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Recipe {
+
     private final int recipeID;
     private final String title;
     private final List<Ingredient> ingredientNames;
@@ -13,8 +14,9 @@ public class Recipe {
     private final String instructions;
     private final String image;
 
-    Recipe(int recipeID, String title, List<Ingredient> ingredientNames, double calories,
-           int healthScore, String instructions, String image){
+    // Package-private constructor for RecipeBuilder
+    Recipe(int recipeID, String title, List<Ingredient> ingredientNames,
+           double calories, int healthScore, String instructions, String image) {
         this.recipeID = recipeID;
         this.title = title;
         this.ingredientNames = ingredientNames;
@@ -24,35 +26,33 @@ public class Recipe {
         this.image = image;
     }
 
-    public int getId() {
-        return recipeID;
-    }
-
-    public String getTitle() {
-        return title;
-    }
+    // ---- Getters ----
+    public int getId() { return recipeID; }
+    public String getTitle() { return title; }
 
     public List<Ingredient> getIngredientNames() {
         return Objects.requireNonNullElse(ingredientNames, Collections.emptyList());
     }
 
-    public double getCalories() {
-        return calories;
-    }
+    public double getCalories() { return calories; }
+    public int getHealthScore() { return healthScore; }
+    public String getInstructions() { return instructions; }
+    public String getImage() { return image; }
 
-    public int getHealthScore() {
-        return healthScore;
-    }
-
-    public String getInstructions() {
-        return instructions;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
+    // ---- Builder entry point ----
     public static RecipeBuilder builder() {
         return new RecipeBuilder();
     }
+
+    // ---- NEW: toBuilder() ----
+    public RecipeBuilder toBuilder() {
+        return new RecipeBuilder()
+                .setId(this.recipeID)
+                .setTitle(this.title)
+                .setIngredientNames(this.ingredientNames)
+                .setCalories(this.calories)
+                .setHealthScore(this.healthScore)
+                .setInstructions(this.instructions)
+                .setImage(this.image);
     }
+}

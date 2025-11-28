@@ -17,7 +17,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
     private static final String API_KEY = System.getenv().getOrDefault(
             "SPOONACULAR_API_KEY",
-            "aaf0737aa46b4cb19096928025c49552"
+            "4932d6f2116641318a14ddc9f10fd899"
     );
 
     private static final String BASE_URL = "https://api.spoonacular.com/recipes";
@@ -45,13 +45,13 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 .addQueryParameter("ignorePantry", String.valueOf(ignorePantry))
                 .build();
 
-        // Execute request and parse response
         try {
             final String json = httpService.get(url);
             final JSONArray array = parseResponse(ingredients, json);
 
             if (array.isEmpty()) {
-                throw new IngredientNotFoundException("No recipes found for ingredients: " + ingredients);
+                throw new IngredientNotFoundException(
+                        "No recipes found for ingredients: " + ingredients);
             }
 
             final List<Recipe> results = new ArrayList<>();
@@ -59,14 +59,14 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
             for (int i = 0; i < array.length(); i++) {
                 final JSONObject obj = array.getJSONObject(i);
 
-                // Build basic recipe (id, title, image)
-                Recipe recipe = new Recipe.Builder()
+                // ----- Build basic recipe (id, title, image) -----
+                Recipe recipe = Recipe.builder()
                         .setId(obj.getInt("id"))
                         .setTitle(obj.getString("title"))
-                        .setImage(obj.getString("image"))
+                        .setImage(obj.optString("image", null))
                         .build();
 
-                // Extract ingredient names
+                // ----- Extract ingredient names -----
                 final List<Ingredient> ingList = new ArrayList<>();
                 final JSONArray used = obj.getJSONArray("usedIngredients");
                 final JSONArray missed = obj.getJSONArray("missedIngredients");
@@ -77,9 +77,9 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                     final int ingredientId = ingObj.optInt("id", -1);
 
                     ingList.add(
-                            new Ingredient.Builder()
+                            Ingredient.builder()
                                     .setName(ingredientName)
-                                    .setIngredientId(ingredientId)
+                                    .setId(ingredientId)
                                     .build()
                     );
                 }
@@ -90,14 +90,14 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                     final int ingredientId = ingObj.optInt("id", -1);
 
                     ingList.add(
-                            new Ingredient.Builder()
+                            Ingredient.builder()
                                     .setName(ingredientName)
-                                    .setIngredientId(ingredientId)
+                                    .setId(ingredientId)
                                     .build()
                     );
                 }
 
-                // Replace the old recipe with a new one that includes ingredientNames
+                // 用 toBuilder 给 recipe 补上 ingredientNames
                 recipe = recipe.toBuilder()
                         .setIngredientNames(ingList)
                         .build();
@@ -107,8 +107,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
             return results;
 
-        }
-        catch (IOException error) {
+        } catch (IOException error) {
             throw new RuntimeException("Failed to fetch recipes: " + error.getMessage(), error);
         }
     }
@@ -129,12 +128,11 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 .addQueryParameter("addTasteData", String.valueOf(addTasteData))
                 .build();
 
-        // Execute request and parse response
         try {
             final String json = httpService.get(url);
             final JSONObject obj = new JSONObject(json);
 
-            // Ingredient names
+            // ----- Ingredient names -----
             final List<Ingredient> ingredients = new ArrayList<>();
             final JSONArray ingArray = obj.getJSONArray("extendedIngredients");
 
@@ -144,27 +142,25 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 final int ingredientId = ingObj.optInt("id", -1);
 
                 ingredients.add(
-                        new Ingredient.Builder()
+                        Ingredient.builder()
                                 .setName(ingredientName)
-                                .setIngredientId(ingredientId)
+                                .setId(ingredientId)
                                 .build()
                 );
             }
 
-// 用 Builder 一次性把 Recipe 所有字段设好
-            final Recipe recipe = new Recipe.Builder()
+            // ----- 用 Builder 一次性把 Recipe 所有字段设好 -----
+            return Recipe.builder()
                     .setId(id)
                     .setTitle(obj.getString("title"))
+                    .setImage(obj.optString("image", null))
                     .setIngredientNames(ingredients)
                     .setHealthScore(obj.optInt("healthScore", -1))
                     .setCalories(extractCalories(obj, includeNutrition))
+                    .setInstructions(obj.optString("instructions", null))
                     .build();
 
-            return recipe;
-
-
-        }
-        catch (IOException error) {
+        } catch (IOException error) {
             throw new RecipeNotFoundException("Error retrieving recipe info: " + error.getMessage());
         }
     }
@@ -180,20 +176,19 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 .addQueryParameter("stepBreakdown", String.valueOf(stepBreakdown))
                 .build();
 
-        // Execute request and parse response
         try {
             final String json = httpService.get(url);
             final JSONArray array = new JSONArray(json);
 
             // No instructions available
             if (array.isEmpty()) {
-                return new Recipe.Builder()
+                return Recipe.builder()
                         .setId(id)
                         .setInstructions("No instructions available.")
                         .build();
             }
 
-// Build instructions
+            // ----- Build instructions -----
             final JSONObject instructionBlock = array.getJSONObject(0);
             final JSONArray steps = instructionBlock.getJSONArray("steps");
 
@@ -206,21 +201,18 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
                 if (stepBreakdown) {
                     sb.append(number).append(". ").append(wrapAt60(text)).append("\n");
-                }
-                else {
+                } else {
                     sb.append(wrapAt60(text)).append("\n");
                 }
             }
 
-// Return recipe with computed instructions
-            return new Recipe.Builder()
+            // ----- Return recipe with computed instructions -----
+            return Recipe.builder()
                     .setId(id)
                     .setInstructions(sb.toString().trim())
                     .build();
 
-
-        }
-        catch (IOException error) {
+        } catch (IOException error) {
             throw new RecipeNotFoundException("Error retrieving instructions: " + error.getMessage());
         }
     }

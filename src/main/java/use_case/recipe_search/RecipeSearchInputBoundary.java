@@ -1,10 +1,15 @@
 package use_case.recipe_search;
 
+/**
+ * Input Boundary for the "search recipes by ingredients" use case.
+ * Called by the controller.
+ */
 public interface RecipeSearchInputBoundary {
+
     /**
-     * Executes the recipe search use case.
+     * Execute the use case.
      *
-     * @param inputData the input data containing the search query
+     * @param inputData the input data containing ingredient names, etc.
      */
-    void execute(RecipeSearchInputData inputData);
+    void searchByIngredients(RecipeSearchInputData inputData);
 }

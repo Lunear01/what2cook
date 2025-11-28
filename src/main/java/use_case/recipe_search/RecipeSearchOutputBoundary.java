@@ -1,17 +1,15 @@
 package use_case.recipe_search;
 
+/**
+ * Output Boundary for the "search recipes by ingredients" use case.
+ * Implemented by the presenter.
+ */
 public interface RecipeSearchOutputBoundary {
-    /**
-     * Prepares the success view for the recipe search use case.
-     *
-     * @param outputData the output data containing found recipes and ingredient list
-     */
-    void prepareSuccessView(RecipeSearchOutputData outputData);
 
     /**
-     * Prepares the failure view for the recipe search use case.
+     * Present the results of the use case.
      *
-     * @param outputData the output data containing the error message
+     * @param outputData the result data (recipes + error info).
      */
-    void prepareFailView(RecipeSearchOutputData outputData);
+    void present(RecipeSearchOutputData outputData);
 }
