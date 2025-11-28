@@ -69,10 +69,10 @@ public class IngredientDataAccessImpl implements IngredientDataAccess {
 
         for (int i = 0; i < ingredientsArray.length(); i++) {
             final JSONObject obj = ingredientsArray.getJSONObject(i);
-            final Ingredient ing = new Ingredient(
-                    obj.getString("ingredient_name"),
-                    obj.getInt("ingredient_id")
-            );
+            final Ingredient ing = Ingredient.Builder()
+                    .setName(obj.getString("ingredient_name"))
+                    .setIngredientId(obj.getInt("ingredient_id"))
+                    .build();
             ingredientList.add(ing);
         }
 
