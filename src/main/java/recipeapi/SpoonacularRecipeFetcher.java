@@ -60,7 +60,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 final JSONObject obj = array.getJSONObject(i);
 
                 // Build basic recipe (id, title, image)
-                Recipe recipe = new Recipe.Builder()
+                Recipe recipe = Recipe.builder()
                         .setId(obj.getInt("id"))
                         .setTitle(obj.getString("title"))
                         .setImage(obj.getString("image"))
@@ -77,9 +77,9 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                     final int ingredientId = ingObj.optInt("id", -1);
 
                     ingList.add(
-                            new Ingredient.Builder()
+                            Ingredient.builder()
                                     .setName(ingredientName)
-                                    .setIngredientId(ingredientId)
+                                    .setId(ingredientId)
                                     .build()
                     );
                 }
@@ -90,15 +90,15 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                     final int ingredientId = ingObj.optInt("id", -1);
 
                     ingList.add(
-                            new Ingredient.Builder()
+                            Ingredient.builder()
                                     .setName(ingredientName)
-                                    .setIngredientId(ingredientId)
+                                    .setId(ingredientId)
                                     .build()
                     );
                 }
 
                 // Replace the old recipe with a new one that includes ingredientNames
-                recipe = recipe.toBuilder()
+                recipe = recipe.builder() //issue!! fix later
                         .setIngredientNames(ingList)
                         .build();
 
@@ -144,20 +144,22 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 final int ingredientId = ingObj.optInt("id", -1);
 
                 ingredients.add(
-                        new Ingredient.Builder()
+                        Ingredient.builder()
                                 .setName(ingredientName)
-                                .setIngredientId(ingredientId)
+                                .setId(ingredientId)
                                 .build()
                 );
             }
 
 // 用 Builder 一次性把 Recipe 所有字段设好
-            final Recipe recipe = new Recipe.Builder()
-                    .setId(id)
+            final Recipe recipe = Recipe.builder()
+                    .setId(obj.optInt("recipeID"))
                     .setTitle(obj.getString("title"))
                     .setIngredientNames(ingredients)
-                    .setHealthScore(obj.optInt("healthScore", -1))
                     .setCalories(extractCalories(obj, includeNutrition))
+                    .setHealthScore(obj.optInt("healthScore", -1))
+                    .setInstructions(obj.getString("instructions"))
+                    .setImage(obj.getString("image"))
                     .build();
 
             return recipe;
@@ -187,7 +189,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
             // No instructions available
             if (array.isEmpty()) {
-                return new Recipe.Builder()
+                return Recipe.builder()
                         .setId(id)
                         .setInstructions("No instructions available.")
                         .build();
@@ -213,7 +215,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
             }
 
 // Return recipe with computed instructions
-            return new Recipe.Builder()
+            return Recipe.builder()
                     .setId(id)
                     .setInstructions(sb.toString().trim())
                     .build();

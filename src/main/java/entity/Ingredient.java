@@ -5,9 +5,18 @@ public class Ingredient {
     private final String name;
     private final int ingredientId;
 
-    private Ingredient(Builder builder) {
-        this.name = builder.name;
-        this.ingredientId = builder.ingredientId;
+    Ingredient(String name, int ingredientId) {
+        this.name = name
+        this.ingredientId = ingredientId;
+    }
+
+    /**
+     * Returns a new builder instance for creating an Ingredient.
+     *
+     * @return a new {@code IngredientBuilder}.
+     */
+    public static IngredientBuilder builder() {
+        return new IngredientBuilder();
     }
 
     public String getName() {
@@ -18,28 +27,5 @@ public class Ingredient {
         return ingredientId;
     }
 
-    public Builder toBuilder() {
-        return new Builder()
-                .setName(this.name)
-                .setIngredientId(this.ingredientId);
-    }
 
-    public static class Builder {
-        private String name;
-        private int ingredientId;
-
-        public Builder setName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder setIngredientId(int ingredientId) {
-            this.ingredientId = ingredientId;
-            return this;
-        }
-
-        public Ingredient build() {
-            return new Ingredient(this);
-        }
-    }
 }

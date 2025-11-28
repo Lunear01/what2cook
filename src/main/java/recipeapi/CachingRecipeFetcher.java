@@ -199,16 +199,15 @@ public class CachingRecipeFetcher implements RecipeFetcher {
             for (int k = 0; k < ingArr.length(); k++) {
                 final JSONObject ingObj = ingArr.getJSONObject(k);
                 ingredients.add(
-                        new Ingredient.Builder()
+                         Ingredient.builder()
                                 .setName(ingObj.getString("name"))
-                                .setIngredientId(ingObj.optInt("id", -1))
+                                .setId(ingObj.optInt("id", -1))
                                 .build()
                 );
             }
         }
 
-        // 使用 Builder 创建 Recipe
-        return new Recipe.Builder()
+        return Recipe.builder()
                 .setId(readObj.getInt("id"))
                 .setTitle(readObj.optString("title", ""))
                 .setImage(readObj.optString("image", null))
@@ -218,7 +217,6 @@ public class CachingRecipeFetcher implements RecipeFetcher {
                 .setInstructions(readObj.optString("instructions", null))
                 .build();
     }
-
 
     // Converts Recipe object to JSONObject
     private static JSONObject serializeRecipe(Recipe recipe) {
