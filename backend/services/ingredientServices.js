@@ -44,8 +44,6 @@ const ingredientServices = {
         }));
     },
 
-    //TODO
-    // Modify it into delete according to the ingredient id
     async deleteIngredient(user_name, ingredient_id) {
 
         const [userRows] = await db.execute(
@@ -60,7 +58,7 @@ const ingredientServices = {
         const user_id = userRows[0].user_id;
 
         const [result] = await db.execute(
-            "DELETE FROM ingredient WHERE user_id = ? AND ingredient_name = ?",
+            "DELETE FROM ingredient WHERE user_id = ? AND ingredient_id = ?",
             [user_id, ingredient_id]
         );
 

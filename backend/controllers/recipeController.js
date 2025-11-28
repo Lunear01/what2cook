@@ -37,13 +37,13 @@ exports.getRecipes = async (req, res) => {
 
 exports.deleteRecipe = async (req, res) => {
     try {
-        const { user_name, recipe_name } = req.body;
+        const { user_name, recipe_id } = req.body;
 
-        if (!user_name || !recipe_name) {
+        if (!user_name || !recipe_id) {
             return res.status(400).json({ error: "Missing fields" });
         }
 
-        const result = await recipeServices.deleteRecipe(user_name, recipe_name);
+        const result = await recipeServices.deleteRecipe(user_name, recipe_id);
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ error: "Recipe not found" });
