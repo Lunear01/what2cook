@@ -2,7 +2,7 @@ package entity;
 
 public class IngredientBuilder {
     private String name;
-    private int ingredientId;
+    private int ingredientId = -1;
 
     /**
      * Set the name for this IngredientBuilder.
@@ -18,7 +18,7 @@ public class IngredientBuilder {
     /**
      * Set the id for this IngredientBuilder.
      *
-     * @param id the ingredient's id
+     * @param ingredientId the ingredient's id
      * @return this builder
      */
     public IngredientBuilder setId(int ingredientId) {
