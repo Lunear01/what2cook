@@ -59,10 +59,12 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
             for (int i = 0; i < array.length(); i++) {
                 final JSONObject obj = array.getJSONObject(i);
 
-                final Recipe recipe = new Recipe();
-                recipe.setId(obj.getInt("id"));
-                recipe.setTitle(obj.getString("title"));
-                recipe.setImage(obj.getString("image"));
+                // Build basic recipe (id, title, image)
+                Recipe recipe = new Recipe.Builder()
+                        .setId(obj.getInt("id"))
+                        .setTitle(obj.getString("title"))
+                        .setImage(obj.getString("image"))
+                        .build();
 
                 // Extract ingredient names
                 final List<Ingredient> ingList = new ArrayList<>();
@@ -70,18 +72,35 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 final JSONArray missed = obj.getJSONArray("missedIngredients");
 
                 for (int u = 0; u < used.length(); u++) {
-                    final String ingredientName = used.getJSONObject(u).getString("name");
-                    final int ingredientId = used.getJSONObject(u).optInt("id", -1);
-                    ingList.add(new Ingredient(ingredientName, ingredientId));
+                    final JSONObject ingObj = used.getJSONObject(u);
+                    final String ingredientName = ingObj.getString("name");
+                    final int ingredientId = ingObj.optInt("id", -1);
 
+                    ingList.add(
+                            new Ingredient.Builder()
+                                    .setName(ingredientName)
+                                    .setIngredientId(ingredientId)
+                                    .build()
+                    );
                 }
+
                 for (int m = 0; m < missed.length(); m++) {
-                    final String ingredientName = missed.getJSONObject(m).getString("name");
-                    final int ingredientId = used.getJSONObject(m).optInt("id", -1);
-                    ingList.add(new Ingredient(ingredientName, ingredientId));
+                    final JSONObject ingObj = missed.getJSONObject(m);
+                    final String ingredientName = ingObj.getString("name");
+                    final int ingredientId = ingObj.optInt("id", -1);
+
+                    ingList.add(
+                            new Ingredient.Builder()
+                                    .setName(ingredientName)
+                                    .setIngredientId(ingredientId)
+                                    .build()
+                    );
                 }
 
-                recipe.setIngredientNames(ingList);
+                // Replace the old recipe with a new one that includes ingredientNames
+                recipe = recipe.toBuilder()
+                        .setIngredientNames(ingList)
+                        .build();
 
                 results.add(recipe);
             }
@@ -115,26 +134,34 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
             final String json = httpService.get(url);
             final JSONObject obj = new JSONObject(json);
 
-            final Recipe recipe = new Recipe();
-            recipe.setId(id);
-            recipe.setTitle(obj.getString("title"));
-
             // Ingredient names
             final List<Ingredient> ingredients = new ArrayList<>();
             final JSONArray ingArray = obj.getJSONArray("extendedIngredients");
 
             for (int i = 0; i < ingArray.length(); i++) {
-                final String ingredientName = ingArray.getJSONObject(i).getString("name");
-                final int ingredientId = ingArray.getJSONObject(i).optInt("id", -1);
-                ingredients.add(new Ingredient(ingredientName, ingredientId));
-            }
-            recipe.setIngredientNames(ingredients);
+                final JSONObject ingObj = ingArray.getJSONObject(i);
+                final String ingredientName = ingObj.getString("name");
+                final int ingredientId = ingObj.optInt("id", -1);
 
-            // Health score
-            recipe.setHealthScore(obj.optInt("healthScore", -1));
-            recipe.setCalories(extractCalories(obj, includeNutrition));
+                ingredients.add(
+                        new Ingredient.Builder()
+                                .setName(ingredientName)
+                                .setIngredientId(ingredientId)
+                                .build()
+                );
+            }
+
+// 用 Builder 一次性把 Recipe 所有字段设好
+            final Recipe recipe = new Recipe.Builder()
+                    .setId(id)
+                    .setTitle(obj.getString("title"))
+                    .setIngredientNames(ingredients)
+                    .setHealthScore(obj.optInt("healthScore", -1))
+                    .setCalories(extractCalories(obj, includeNutrition))
+                    .build();
 
             return recipe;
+
 
         }
         catch (IOException error) {
@@ -158,15 +185,15 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
             final String json = httpService.get(url);
             final JSONArray array = new JSONArray(json);
 
-            final Recipe recipe = new Recipe();
-            recipe.setId(id);
-
             // No instructions available
             if (array.isEmpty()) {
-                recipe.setInstructions("No instructions available.");
-                return recipe;
+                return new Recipe.Builder()
+                        .setId(id)
+                        .setInstructions("No instructions available.")
+                        .build();
             }
 
+// Build instructions
             final JSONObject instructionBlock = array.getJSONObject(0);
             final JSONArray steps = instructionBlock.getJSONArray("steps");
 
@@ -185,8 +212,12 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 }
             }
 
-            recipe.setInstructions(sb.toString().trim());
-            return recipe;
+// Return recipe with computed instructions
+            return new Recipe.Builder()
+                    .setId(id)
+                    .setInstructions(sb.toString().trim())
+                    .build();
+
 
         }
         catch (IOException error) {
