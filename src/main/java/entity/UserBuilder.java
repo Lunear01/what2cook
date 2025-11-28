@@ -1,7 +1,5 @@
 package entity;
 
-import java.util.ArrayList;
-
 import com.sanctionco.jmail.JMail;
 
 public class UserBuilder {
@@ -64,7 +62,7 @@ public class UserBuilder {
             throw new IllegalStateException("Invalid email format: " + userEmail);
         }
 
-        return new User(userName, userPassword, userEmail, new ArrayList<>(), new ArrayList<>());
+        return new User(userName, userPassword,  userEmail);
 
     }
 
