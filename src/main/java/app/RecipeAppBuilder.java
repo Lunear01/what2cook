@@ -158,7 +158,7 @@ public final class RecipeAppBuilder {
 
             final List<Ingredient> ingredients = new ArrayList<>();
             for (String name : names) {
-                ingredients.add(new Ingredient(name));
+                ingredients.add(new Ingredient(name, -1));
             }
 
             recipeSearchViewModel.setCurrentIngredients(ingredients);

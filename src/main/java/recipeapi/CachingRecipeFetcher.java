@@ -201,7 +201,7 @@ public class CachingRecipeFetcher implements RecipeFetcher {
         if (ingArr != null) {
             for (int k = 0; k < ingArr.length(); k++) {
                 final JSONObject ingObj = ingArr.getJSONObject(k);
-                ingredients.add(new Ingredient(ingObj.getString("name")));
+                ingredients.add(new Ingredient(ingObj.getString("name"), ingObj.optInt("id", -1)));
             }
         }
         recipe.setIngredientNames(ingredients);
