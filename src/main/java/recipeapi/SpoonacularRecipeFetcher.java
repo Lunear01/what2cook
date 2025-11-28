@@ -60,7 +60,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 final JSONObject obj = array.getJSONObject(i);
 
                 // Build basic recipe (id, title, image)
-                Recipe recipe = new Recipe.Builder()
+                Recipe recipe = Recipe.builder()
                         .setId(obj.getInt("id"))
                         .setTitle(obj.getString("title"))
                         .setImage(obj.getString("image"))
@@ -77,9 +77,9 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                     final int ingredientId = ingObj.optInt("id", -1);
 
                     ingList.add(
-                            new Ingredient.Builder()
+                            Ingredient.builder()
                                     .setName(ingredientName)
-                                    .setIngredientId(ingredientId)
+                                    .setId(ingredientId)
                                     .build()
                     );
                 }
