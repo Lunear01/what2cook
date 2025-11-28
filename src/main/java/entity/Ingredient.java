@@ -27,5 +27,12 @@ public class Ingredient {
         return ingredientId;
     }
 
+    public IngredientBuilder toBuilder() {
+        return new IngredientBuilder()
+                .setName(this.name)
+                .setId(this.ingredientId);
+    }
+
+
 
 }
