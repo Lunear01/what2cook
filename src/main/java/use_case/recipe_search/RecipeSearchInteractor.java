@@ -47,15 +47,25 @@ public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
             for (Recipe r : basic) {
                 final int id = r.getId();
 
+                // 取得 recipe 的 info
                 final Recipe info = fetcher.getRecipeInfo(id, true, false, false);
-                r.setHealthScore(info.getHealthScore());
-                r.setIngredientNames(info.getIngredientNames());
-                r.setCalories(info.getCalories());
 
+                // 用 toBuilder() 在原本的 r 上更新 fields
+                Recipe updated = r.toBuilder()
+                        .setHealthScore(info.getHealthScore())
+                        .setIngredientNames(info.getIngredientNames())
+                        .setCalories(info.getCalories())
+                        .build();
+
+                // 再取得 instructions
                 final Recipe instructions = fetcher.getRecipeInstructions(id, true);
-                r.setInstructions(instructions.getInstructions());
 
-                enriched.add(r);
+                // 再把 instructions 加进去（再次 toBuilder）
+                updated = updated.toBuilder()
+                        .setInstructions(instructions.getInstructions())
+                        .build();
+
+                enriched.add(updated);
             }
 
             presenter.prepareSuccessView(new RecipeSearchOutputData(
@@ -63,6 +73,7 @@ public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
                     enriched,
                     null
             ));
+
 
         }
         catch (Exception e) {

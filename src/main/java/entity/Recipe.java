@@ -5,29 +5,22 @@ import java.util.List;
 import java.util.Objects;
 
 public class Recipe {
-    private int recipeID;
-    private String title;
-    private List<Ingredient> ingredientNames;
-    private double calories;
-    private int healthScore;
-    private String instructions;
-    private String image;
+    private final int recipeID;
+    private final String title;
+    private final List<Ingredient> ingredientNames;
+    private final double calories;
+    private final int healthScore;
+    private final String instructions;
+    private final String image;
 
-    public Recipe() {
-    }
-
-    public Recipe(int recipeID, String title,
-                  List<Ingredient> ingredientNames,
-                  double calories,
-                  int healthScore,
-                  String instructions) {
-        this.recipeID = recipeID;
-        this.title = title;
-        this.ingredientNames = ingredientNames;
-        this.calories = calories;
-        this.healthScore = healthScore;
-        this.instructions = instructions;
-        this.image = "";
+    private Recipe(Builder builder) {
+        this.recipeID = builder.recipeID;
+        this.title = builder.title;
+        this.ingredientNames = builder.ingredientNames;
+        this.calories = builder.calories;
+        this.healthScore = builder.healthScore;
+        this.instructions = builder.instructions;
+        this.image = builder.image;
     }
 
     public int getId() {
@@ -58,31 +51,63 @@ public class Recipe {
         return image;
     }
 
-    public void setId(int id) {
-        this.recipeID = id;
+    public Builder toBuilder() {
+        return new Builder()
+                .setId(this.recipeID)
+                .setTitle(this.title)
+                .setIngredientNames(this.ingredientNames)
+                .setCalories(this.calories)
+                .setHealthScore(this.healthScore)
+                .setInstructions(this.instructions)
+                .setImage(this.image);
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    public static class Builder {
+        private int recipeID;
+        private String title = "";
+        private List<Ingredient> ingredientNames = Collections.emptyList();
+        private double calories;
+        private int healthScore;
+        private String instructions = "";
+        private String image = "";
 
-    public void setIngredientNames(List<Ingredient> ingredientNames) {
-        this.ingredientNames = ingredientNames;
-    }
+        public Builder setId(int recipeID) {
+            this.recipeID = recipeID;
+            return this;
+        }
 
-    public void setCalories(double calories) {
-        this.calories = calories;
-    }
+        public Builder setTitle(String title) {
+            this.title = title;
+            return this;
+        }
 
-    public void setHealthScore(int healthScore) {
-        this.healthScore = healthScore;
-    }
+        public Builder setIngredientNames(List<Ingredient> ingredientNames) {
+            this.ingredientNames = ingredientNames;
+            return this;
+        }
 
-    public void setInstructions(String instructions) {
-        this.instructions = instructions;
-    }
+        public Builder setCalories(double calories) {
+            this.calories = calories;
+            return this;
+        }
 
-    public void setImage(String image) {
-        this.image = image;
+        public Builder setHealthScore(int healthScore) {
+            this.healthScore = healthScore;
+            return this;
+        }
+
+        public Builder setInstructions(String instructions) {
+            this.instructions = instructions;
+            return this;
+        }
+
+        public Builder setImage(String image) {
+            this.image = image;
+            return this;
+        }
+
+        public Recipe build() {
+            return new Recipe(this);
+        }
     }
 }
