@@ -70,17 +70,18 @@ public class RecipeDataAccessImpl implements RecipeDataAccess {
 
         for (int i = 0; i < recipesArray.length(); i++) {
             final JSONObject obj = recipesArray.getJSONObject(i);
-            final Recipe ing = Recipe.builder()
-                    .withID(obj.getInt("recipeID"))
-                    .withtitle(obj.getString("title"))
-                    .withIngredient(obj.getJSONArray("ingredientNames")) //may have some issue will fix later
-                    .withcalories(obj.getDouble("calories"))
-                    .withhealthScore(obj.getInt("healthScore"))
-                    .withinstructions(obj.getString("instructions"))
+            final Recipe ing = Recipe.Builder()
+                    .setID(obj.getInt("recipeID"))
+                    .setTitle(obj.getString("title"))
+                    .setIngredientNames(obj.getJSONArray("ingredientNames")) //may have some issue will fix later
+                    .setCalories(obj.getDouble("calories"))
+                    .setHealthScore(obj.getInt("healthScore"))
+                    .setInstructions(obj.getString("instructions"))
+                    .setImage(obj.getString("image"))
                     .build();
             recipeList.add(ing);
         }
-
+        return recipeList;
     }
 
     @Override
