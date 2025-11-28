@@ -10,10 +10,16 @@ import entity.UserBuilder;
 public class SignupInteractor implements SignupInputBoundary {
     private final SignupUserDataAccessInterface userDataAccess;
     private final SignupOutputBoundary presenter;
+    private final EmailValidation emailValidator;
+    private final PasswordValidation passwordValidator;
 
-    public SignupInteractor(SignupUserDataAccessInterface userDataAccess, SignupOutputBoundary presenter) {
+    public SignupInteractor(SignupUserDataAccessInterface userDataAccess, SignupOutputBoundary presenter,
+                            EmailValidation emailValidator, PasswordValidation passwordValidator) {
         this.userDataAccess = userDataAccess;
         this.presenter = presenter;
+        this.emailValidator = emailValidator;
+        this.passwordValidator = passwordValidator;
+
     }
 
     @Override
@@ -28,6 +34,18 @@ public class SignupInteractor implements SignupInputBoundary {
         }
         else if (password == null || password.trim().isEmpty()) {
             presenter.presentFailure("Password cannot be empty");
+        }
+        else if (!passwordValidator.isStrong(password)) {
+            final String message =
+                    "<html>The password must include:<br>"
+                            + "1. At least 8 characters<br>"
+                            + "2. At least 1 uppercase letter and 1 lowercase letter<br>"
+                            + "3. At least 1 number<br>"
+                            + "3. At least 1 special symbol <br>";
+            presenter.presentFailure(message);
+        }
+        else if (!emailValidator.isValid(email)) {
+            presenter.presentFailure("Invalid email format");
         }
         else if (!password.equals(confirm)) {
             presenter.presentFailure("Passwords do not match");
