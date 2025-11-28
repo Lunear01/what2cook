@@ -1,63 +1,51 @@
 package entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class RecipeBuilder {
-
     private int recipeID;
     private String title = "";
-    private List<Ingredient> ingredientNames = new ArrayList<>();
+    private List<Ingredient> ingredientNames = Collections.emptyList();
     private double calories;
     private int healthScore;
     private String instructions = "";
     private String image = "";
 
-    public RecipeBuilder setId(int recipeID) {
+    public Builder setId(int recipeID) {
         this.recipeID = recipeID;
         return this;
     }
 
-    public RecipeBuilder setTitle(String title) {
+    public Builder setTitle(String title) {
         this.title = title;
         return this;
     }
 
-    public RecipeBuilder setIngredientNames(List<Ingredient> ingredientNames) {
+    public Builder setIngredientNames(List<Ingredient> ingredientNames) {
         this.ingredientNames = ingredientNames;
         return this;
     }
 
-    public RecipeBuilder setCalories(double calories) {
+    public Builder setCalories(double calories) {
         this.calories = calories;
         return this;
     }
 
-    public RecipeBuilder setHealthScore(int healthScore) {
+    public Builder setHealthScore(int healthScore) {
         this.healthScore = healthScore;
         return this;
     }
 
-    public RecipeBuilder setInstructions(String instructions) {
+    public Builder setInstructions(String instructions) {
         this.instructions = instructions;
         return this;
     }
 
-    public RecipeBuilder setImage(String image) {
+    public Builder setImage(String image) {
         this.image = image;
         return this;
     }
 
     public Recipe build() {
-        // 调用你在 Recipe 里写的那个构造函数
-        return new Recipe(
-                recipeID,
-                title,
-                ingredientNames,
-                calories,
-                healthScore,
-                instructions,
-                image
-        );
+        return new Recipe(this);
     }
 }
+

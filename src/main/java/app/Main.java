@@ -1,34 +1,30 @@
 package app;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 /**
- * Application entry point.
+ * Entry point of the What2Cook application.
  */
 public final class Main {
 
+    /**
+     * Private constructor to prevent instantiation.
+     */
     private Main() {
-        // prevent instantiation
+        // Prevent instantiation.
     }
 
+    /**
+     * Launches the What2Cook application.
+     *
+     * @param args the command-line arguments.
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            try {
-                // 用 RecipeAppBuilder 构建整个应用的 JFrame
-                JFrame frame = RecipeAppBuilder.build();
-                frame.setVisible(true);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Failed to start What2Cook:\n" + e.getMessage(),
-                        "Startup Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
+            final JFrame frame = RecipeAppBuilder.build();
+            frame.setVisible(true);
         });
     }
 }
+
