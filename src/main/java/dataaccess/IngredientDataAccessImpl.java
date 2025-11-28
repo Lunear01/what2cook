@@ -1,11 +1,13 @@
 package dataaccess;
 
 import entity.Ingredient;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class IngredientDataAccessImpl implements IngredientDataAccess {
@@ -40,7 +42,7 @@ public class IngredientDataAccessImpl implements IngredientDataAccess {
         final URL url = new URL(baseUrl + "/" + user_name);
         final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-        conn.setRequestMethod("POST");
+        conn.setRequestMethod("GET");
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setDoOutput(true);
 
@@ -61,10 +63,39 @@ public class IngredientDataAccessImpl implements IngredientDataAccess {
 
         final JSONObject res = new JSONObject(sb.toString());
 
-        final JSONObject userJson = res.getJSONObject("user");
+        final JSONArray ingredientsArray = res.getJSONArray("ingredients");
 
+        final List<Ingredient> ingredientList = new ArrayList<>();
+
+        for (int i = 0; i < ingredientsArray.length(); i++) {
+            final JSONObject obj = ingredientsArray.getJSONObject(i);
+            final Ingredient ing = new Ingredient(
+                    obj.getString("ingredient_name"),
+                    obj.getInt("ingredient_id")
+            );
+            ingredientList.add(ing);
+        }
+
+        return ingredientList;
     }
 
     @Override
-    public void deleteIngredient(String user_name, int ingredientID) throws Exception {}
+    public void deleteIngredient(String user_name, int ingredientID) throws Exception {
+        final URL url = new URL(baseUrl + "/delete");
+        final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setRequestMethod("DELETE");
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setDoOutput(true);
+
+        final JSONObject body = new JSONObject();
+        body.put("user_name", user_name);
+        body.put("ingredient_id", ingredientID);
+
+        final OutputStream os = conn.getOutputStream();
+        os.write(body.toString().getBytes());
+        os.flush();
+
+        conn.getInputStream();
+    }
 }
