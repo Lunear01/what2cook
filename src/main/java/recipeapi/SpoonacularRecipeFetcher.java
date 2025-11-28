@@ -71,12 +71,14 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
                 for (int u = 0; u < used.length(); u++) {
                     final String ingredientName = used.getJSONObject(u).getString("name");
-                    ingList.add(new Ingredient(ingredientName));
+                    final int ingredientId = used.getJSONObject(u).optInt("id", -1);
+                    ingList.add(new Ingredient(ingredientName, ingredientId));
 
                 }
                 for (int m = 0; m < missed.length(); m++) {
                     final String ingredientName = missed.getJSONObject(m).getString("name");
-                    ingList.add(new Ingredient(ingredientName));
+                    final int ingredientId = used.getJSONObject(m).optInt("id", -1);
+                    ingList.add(new Ingredient(ingredientName, ingredientId));
                 }
 
                 recipe.setIngredientNames(ingList);
@@ -123,7 +125,8 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
             for (int i = 0; i < ingArray.length(); i++) {
                 final String ingredientName = ingArray.getJSONObject(i).getString("name");
-                ingredients.add(new Ingredient(ingredientName));
+                final int ingredientId = ingArray.getJSONObject(i).optInt("id", -1);
+                ingredients.add(new Ingredient(ingredientName, ingredientId));
             }
             recipe.setIngredientNames(ingredients);
 
