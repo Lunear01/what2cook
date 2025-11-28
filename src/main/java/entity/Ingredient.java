@@ -6,7 +6,7 @@ public class Ingredient {
     private final int ingredientId;
 
     Ingredient(String name, int ingredientId) {
-        this.name = name
+        this.name = name;
         this.ingredientId = ingredientId;
     }
 

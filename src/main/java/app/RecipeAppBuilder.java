@@ -160,9 +160,9 @@ public final class RecipeAppBuilder {
             final List<Ingredient> ingredients = new ArrayList<>();
             for (String name : names) {
                 ingredients.add(
-                        new Ingredient.Builder()
+                        Ingredient.builder()
                                 .setName(name)
-                                .setIngredientId(-1)
+                                .setId(-1)
                                 .build()
                 );
             }

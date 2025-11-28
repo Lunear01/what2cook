@@ -28,14 +28,6 @@ public class IngredientBuilder {
 
     public Ingredient build() {
 
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalStateException("Ingredient name is required");
-        }
-
-        if (ingredientId == -1) {
-            throw new IllegalStateException("ID is required");
-        }
-
         return new Ingredient(name, ingredientId);
 
     }
