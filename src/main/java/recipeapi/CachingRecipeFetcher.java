@@ -191,27 +191,34 @@ public class CachingRecipeFetcher implements RecipeFetcher {
 
     // Converts JSONObject to Recipe object
     private static Recipe parseRecipe(JSONObject readObj) {
-        final Recipe recipe = new Recipe();
-        recipe.setId(readObj.getInt("id"));
-        recipe.setTitle(readObj.optString("title", ""));
-        recipe.setImage(readObj.optString("image", null));
 
         final List<Ingredient> ingredients = new ArrayList<>();
         final JSONArray ingArr = readObj.optJSONArray("ingredients");
+
         if (ingArr != null) {
             for (int k = 0; k < ingArr.length(); k++) {
                 final JSONObject ingObj = ingArr.getJSONObject(k);
-                ingredients.add(new Ingredient(ingObj.getString("name"), ingObj.optInt("id", -1)));
+                ingredients.add(
+                        new Ingredient.Builder()
+                                .setName(ingObj.getString("name"))
+                                .setIngredientId(ingObj.optInt("id", -1))
+                                .build()
+                );
             }
         }
-        recipe.setIngredientNames(ingredients);
 
-        recipe.setHealthScore(readObj.optInt("healthScore", -1));
-        recipe.setCalories(readObj.optInt("calories", -1));
-        recipe.setInstructions(readObj.optString("instructions", null));
-
-        return recipe;
+        // 使用 Builder 创建 Recipe
+        return new Recipe.Builder()
+                .setId(readObj.getInt("id"))
+                .setTitle(readObj.optString("title", ""))
+                .setImage(readObj.optString("image", null))
+                .setIngredientNames(ingredients)
+                .setHealthScore(readObj.optInt("healthScore", -1))
+                .setCalories(readObj.optInt("calories", -1))
+                .setInstructions(readObj.optString("instructions", null))
+                .build();
     }
+
 
     // Converts Recipe object to JSONObject
     private static JSONObject serializeRecipe(Recipe recipe) {
