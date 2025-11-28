@@ -70,7 +70,7 @@ public class RecipeDataAccessImpl implements RecipeDataAccess {
 
         for (int i = 0; i < recipesArray.length(); i++) {
             final JSONObject obj = recipesArray.getJSONObject(i);
-            final Recipe ing = Recipe.Builder()
+            final Recipe ing = Recipe.builder()
                     .setID(obj.getInt("recipeID"))
                     .setTitle(obj.getString("title"))
                     .setIngredientNames(obj.getJSONArray("ingredientNames")) //may have some issue will fix later
