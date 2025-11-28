@@ -12,7 +12,7 @@ public final class User {
     // private final List<Ingredient> refrigerator;
 
     // Private constructor
-    User(String name, String password, String email, List<Recipe> personalCookingList, List<Ingredient> refrigerator) {
+    User(String name, String password, String email) {
         this.name = name;
         this.email = email;
         this.password = password;
