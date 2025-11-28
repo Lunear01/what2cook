@@ -1,21 +1,26 @@
 package use_case.recipe_search;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
-import entity.Ingredient;
 import entity.Recipe;
 import recipeapi.RecipeFetcher;
+import recipeapi.exceptions.IngredientNotFoundException;
 
+/**
+ * Interactor for the "search recipes by ingredients" use case.
+ * Implements the application-specific business rules.
+ */
 public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
-
-    private static final int DEFAULT_NUMBER = 10;
-    private static final int DEFAULT_RANKING = 1;
-    private static final boolean DEFAULT_IGNORE_PANTRY = true;
 
     private final RecipeFetcher fetcher;
     private final RecipeSearchOutputBoundary presenter;
 
+    /**
+     * @param fetcher   the external recipe API / gateway
+     * @param presenter the output boundary to present results to the UI layer
+     */
     public RecipeSearchInteractor(RecipeFetcher fetcher,
                                   RecipeSearchOutputBoundary presenter) {
         this.fetcher = fetcher;
@@ -23,65 +28,59 @@ public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
     }
 
     @Override
-    public void execute(RecipeSearchInputData inputData) {
-        final List<Ingredient> ingredients = inputData.getIngredients();
+    public void searchByIngredients(RecipeSearchInputData inputData) {
+        List<String> ingredientNames = inputData.getIngredientNames();
 
-        if (ingredients == null || ingredients.isEmpty()) {
-            presenter.prepareFailView(new RecipeSearchOutputData(
-                    new ArrayList<>(),
-                    new ArrayList<>(),
-                    "Please add at least one ingredient before searching."
-            ));
-            return;
-        }
+        // Some sensible defaults for the API call
+        final int number = 10;          // how many recipes to request
+        final int ranking = 1;          // 1 = maximize used ingredients
+        final boolean ignorePantry = true;
 
         try {
-            final List<String> names = new ArrayList<>();
-            for (Ingredient ing : ingredients) names.add(ing.getName());
+            // 调用外部 API
+            List<Recipe> recipes =
+                    fetcher.getRecipesByIngredients(
+                            ingredientNames, number, ranking, ignorePantry);
 
-            final List<Recipe> basic = fetcher.getRecipesByIngredients(
-                    names, DEFAULT_NUMBER, DEFAULT_RANKING, DEFAULT_IGNORE_PANTRY);
+            RecipeSearchOutputData output =
+                    new RecipeSearchOutputData(recipes, false, null);
 
-            final List<Recipe> enriched = new ArrayList<>();
-
-            for (Recipe r : basic) {
-                final int id = r.getId();
-
-                // 取得 recipe 的 info
-                final Recipe info = fetcher.getRecipeInfo(id, true, false, false);
-
-                // 用 toBuilder() 在原本的 r 上更新 fields
-                Recipe updated = r.toBuilder()
-                        .setHealthScore(info.getHealthScore())
-                        .setIngredientNames(info.getIngredientNames())
-                        .setCalories(info.getCalories())
-                        .build();
-
-                // 再取得 instructions
-                final Recipe instructions = fetcher.getRecipeInstructions(id, true);
-
-                // 再把 instructions 加进去（再次 toBuilder）
-                updated = updated.toBuilder()
-                        .setInstructions(instructions.getInstructions())
-                        .build();
-
-                enriched.add(updated);
+            presenter.present(output);
+        }
+        catch (IngredientNotFoundException e) {
+            // Spoonacular 认为这些食材组合找不到任何菜谱
+            RecipeSearchOutputData output =
+                    new RecipeSearchOutputData(
+                            Collections.emptyList(),
+                            true,
+                            "No recipes found for those ingredients.");
+            presenter.present(output);
+        }
+        catch (IOException e) {
+            // 如果你的 RecipeFetcher 接口声明了 IOException，就会走到这里
+            RecipeSearchOutputData output =
+                    new RecipeSearchOutputData(
+                            Collections.emptyList(),
+                            true,
+                            "Failed to contact recipe service. Please try again.");
+            presenter.present(output);
+        }
+        catch (RuntimeException e) {
+            // 目前 SpoonacularRecipeFetcher 在内部把 IOException 包成 RuntimeException
+            // 比如 HTTP 402（额度用完）、401（API key 无效）等
+            String msg = e.getMessage();
+            if (msg == null || msg.isBlank()) {
+                msg = "Failed to contact recipe service (unexpected error).";
+            } else {
+                msg = "Failed to contact recipe service: " + msg;
             }
 
-            presenter.prepareSuccessView(new RecipeSearchOutputData(
-                    new ArrayList<>(ingredients),
-                    enriched,
-                    null
-            ));
-
-
-        }
-        catch (Exception e) {
-            presenter.prepareFailView(new RecipeSearchOutputData(
-                    new ArrayList<>(ingredients),
-                    new ArrayList<>(),
-                    "Failed to fetch recipes: " + e.getMessage()
-            ));
+            RecipeSearchOutputData output =
+                    new RecipeSearchOutputData(
+                            Collections.emptyList(),
+                            true,
+                            msg);
+            presenter.present(output);
         }
     }
 }

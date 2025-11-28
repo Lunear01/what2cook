@@ -1,14 +1,19 @@
 package interface_adapter.recipe_search;
 
-import java.util.List;
-
-import javax.swing.*;
-
 import entity.Ingredient;
 import entity.Recipe;
 import use_case.recipe_search.RecipeSearchInputBoundary;
 import use_case.recipe_search.RecipeSearchInputData;
 
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Controller for the Recipe Search use case.
+ * Receives calls from the view and forwards them to the interactor.
+ */
 public class RecipeSearchController {
 
     private final RecipeSearchInputBoundary interactor;
@@ -20,12 +25,16 @@ public class RecipeSearchController {
     /**
      * Called by the view when user clicks "Search".
      *
-     * @param ingredients the input ingredients.
+     * @param ingredients the input ingredients as entity objects
      */
     public void searchByIngredients(List<Ingredient> ingredients) {
-        final RecipeSearchInputData inputData =
-                new RecipeSearchInputData(ingredients);
-        interactor.execute(inputData);
+        // 把实体里的 name 提取出来，交给 use case（它只关心字符串）
+        List<String> names = ingredients.stream()
+                .map(Ingredient::getName)
+                .collect(Collectors.toList());
+
+        RecipeSearchInputData inputData = new RecipeSearchInputData(names);
+        interactor.searchByIngredients(inputData);
     }
 
     /**
@@ -41,7 +50,7 @@ public class RecipeSearchController {
                 icon = loadImage(recipe.getImage());
             }
 
-            final StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             sb.append("Title: ").append(recipe.getTitle()).append("\n");
             sb.append("Calories: ").append(recipe.getCalories()).append("\n");
             sb.append("Health Score: ").append(recipe.getHealthScore()).append("\n");
@@ -63,6 +72,8 @@ public class RecipeSearchController {
             );
         }
     }
+
+    /** Helper to load an image from URL for the dialog. */
     private ImageIcon loadImage(String urlStr) {
         try {
             java.net.URL url = new java.net.URL(urlStr);
@@ -72,11 +83,9 @@ public class RecipeSearchController {
             img = img.getScaledInstance(300, -1, java.awt.Image.SCALE_SMOOTH);
 
             return new ImageIcon(img);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Failed to load image: " + e.getMessage());
             return null;
         }
     }
 }
-

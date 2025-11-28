@@ -3,6 +3,11 @@ package interface_adapter.recipe_search;
 import use_case.recipe_search.RecipeSearchOutputBoundary;
 import use_case.recipe_search.RecipeSearchOutputData;
 
+/**
+ * Presenter for the Recipe Search use case.
+ * Uses RecipeSearchViewModel's helper methods so that
+ * property change events are correctly fired.
+ */
 public class RecipeSearchPresenter implements RecipeSearchOutputBoundary {
 
     private final RecipeSearchViewModel viewModel;
@@ -12,28 +17,16 @@ public class RecipeSearchPresenter implements RecipeSearchOutputBoundary {
     }
 
     @Override
-    public void prepareSuccessView(RecipeSearchOutputData outputData) {
-        final RecipeSearchState newState =
-                new RecipeSearchState(viewModel.getState());
+    public void present(RecipeSearchOutputData outputData) {
 
-        newState.setIngredients(outputData.getIngredients());
-        newState.setRecipes(outputData.getRecipes());
-        newState.setError(null);
+        // 更新 recipes 列表（会内部 setState + firePropertyChanged）
+        viewModel.setRecipes(outputData.getRecipes());
 
-        viewModel.setState(newState);
-        viewModel.firePropertyChanged();
-    }
-
-    @Override
-    public void prepareFailView(RecipeSearchOutputData outputData) {
-        final RecipeSearchState newState =
-                new RecipeSearchState(viewModel.getState());
-
-        newState.setIngredients(outputData.getIngredients());
-        newState.setRecipes(outputData.getRecipes());
-        newState.setError(outputData.getErrorMessage());
-
-        viewModel.setState(newState);
-        viewModel.firePropertyChanged();
+        // 更新错误信息
+        if (outputData.isUseCaseFailed()) {
+            viewModel.setError(outputData.getErrorMessage());
+        } else {
+            viewModel.setError(null);
+        }
     }
 }
