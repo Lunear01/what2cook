@@ -10,8 +10,6 @@ import javax.swing.JPanel;
 import dataaccess.InMemoryCookingListDataAccessInterface;
 import dataaccess.UserDataAccesssObject;
 import entity.Ingredient;
-import entity.User;
-import entity.UserBuilder;
 import interface_adapter.cookinglist.AddToCookingListController;
 import interface_adapter.cookinglist.AddToCookingListPresenter;
 import interface_adapter.cookinglist.CookingListViewModel;
@@ -65,21 +63,6 @@ public final class RecipeAppBuilder {
 
         // --- Data access (gateway) ---
         final UserDataAccesssObject userDao = new UserDataAccesssObject();
-
-        // --- Demo users ---
-//        final User user1 = new UserBuilder()
-//                .withName("jonathan_calver2")
-//                .withPassword("password123")
-//                .withEmail("39485@adf.com")
-//                .build();
-//        final User user2 = new UserBuilder()
-//                .withName("david")
-//                .withPassword("pass456")
-//                .withEmail("dkh.kim@mail.utoronto.com")
-//                .build();
-//
-//        userDao.save(user1);
-//        userDao.save(user2);
 
         // --- Login wiring ---
         final LoginViewModel loginViewModel = new LoginViewModel();
@@ -141,7 +124,6 @@ public final class RecipeAppBuilder {
         final CookingListView cookingListView =
                 new CookingListView(cookingListViewModel);
 
-
         // --- Favorite list wiring ---
         final FavoriteListViewModel favoriteListViewModel =
                 new FavoriteListViewModel();
@@ -164,7 +146,6 @@ public final class RecipeAppBuilder {
 
         // 让 recipe 搜索页能把菜加到 favorites
         recipeSearchView.setFavoriteController(addFavoriteRecipeController);
-
 
         // --- Frame and card layout ---
         final JFrame frame = new JFrame("What2Cook");
