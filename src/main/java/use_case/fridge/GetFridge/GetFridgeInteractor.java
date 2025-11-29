@@ -1,16 +1,16 @@
 package use_case.fridge.GetFridge;
 
-import dataaccess.IngredientDataAccess;
+import dataaccess.IngredientDataAccessInterface;
 import entity.Ingredient;
 
 import java.util.List;
 
 public class GetFridgeInteractor implements GetFridgeInputBoundary{
-    private final IngredientDataAccess fridgeDataAccess;
+    private final IngredientDataAccessInterface fridgeDataAccess;
     private final GetFridgeOutputBoundary presenter;
 
-    public GetFridgeInteractor(IngredientDataAccess fridgeDataAccess,
-                                 GetFridgeOutputBoundary presenter) {
+    public GetFridgeInteractor(IngredientDataAccessInterface fridgeDataAccess,
+                               GetFridgeOutputBoundary presenter) {
         this.fridgeDataAccess = fridgeDataAccess;
         this.presenter = presenter;
     }

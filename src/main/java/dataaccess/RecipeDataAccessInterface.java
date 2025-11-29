@@ -3,10 +3,9 @@ package dataaccess;
 import entity.Recipe;
 import org.json.JSONObject;
 
-import java.sql.SQLException;
 import java.util.List;
 
-public interface RecipeDataAccess {
+public interface RecipeDataAccessInterface {
     /**
      * add the recipe.
      * @param user_name the name of current user

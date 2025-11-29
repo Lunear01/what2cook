@@ -1,14 +1,14 @@
 package use_case.fridge.AddToFridge;
 
-import dataaccess.IngredientDataAccess;
+import dataaccess.IngredientDataAccessInterface;
 
 public class AddToFridgeInteractor implements AddToFridgeInputBoundary {
 
-    private final IngredientDataAccess fridgeDataAccess;
+    private final IngredientDataAccessInterface fridgeDataAccess;
     private final AddToFridgeOutputBoundary presenter;
 
-    public AddToFridgeInteractor(IngredientDataAccess fridgeDataAccess,
-                                   AddToFridgeOutputBoundary presenter) {
+    public AddToFridgeInteractor(IngredientDataAccessInterface fridgeDataAccess,
+                                 AddToFridgeOutputBoundary presenter) {
         this.fridgeDataAccess = fridgeDataAccess;
         this.presenter = presenter;
     }

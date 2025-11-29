@@ -2,10 +2,9 @@ package dataaccess;
 
 import entity.Ingredient;
 
-import java.sql.SQLException;
 import java.util.List;
 
-public interface IngredientDataAccess {
+public interface IngredientDataAccessInterface {
     /**
      * add the ingredient.
      * @param user_name the name of current user

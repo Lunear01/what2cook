@@ -7,7 +7,7 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import dataaccess.InMemoryCookingListDataAccess;
+import dataaccess.InMemoryCookingListDataAccessInterface;
 import dataaccess.UserDataAccesssObject;
 import entity.Ingredient;
 import entity.User;
@@ -120,7 +120,7 @@ public final class RecipeAppBuilder {
                 new AddToCookingListPresenter(cookingListViewModel);
 
         final CookingListDataAccessInterface cookingListDao =
-                new InMemoryCookingListDataAccess();
+                new InMemoryCookingListDataAccessInterface();
 
         final AddToCookingListInputBoundary addToCookingListInteractor =
                 new AddToCookingListInteractor(cookingListDao, cookingListPresenter);

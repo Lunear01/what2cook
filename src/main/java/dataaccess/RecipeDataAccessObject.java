@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeDataAccessObject implements RecipeDataAccess {
+public class RecipeDataAccessObject implements RecipeDataAccessInterface {
 
     private final String baseUrl = "http://localhost:3000/recipe";
 

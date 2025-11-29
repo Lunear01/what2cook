@@ -10,7 +10,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IngredientDataAccessImpl implements IngredientDataAccess {
+public class IngredientDataAccessObject implements IngredientDataAccessInterface {
 
     private final String baseUrl = "http://localhost:3000/ingredient";
 
