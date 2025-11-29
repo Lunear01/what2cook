@@ -8,9 +8,9 @@ import java.util.List;
 public interface RecipeDataAccessInterface {
     /**
      * add the recipe.
-     * @param userName the name of current user
-     * @param recipeID the id of the recipe that need to be added
-     * @param recipes the name of the recipe that need to be added
+     * @param userName the name of the current user
+     * @param recipeID the id of the recipe that needs to be added
+     * @param recipes the name of the recipe that needs to be added
      */
     void addRecipe(String userName, int recipeID, JSONObject recipes);
 
@@ -23,7 +23,7 @@ public interface RecipeDataAccessInterface {
 
     /**
      * delete the recipe.
-     * @param userName the name of current user
+     * @param userName the name of the current user
      * @param recipeID the id of the recipe that need to be deleted
      */
     void deleteRecipe(String userName, int recipeID);

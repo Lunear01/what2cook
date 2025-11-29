@@ -5,7 +5,7 @@ import entity.UserBuilder;
 
 /**
  * Interactor for the Signup use case.
- * Validates input, ensures username is unique, and saves the new user.
+ * Validates input, ensures that the username is unique, and saves the new user.
  */
 public class SignupInteractor implements SignupInputBoundary {
     private final SignupUserDataAccessInterface userDataAccess;
