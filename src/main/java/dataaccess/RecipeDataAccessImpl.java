@@ -7,6 +7,8 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,25 +18,38 @@ public class RecipeDataAccessImpl implements RecipeDataAccess {
     private final String baseUrl = "http://localhost:3000/recipe";
 
     @Override
-    public void addRecipe(String user_name, int recipeID, JSONObject recipe) throws Exception {
+    public void addRecipe(String user_name, int recipeID, JSONObject recipe) {
+        HttpURLConnection conn;
+        try {
+            final URL url = new URI(baseUrl + "/add").toURL();
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
 
-        final URL url = new URL(baseUrl + "/add");
-        final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "application/json");
-        conn.setDoOutput(true);
+        } catch (URISyntaxException e) {
+            System.out.println("URISyntaxException");
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            System.out.println("IOException");
+            throw new RuntimeException(e);
+        }
 
         final JSONObject body = new JSONObject();
         body.put("user_name", user_name);
         body.put("recipe", recipe);
         body.put("recipe_id", recipeID);
+        try {
+            final OutputStream os = conn.getOutputStream();
+            os.write(body.toString().getBytes());
+            os.flush();
 
-        final OutputStream os = conn.getOutputStream();
-        os.write(body.toString().getBytes());
-        os.flush();
+            conn.getInputStream();
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
 
-        conn.getInputStream();
     }
 
     @Override
