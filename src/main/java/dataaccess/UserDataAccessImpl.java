@@ -1,13 +1,18 @@
 package dataaccess;
 
 import entity.User;
+
 import org.json.JSONObject;
+import use_case.cookinglist.UserDataAccessInterface;
+import use_case.login.LoginUserDataAccessInterface;
+import use_case.signup.SignupUserDataAccessInterface;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class UserDataAccessImpl implements UserDataAccess {
+public class UserDataAccessImpl implements UserDataAccessInterface,
+        LoginUserDataAccessInterface, SignupUserDataAccessInterface {
 
     private final String baseUrl = "http://localhost:3000/user";
 
