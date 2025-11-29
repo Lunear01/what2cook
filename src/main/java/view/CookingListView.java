@@ -1,5 +1,9 @@
 package view;
 
+import interface_adapter.cookinglist.CookingListViewModel;
+import interface_adapter.cookinglist.CookingListState;
+import entity.Recipe;
+
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
@@ -8,14 +12,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
-
-import entity.Recipe;
-import interface_adapter.cookinglist.CookingListViewModel;
-import interface_adapter.cookinglist.CookingListState;
-
-import javax.swing.*;
-import java.awt.*;
-
 
 public class CookingListView extends JPanel implements PropertyChangeListener {
 
