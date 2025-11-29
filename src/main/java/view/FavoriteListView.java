@@ -11,7 +11,8 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 /**
- * Simple view that displays the user's favorite recipes.
+ * A panel that uses vertical BoxLayouts to display favorite recipes in a scrollable list,
+ * along with a title and status label, updating automatically when the FavoriteListState changes.
  */
 public class FavoriteListView extends JPanel implements PropertyChangeListener {
 
