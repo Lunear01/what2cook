@@ -56,12 +56,8 @@ public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
 
                 final Recipe info = fetcher.getRecipeInfo(id, true, false, false);
 
-                final Recipe instructions = fetcher.getRecipeInstructions(id, true);
-
-                final Recipe updated = Recipe.builder()
-                        .setId(id)
-                        .setTitle(title)
-                        .setImage(image)
+                // 用 toBuilder() 在原本的 r 上更新 fields
+                Recipe updated = r.toBuilder()
                         .setHealthScore(info.getHealthScore())
                         .setIngredientNames(info.getIngredientNames())
                         .setCalories(info.getCalories())
@@ -70,31 +66,30 @@ public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
 
                 enriched.add(updated);
             }
-
-            //有问题
-            //for (Recipe r : basic) {
-            //    final int id = r.getId();
+          
+            for (Recipe r : basic) {
+                final int id = r.getId();
 
                 // 取得 recipe 的 info
-            //    final Recipe info = fetcher.getRecipeInfo(id, true, false, false);
+                final Recipe info = fetcher.getRecipeInfo(id, true, false, false);
 
                 // 用 toBuilder() 在原本的 r 上更新 fields
-            //    Recipe updated = r.builder()
-              //          .setHealthScore(info.getHealthScore())
-                //        .setIngredientNames(info.getIngredientNames())
-                //        .setCalories(info.getCalories())
-                //        .build();
+                Recipe updated = r.builder()
+                        .setHealthScore(info.getHealthScore())
+                        .setIngredientNames(info.getIngredientNames())
+                        .setCalories(info.getCalories())
+                        .build();
 
                 // 再取得 instructions
-            //    final Recipe instructions = fetcher.getRecipeInstructions(id, true);
+                final Recipe instructions = fetcher.getRecipeInstructions(id, true);
 
                 // 再把 instructions 加进去（再次 toBuilder）
-            //    updated = updated.builder()
-            //            .setInstructions(instructions.getInstructions())
-            //            .build();
+                updated = updated.toBuilder()
+                        .setInstructions(instructions.getInstructions())
+                        .build();
 
-            //    enriched.add(updated);
-            //}//
+                enriched.add(updated);
+            }
 
             presenter.prepareSuccessView(new RecipeSearchOutputData(
                     new ArrayList<>(ingredients),
