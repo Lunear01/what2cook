@@ -29,7 +29,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     private final JScrollPane recipesScrollPane = new JScrollPane(recipesPanel);
 
     private final JLabel resultsCountLabel = new JLabel("0 results");
-    //增加cookinglist的内容
+    // 增加cookinglist的内容
     private final JButton addToCookingListButton = new JButton("Add to Cooking List");
     private final JButton viewCookingListButton = new JButton("View My Cooking List");
 
@@ -40,8 +40,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     private Runnable onOpenCookingList;
     private String currentUsername;
 
-    //结束
-
+    // 结束
 
     public RecipeSearchView(RecipeSearchViewModel viewModel) {
         this.viewModel = viewModel;
@@ -53,7 +52,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         ingredientsTitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         resultsCountLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        //增加cookinglist内容
+        // 增加cookinglist内容
         addToCookingListButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         viewCookingListButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         //
@@ -97,24 +96,22 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
                 );
                 return;
             }
-            //调用
+            // 调用
             cookingListController.add(currentUsername, selectedRecipe);
         });
-        //打开
+        // 打开
         viewCookingListButton.addActionListener(e -> {
             if (onOpenCookingList != null) {
                 onOpenCookingList.run();
             }
         });
-
-
         add(titleLabel);
         add(ingredientsTitleLabel);
         add(ingredientsArea);
         add(recipesScrollPane);
         add(resultsCountLabel);
 
-        //加按钮
+        // 加按钮
         add(addToCookingListButton);
         add(viewCookingListButton);
     }
@@ -123,19 +120,17 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     public void propertyChange(final PropertyChangeEvent evt) {
         final Object newValue = evt.getNewValue();
 
-        //测试
+        // 测试
         if (newValue instanceof RecipeSearchState) {
             final RecipeSearchState state = (RecipeSearchState) newValue;
 
-            System.out.println("DEBUG recipes size = " +
-                    (state.getRecipes() == null ? "null" : state.getRecipes().size()));
+            System.out.println("DEBUG recipes size = "
+                    + (state.getRecipes() == null ? "null" : state.getRecipes().size()));
 
             updateIngredients(state.getIngredients());
             updateRecipes(state.getRecipes());
 
         }
-
-
         if (newValue instanceof RecipeSearchState) {
             final RecipeSearchState state = (RecipeSearchState) newValue;
 
@@ -182,7 +177,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     private void updateRecipes(List<Recipe> recipes) {
         recipesPanel.removeAll();
 
-        //刷新选中的recipe
+        // 刷新选中的recipe
         selectedRecipe = null;
 
         if (recipes != null) {
@@ -236,7 +231,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         card.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                //点击记录选中recipe
+                // 点击记录选中recipe
                 selectedRecipe = recipe;
 
                 if (controller != null) {
@@ -253,7 +248,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     }
 
 
-    //加
+    // 加
     public void setCookingListController(AddToCookingListController cookingListController) {
         this.cookingListController = cookingListController;
     }

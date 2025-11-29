@@ -93,7 +93,7 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         signupButton.addActionListener(this);
     }
 
-    /* ========= setters for controllers & callbacks ========= */
+    /* setters for controllers & callbacks*/
 
     public void setLoginController(LoginController controller) {
         this.loginController = controller;
@@ -151,7 +151,6 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
     }
 
     /* ========== ViewModel 改变时，刷新界面 ========== */
-
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
 
