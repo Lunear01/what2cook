@@ -225,7 +225,7 @@ public class CachingRecipeFetcher implements RecipeFetcher {
         rObj.put("title", recipe.getTitle());
         rObj.put("image", recipe.getImage());
         final JSONArray ingArr = new JSONArray();
-        for (Ingredient ing : recipe.getIngredientNames()) {
+        for (Ingredient ing : recipe.getIngredients()) {
             final JSONObject ingObj = new JSONObject();
             ingObj.put("name", ing.getName());
             ingArr.put(ingObj);

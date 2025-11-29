@@ -55,11 +55,12 @@ public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
                 final String image = r.getImage();
 
                 final Recipe info = fetcher.getRecipeInfo(id, true, false, false);
+                final Recipe instructions = fetcher.getRecipeInstructions(id, true);
 
                 // 用 toBuilder() 在原本的 r 上更新 fields
                 Recipe updated = r.toBuilder()
                         .setHealthScore(info.getHealthScore())
-                        .setIngredientNames(info.getIngredientNames())
+                        .setIngredientNames(info.getIngredients())
                         .setCalories(info.getCalories())
                         .setInstructions(instructions.getInstructions())
                         .build();
@@ -76,7 +77,7 @@ public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
                 // 用 toBuilder() 在原本的 r 上更新 fields
                 Recipe updated = r.builder()
                         .setHealthScore(info.getHealthScore())
-                        .setIngredientNames(info.getIngredientNames())
+                        .setIngredientNames(info.getIngredients())
                         .setCalories(info.getCalories())
                         .build();
 
