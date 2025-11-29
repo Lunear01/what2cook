@@ -133,8 +133,7 @@ public final class RecipeAppBuilder {
 
 
         recipeSearchView.setCookingListController(addToCookingListController);
-
-        recipeSearchView.setCookingListController(addToCookingListController);
+        cookingListView.setOnOpenRecipe(recipeSearchController::openRecipe);
 
 
 

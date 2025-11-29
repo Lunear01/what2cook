@@ -6,6 +6,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import entity.Recipe;
 import interface_adapter.cookinglist.CookingListViewModel;
@@ -27,6 +28,8 @@ public class CookingListView extends JPanel implements PropertyChangeListener {
     private final JButton sortByHealthButton = new JButton("Sort by Health Score");
     private final JButton sortByCaloriesButton = new JButton("Sort by Calories");
     private Runnable onBack;
+    private Consumer<Recipe> onOpenRecipe;
+
 
     public CookingListView(CookingListViewModel viewModel) {
         this.viewModel = viewModel;
@@ -55,6 +58,21 @@ public class CookingListView extends JPanel implements PropertyChangeListener {
         add(titleLabel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
+
+        recipeList.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2 && !recipeList.isSelectionEmpty()) {
+                    int index = recipeList.getSelectedIndex();
+                    java.util.List<Recipe> list = viewModel.getPersonalCookingList();
+                    if (index >= 0 && index < list.size() && onOpenRecipe != null) {
+                        Recipe selected = list.get(index);
+                        onOpenRecipe.accept(selected);
+                    }
+                }
+            }
+        });
+
 
         backButton.addActionListener(e -> {
             if (onBack != null) {
@@ -93,6 +111,10 @@ public class CookingListView extends JPanel implements PropertyChangeListener {
         this.onBack = onBack;
     }
 
+
+    public void setOnOpenRecipe(Consumer<Recipe> onOpenRecipe) {
+        this.onOpenRecipe = onOpenRecipe;
+    }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
