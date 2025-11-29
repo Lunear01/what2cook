@@ -13,6 +13,7 @@ import javax.swing.*;
 import entity.Ingredient;
 import entity.Recipe;
 import interface_adapter.cookinglist.AddToCookingListController;
+import interface_adapter.favoritelist.AddFavoriteRecipeController;
 import interface_adapter.recipe_search.RecipeSearchController;
 import interface_adapter.recipe_search.RecipeSearchState;
 import interface_adapter.recipe_search.RecipeSearchViewModel;
@@ -32,6 +33,8 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     //增加cookinglist的内容
     private final JButton addToCookingListButton = new JButton("Add to Cooking List");
     private final JButton viewCookingListButton = new JButton("View My Cooking List");
+    private final JButton addToFavoritesButton = new JButton("Add to Favorites");
+    private final JButton viewFavoritesButton = new JButton("View My Favorites");
 
     // 当前选中的菜谱（点击某个 card 时记录）
     private Recipe selectedRecipe = null;
@@ -40,8 +43,10 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     private Runnable onOpenCookingList;
     private String currentUsername;
 
-    //结束
+    private AddFavoriteRecipeController favoriteController;
 
+    private Runnable onOpenFavorites;
+    //结束
 
     public RecipeSearchView(RecipeSearchViewModel viewModel) {
         this.viewModel = viewModel;
@@ -56,6 +61,8 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         //增加cookinglist内容
         addToCookingListButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         viewCookingListButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        addToFavoritesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        viewFavoritesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         //
 
         ingredientsArea.setEditable(false);
@@ -107,6 +114,45 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
             }
         });
 
+        // 打开 favorites
+        viewFavoritesButton.addActionListener(e -> {
+            if (onOpenFavorites != null) {
+                onOpenFavorites.run();
+            }
+        });
+
+        // 添加到 Favorites
+        addToFavoritesButton.addActionListener(e -> {
+            if (favoriteController == null) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Favorite feature is not configured.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
+            if (currentUsername == null || currentUsername.isEmpty()) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "User is not logged in.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
+            if (selectedRecipe == null) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Please click a recipe card first.",
+                        "No recipe selected",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+            // 调用 use case
+            favoriteController.add(currentUsername, selectedRecipe);
+        });
 
         add(titleLabel);
         add(ingredientsTitleLabel);
@@ -117,6 +163,8 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         //加按钮
         add(addToCookingListButton);
         add(viewCookingListButton);
+        add(addToFavoritesButton);
+        add(viewFavoritesButton);
     }
 
     @Override
@@ -134,7 +182,6 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
             updateRecipes(state.getRecipes());
 
         }
-
 
         if (newValue instanceof RecipeSearchState) {
             final RecipeSearchState state = (RecipeSearchState) newValue;
@@ -264,4 +311,15 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     public void setCurrentUsername(String username) {
         this.currentUsername = username;
     }
+
+
+
+    public void setFavoriteController(AddFavoriteRecipeController controller) {
+        this.favoriteController = controller;
+    }
+
+    public void setOnOpenFavorites(Runnable onOpenFavorites) {
+        this.onOpenFavorites = onOpenFavorites;
+    }
+
 }
