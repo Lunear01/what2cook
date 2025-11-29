@@ -13,6 +13,13 @@ public class SignupInteractor implements SignupInputBoundary {
     private final EmailValidation emailValidator;
     private final PasswordValidation passwordValidator;
 
+    /**
+     * Constructor for the SignupInteractor.
+     * @param userDataAccess the data access object for the user table
+     * @param presenter the presenter for the Signup use case
+     * @param emailValidator the email validator
+     * @param passwordValidator the password validator
+     */
     public SignupInteractor(SignupUserDataAccessInterface userDataAccess, SignupOutputBoundary presenter,
                             EmailValidation emailValidator, PasswordValidation passwordValidator) {
         this.userDataAccess = userDataAccess;
@@ -22,6 +29,10 @@ public class SignupInteractor implements SignupInputBoundary {
 
     }
 
+    /**
+     * Executes the Signup use case.
+     * @param inputData the SignupInputData Object containing the user's signup information.
+     */
     @Override
     public void execute(SignupInputData inputData) {
         final String username = inputData.getUsername();

@@ -1,7 +1,7 @@
 package use_case.signup;
 
 /**
- * Password Validation Services.
+ * Password Validation Service interface.
  * Used to check the validity of user passwords.
  */
 public interface PasswordValidation {

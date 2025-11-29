@@ -1,7 +1,7 @@
 package use_case.signup;
 
 /**
- * Email Validation Services.
+ * Email Validation Service interface.
  * Checks and returns a boolean on whether the email is valid.
  */
 public interface EmailValidation {

@@ -4,6 +4,7 @@ import com.sanctionco.jmail.EmailValidator;
 import com.sanctionco.jmail.JMail;
 
 /**
+ * Email Validation Service implementation.
  * Uses External library JMail to check for mail format validity.
  */
 public class JmailValidationService implements EmailValidation {

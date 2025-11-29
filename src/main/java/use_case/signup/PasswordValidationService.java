@@ -2,6 +2,10 @@ package use_case.signup;
 
 import java.util.regex.Pattern;
 
+/**
+ * Password Validation Service implementation.
+ * Used to check the validity of user passwords.
+ */
 public class PasswordValidationService implements PasswordValidation {
 
     private static final Pattern STRONG_PASSWORD =
