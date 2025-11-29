@@ -62,7 +62,7 @@ public class UserBuilder {
             throw new IllegalStateException("Invalid email format: " + userEmail);
         }
 
-        return new User(userName, userPassword,  userEmail);
+        return new User(userName, userPassword, userEmail);
 
     }
 
