@@ -7,7 +7,7 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import dataaccess.InMemoryCookingListDataAccess;
+import dataaccess.InMemoryCookingListDataAccessInterface;
 import dataaccess.UserDataAccesssObject;
 import entity.Ingredient;
 import entity.User;
@@ -120,7 +120,7 @@ public final class RecipeAppBuilder {
                 new AddToCookingListPresenter(cookingListViewModel);
 
         final CookingListDataAccessInterface cookingListDao =
-                new InMemoryCookingListDataAccess();
+                new InMemoryCookingListDataAccessInterface();
 
         final AddToCookingListInputBoundary addToCookingListInteractor =
                 new AddToCookingListInteractor(cookingListDao, cookingListPresenter);
@@ -130,9 +130,10 @@ public final class RecipeAppBuilder {
 
         final CookingListView cookingListView =
                 new CookingListView(cookingListViewModel);
-        recipeSearchView.setCookingListController(addToCookingListController);
+
 
         recipeSearchView.setCookingListController(addToCookingListController);
+        cookingListView.setOnOpenRecipe(recipeSearchController::openRecipe);
 
 
 
@@ -169,6 +170,12 @@ public final class RecipeAppBuilder {
         cardPanel.add(recipeSearchView, recipe);
         //
         cardPanel.add(cookingListView, cooking);
+
+        recipeSearchView.setOnOpenCookingList(() -> {
+            frame.setTitle("What2Cook - Cooking List");
+            cardLayout.show(cardPanel, cooking);
+        });
+
 
         // --- Navigation wiring ---
         loginView.setOnSwitchToSignup(() -> {

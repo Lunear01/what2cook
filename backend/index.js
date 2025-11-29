@@ -10,8 +10,10 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/user', require('./routes/userRoutes'));
-app.use('/ingredient', require('./Routes/ingredientRoutes'));
+app.use('/ingredient', require('./routes/ingredientRoutes'));
 app.use('/recipe', require('./routes/recipeRoutes'));
+
+const PORT = process.env.PORT || 3000;
 
 // Health check
 app.get('/', (req, res) => res.send('What2Cook backend is running!'));
@@ -21,8 +23,6 @@ app.use((err, req, res, next) => {
     res.status(err.status || 500).json({ error: err.message || 'Internal Server Error' });
 });
 
-// start
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
