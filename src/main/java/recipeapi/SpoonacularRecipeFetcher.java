@@ -17,7 +17,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
     private static final String API_KEY = System.getenv().getOrDefault(
             "SPOONACULAR_API_KEY",
-            "aaf0737aa46b4cb19096928025c49552"
+            "098b8f42e00a4250ae71e909016e5393"
     );
 
     private static final String BASE_URL = "https://api.spoonacular.com/recipes";
@@ -90,12 +90,11 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                     );
                 }
 
-                // build recipe
                 Recipe recipe = Recipe.builder()
-                        .setId(obj.getInt("recipeID"))
+                        .setId(obj.getInt("id"))
                         .setTitle(obj.getString("title"))
-                        .setIngredientNames(ingList)
                         .setImage(obj.getString("image"))
+                        .setIngredientNames(ingList)
                         .build();
 
                 results.add(recipe);
@@ -149,13 +148,11 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
 // 用 Builder 一次性把 Recipe 所有字段设好
             final Recipe recipe = Recipe.builder()
-                    .setId(obj.getInt("recipeID"))
+                    .setId(id)
                     .setTitle(obj.getString("title"))
                     .setIngredientNames(ingredients)
-                    .setCalories(extractCalories(obj, includeNutrition))
                     .setHealthScore(obj.optInt("healthScore", -1))
-                    .setInstructions(obj.getString("instructions"))
-                    .setImage(obj.getString("image"))
+                    .setCalories(extractCalories(obj, includeNutrition))
                     .build();
 
             return recipe;
@@ -215,7 +212,6 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                     .setId(id)
                     .setInstructions(sb.toString().trim())
                     .build();
-
 
         }
         catch (IOException error) {

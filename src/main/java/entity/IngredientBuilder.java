@@ -2,7 +2,7 @@ package entity;
 
 public class IngredientBuilder {
     private String name;
-    private int ingredientId = -1;
+    private int ingredientId;
 
     /**
      * Set the name for this IngredientBuilder.
