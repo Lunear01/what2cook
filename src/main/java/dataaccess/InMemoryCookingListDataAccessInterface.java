@@ -5,7 +5,7 @@ import use_case.cookinglist.CookingListDataAccessInterface;
 
 import java.util.*;
 
-public class InMemoryCookingListDataAccess implements CookingListDataAccessInterface {
+public class InMemoryCookingListDataAccessInterface implements CookingListDataAccessInterface {
 
     // username -> list of recipes
     private final Map<String, List<Recipe>> cookingLists = new HashMap<>();

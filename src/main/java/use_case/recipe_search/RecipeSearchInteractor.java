@@ -1,11 +1,14 @@
 package use_case.recipe_search;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import entity.Ingredient;
 import entity.Recipe;
 import recipeapi.RecipeFetcher;
+import recipeapi.exceptions.IngredientNotFoundException;
+import recipeapi.exceptions.RecipeNotFoundException;
 
 public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
 
@@ -32,21 +35,36 @@ public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
                     new ArrayList<>(),
                     "Please add at least one ingredient before searching."
             ));
-            return;
         }
+        else {
+            try {
+                final List<String> names = new ArrayList<>();
+                for (Ingredient ingredient : ingredients) {
+                    names.add(ingredient.getName());
+                }
 
-        try {
-            final List<String> names = new ArrayList<>();
-            for (Ingredient ing : ingredients) names.add(ing.getName());
+                final List<Recipe> basic = fetcher.getRecipesByIngredients(
+                        names, DEFAULT_NUMBER, DEFAULT_RANKING, DEFAULT_IGNORE_PANTRY
+                );
 
-            final List<Recipe> basic = fetcher.getRecipesByIngredients(
-                    names, DEFAULT_NUMBER, DEFAULT_RANKING, DEFAULT_IGNORE_PANTRY);
+                final List<Recipe> enriched = new ArrayList<>();
 
-            final List<Recipe> enriched = new ArrayList<>();
+                for (Recipe recipe : basic) {
+                    final int id = recipe.getId();
 
+                    final Recipe info = fetcher.getRecipeInfo(id, true, false, false);
 
+                    final Recipe instructions = fetcher.getRecipeInstructions(id, true);
 
+                    final Recipe updated = recipe.toBuilder()
+                            .setHealthScore(info.getHealthScore())
+                            .setIngredientNames(info.getIngredientNames())
+                            .setCalories(info.getCalories())
+                            .setInstructions(instructions.getInstructions())
+                            .build();
 
+                    enriched.add(updated);
+                }
 
 
             for (Recipe r : basic) {
@@ -92,20 +110,13 @@ public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
                 enriched.add(updated);
             }
 
-            presenter.prepareSuccessView(new RecipeSearchOutputData(
-                    new ArrayList<>(ingredients),
-                    enriched,
-                    null
-            ));
-
-
-        }
-        catch (Exception e) {
-            presenter.prepareFailView(new RecipeSearchOutputData(
-                    new ArrayList<>(ingredients),
-                    new ArrayList<>(),
-                    "Failed to fetch recipes: " + e.getMessage()
-            ));
+            catch (IOException ioException) {
+                presenter.prepareFailView(new RecipeSearchOutputData(
+                        new ArrayList<>(ingredients),
+                        new ArrayList<>(),
+                        "Network error while fetching recipes: " + ioException.getMessage()
+                ));
+            }
         }
     }
 }
