@@ -33,7 +33,7 @@ public class LoginInteractor implements LoginInputBoundary {
         }
         else {
             // Get user
-            final User user = userDataAccess.get(username);
+            final User user = userDataAccess.get(username, password);
 
             if (user == null) {
                 errorMessage = "User not found";
