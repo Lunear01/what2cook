@@ -13,13 +13,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeDataAccessObject implements RecipeDataAccess {
+public class RecipeDataAccessObject implements RecipeDataAccessInterface {
 
     private final String baseUrl = "http://localhost:3000/recipe";
 
     @Override
     public void addRecipe(String userName, int recipeID, JSONObject recipe) {
-
         try {
             final URL url = new URI(baseUrl + "/add").toURL();
             final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
