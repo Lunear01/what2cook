@@ -9,12 +9,14 @@ public interface UserDataAccess {
      * @param email user's email
      * @param password user's password
      */
-    void signUp(String user_name, String email, String password) throws Exception;
+    void save(String user_name, String email, String password) throws Exception;
 
     /**
      * Login the user.
      * @param email user's email
      * @param password user's password
      */
-    User login(String email, String password) throws Exception;
+    User get(String email, String password) throws Exception;
+
+    boolean exists(String email) throws Exception;
 }
