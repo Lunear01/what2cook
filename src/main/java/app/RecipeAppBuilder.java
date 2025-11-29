@@ -67,19 +67,19 @@ public final class RecipeAppBuilder {
         final UserDataAccesssObject userDao = new UserDataAccesssObject();
 
         // --- Demo users ---
-        final User user1 = new UserBuilder()
-                .withName("jonathan_calver2")
-                .withPassword("password123")
-                .withEmail("39485@adf.com")
-                .build();
-        final User user2 = new UserBuilder()
-                .withName("david")
-                .withPassword("pass456")
-                .withEmail("dkh.kim@mail.utoronto.com")
-                .build();
-
-        userDao.save(user1);
-        userDao.save(user2);
+//        final User user1 = new UserBuilder()
+//                .withName("jonathan_calver2")
+//                .withPassword("password123")
+//                .withEmail("39485@adf.com")
+//                .build();
+//        final User user2 = new UserBuilder()
+//                .withName("david")
+//                .withPassword("pass456")
+//                .withEmail("dkh.kim@mail.utoronto.com")
+//                .build();
+//
+//        userDao.save(user1);
+//        userDao.save(user2);
 
         // --- Login wiring ---
         final LoginViewModel loginViewModel = new LoginViewModel();
