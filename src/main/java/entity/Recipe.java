@@ -7,17 +7,17 @@ import java.util.Objects;
 public class Recipe {
     private final int recipeID;
     private final String title;
-    private final List<Ingredient> ingredientNames;
+    private final List<Ingredient> ingredientList;
     private final double calories;
     private final int healthScore;
     private final String instructions;
     private final String image;
 
-    Recipe(int recipeID, String title, List<Ingredient> ingredientNames, double calories,
-           int healthScore, String instructions, String image){
+    Recipe(int recipeID, String title, List<Ingredient> ingredientList, double calories,
+           int healthScore, String instructions, String image) {
         this.recipeID = recipeID;
         this.title = title;
-        this.ingredientNames = ingredientNames;
+        this.ingredientList = ingredientList;
         this.calories = calories;
         this.healthScore = healthScore;
         this.instructions = instructions;
@@ -32,8 +32,8 @@ public class Recipe {
         return title;
     }
 
-    public List<Ingredient> getIngredientNames() {
-        return Objects.requireNonNullElse(ingredientNames, Collections.emptyList());
+    public List<Ingredient> getIngredients() {
+        return Objects.requireNonNullElse(ingredientList, Collections.emptyList());
     }
 
     public double getCalories() {
@@ -61,9 +61,10 @@ public class Recipe {
                 .setId(this.recipeID)
                 .setTitle(this.title)
                 .setImage(this.image)
-                .setIngredientNames(this.ingredientNames)
+                .setIngredientNames(this.ingredientList)
                 .setHealthScore(this.healthScore)
                 .setCalories(this.calories)
                 .setInstructions(this.instructions);
     }
-    }
+
+}
