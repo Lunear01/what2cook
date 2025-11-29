@@ -19,7 +19,6 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
 
     @Override
     public void addRecipe(String userName, int recipeID, JSONObject recipe) {
-
         try {
             final URL url = new URI(baseUrl + "/add").toURL();
             final HttpURLConnection conn = (HttpURLConnection) url.openConnection();

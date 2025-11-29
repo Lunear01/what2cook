@@ -8,24 +8,24 @@ import java.util.List;
 public interface RecipeDataAccessInterface {
     /**
      * add the recipe.
-     * @param user_name the name of current user
+     * @param userName the name of current user
      * @param recipeID the id of the recipe that need to be added
      * @param recipes the name of the recipe that need to be added
      */
-    void addRecipe(String user_name, int recipeID, JSONObject recipes) throws Exception;
+    void addRecipe(String userName, int recipeID, JSONObject recipes);
 
     /**
      * get the recipe.
-     * @param user_name the name of the current user
+     * @param userName the name of the current user
      * @return the list of the recipes that was created by user.
      */
-    List<Recipe> getAllRecipes(String user_name) throws Exception;
+    List<Recipe> getAllRecipes(String userName);
 
     /**
      * delete the recipe.
-     * @param user_name the name of current user
+     * @param userName the name of current user
      * @param recipeID the id of the recipe that need to be deleted
      */
-    void deleteRecipe(String user_name, int recipeID) throws Exception;
+    void deleteRecipe(String userName, int recipeID);
 
 }
