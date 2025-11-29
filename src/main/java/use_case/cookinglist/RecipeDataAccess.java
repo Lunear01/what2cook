@@ -1,19 +1,17 @@
-package dataaccess;
+package use_case.cookinglist;
 
 import entity.Recipe;
 import org.json.JSONObject;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface RecipeDataAccess {
     /**
      * add the recipe.
      * @param user_name the name of current user
-     * @param recipeID the id of the recipe that need to be added
-     * @param recipes the name of the recipe that need to be added
+     * @param recipe the recipe that need to be added
      */
-    void addRecipe(String user_name, int recipeID, JSONObject recipes) throws Exception;
+    void addRecipe(String user_name, Recipe recipe) throws Exception;
 
     /**
      * get the recipe.

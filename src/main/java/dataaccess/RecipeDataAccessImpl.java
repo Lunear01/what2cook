@@ -4,6 +4,7 @@ import entity.Ingredient;
 import entity.Recipe;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import use_case.cookinglist.RecipeDataAccess;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -16,7 +17,7 @@ public class RecipeDataAccessImpl implements RecipeDataAccess {
     private final String baseUrl = "http://localhost:3000/recipe";
 
     @Override
-    public void addRecipe(String user_name, int recipeID, JSONObject recipe) throws Exception {
+    public void addRecipe(String user_name, Recipe recipe) throws Exception {
 
         final URL url = new URL(baseUrl + "/add");
         final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -25,10 +26,26 @@ public class RecipeDataAccessImpl implements RecipeDataAccess {
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setDoOutput(true);
 
+        final JSONArray ingredientNames = new JSONArray();
+        for (Ingredient ingredient: recipe.getIngredientNames()){
+            final JSONObject obj = new JSONObject();
+            obj.put("name", ingredient.getName());
+            ingredientNames.put(obj);
+        }
+
+        final JSONObject recipeJSon = new JSONObject();
+        recipeJSon.put("id", recipe.getId());
+        recipeJSon.put("title", recipe.getTitle());
+        recipeJSon.put("ingredientNames", ingredientNames);
+        recipeJSon.put("calories", recipe.getCalories());
+        recipeJSon.put("instructions", recipe.getHealthScore());
+        recipeJSon.put("instructions", recipe.getInstructions());
+        recipeJSon.put("image", recipe.getImage());
+
         final JSONObject body = new JSONObject();
         body.put("user_name", user_name);
-        body.put("recipe", recipe);
-        body.put("recipe_id", recipeID);
+        body.put("recipe", recipeJSon);
+        body.put("recipe_id", recipe.getId());
 
         final OutputStream os = conn.getOutputStream();
         os.write(body.toString().getBytes());
