@@ -39,6 +39,16 @@ import use_case.recipe_search.RecipeSearchInteractor;
 import use_case.signup.*;
 import view.*;
 
+import dataaccess.InMemoryFavoriteRecipeDataAccess;
+
+import interface_adapter.favoritelist.AddFavoriteRecipeController;
+import interface_adapter.favoritelist.AddFavoriteRecipePresenter;
+import interface_adapter.favoritelist.FavoriteListViewModel;
+
+import use_case.add_favorite_list.AddFavoriteRecipeDataAccessInterface;
+import use_case.add_favorite_list.AddFavoriteRecipeInputBoundary;
+import use_case.add_favorite_list.AddFavoriteRecipeInteractor;
+import use_case.add_favorite_list.AddFavoriteRecipeOutputBoundary;
 
 public final class RecipeAppBuilder {
 
@@ -112,7 +122,7 @@ public final class RecipeAppBuilder {
                 new RecipeSearchView(recipeSearchViewModel);
         recipeSearchView.setController(recipeSearchController);
 
-        //cookinglist
+        // cookinglist
         final CookingListViewModel cookingListViewModel =
                 new CookingListViewModel();
 
@@ -132,9 +142,28 @@ public final class RecipeAppBuilder {
                 new CookingListView(cookingListViewModel);
 
 
-        recipeSearchView.setCookingListController(addToCookingListController);
+        // --- Favorite list wiring ---
+        final FavoriteListViewModel favoriteListViewModel =
+                new FavoriteListViewModel();
+
+        final AddFavoriteRecipeOutputBoundary favoritePresenter =
+                new AddFavoriteRecipePresenter(favoriteListViewModel);
         cookingListView.setOnOpenRecipe(recipeSearchController::openRecipe);
 
+        final AddFavoriteRecipeDataAccessInterface favoriteDao =
+                new InMemoryFavoriteRecipeDataAccess();
+
+        final AddFavoriteRecipeInputBoundary addFavoriteRecipeInteractor =
+                new AddFavoriteRecipeInteractor(favoriteDao, favoritePresenter);
+
+        final AddFavoriteRecipeController addFavoriteRecipeController =
+                new AddFavoriteRecipeController(addFavoriteRecipeInteractor);
+
+        final FavoriteListView favoriteListView =
+                new FavoriteListView(favoriteListViewModel);
+
+        // 让 recipe 搜索页能把菜加到 favorites
+        recipeSearchView.setFavoriteController(addFavoriteRecipeController);
 
 
         // --- Frame and card layout ---
@@ -163,6 +192,7 @@ public final class RecipeAppBuilder {
         final String recipe = "recipe";
         //
         final String cooking = "cooking";
+        final String favorites = "favorites";
 
         cardPanel.add(loginView, login);
         cardPanel.add(signupView, signup);
@@ -170,6 +200,7 @@ public final class RecipeAppBuilder {
         cardPanel.add(recipeSearchView, recipe);
         //
         cardPanel.add(cookingListView, cooking);
+        cardPanel.add(favoriteListView, favorites);
 
         recipeSearchView.setOnOpenCookingList(() -> {
             frame.setTitle("What2Cook - Cooking List");
@@ -211,7 +242,6 @@ public final class RecipeAppBuilder {
                 );
             }
 
-
             recipeSearchViewModel.setCurrentIngredients(ingredients);
             recipeSearchController.searchByIngredients(ingredients);
 
@@ -224,6 +254,10 @@ public final class RecipeAppBuilder {
             cardLayout.show(cardPanel, cooking);
         });
 
+        recipeSearchView.setOnOpenFavorites(() -> {
+            frame.setTitle("What2Cook - Favorites");
+            cardLayout.show(cardPanel, favorites);
+        });
 
         frame.add(cardPanel);
         frame.setTitle("What2Cook - Login");
