@@ -20,6 +20,7 @@ public interface RecipeFetcher {
      * @param ignorePantry boolean, whether to ignore typical items such as water.
      * @return list of recipes
      * @throws IngredientNotFoundException if the ingredient does not exist
+     * @throws IOException for other errors.
      */
     List<Recipe> getRecipesByIngredients(List<String> ingredients, int number, int ranking,
                                          boolean ignorePantry) throws IngredientNotFoundException, IOException;
@@ -32,6 +33,7 @@ public interface RecipeFetcher {
      * @param addTasteData true to include taste analysis
      * @return detailed recipe information
      * @throws RecipeNotFoundException if recipe ID is not found
+     * @throws IOException for other errors.
      */
     Recipe getRecipeInfo(int id, boolean includeNutrition, boolean addWinePairing,
                          boolean addTasteData) throws RecipeNotFoundException, IOException;
@@ -42,6 +44,7 @@ public interface RecipeFetcher {
      * @param stepBreakdown true to include detailed step-by-step instructions
      * @return recipe with instructions
      * @throws RecipeNotFoundException if recipe ID is not found
+     * @throws IOException for other errors.
      */
     Recipe getRecipeInstructions(int id, boolean stepBreakdown) throws RecipeNotFoundException, IOException;
 

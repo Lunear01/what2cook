@@ -17,7 +17,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
     private static final String API_KEY = System.getenv().getOrDefault(
             "SPOONACULAR_API_KEY",
-            "098b8f42e00a4250ae71e909016e5393"
+            "1d96247defbd4a5baaeb28cbbd6a8972"
     );
 
     private static final String BASE_URL = "https://api.spoonacular.com/recipes";
@@ -51,7 +51,8 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
             final JSONArray array = parseResponse(ingredients, json);
 
             if (array.isEmpty()) {
-                throw new IngredientNotFoundException("No recipes found for ingredients: " + ingredients);
+                throw new IngredientNotFoundException("No recipes found for ingredients: "
+                        + String.join(",", ingredients));
             }
 
             final List<Recipe> results = new ArrayList<>();
@@ -59,38 +60,10 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
             for (int i = 0; i < array.length(); i++) {
                 final JSONObject obj = array.getJSONObject(i);
 
-                // Extract ingredient names
-                final List<Ingredient> ingList = new ArrayList<>();
-                final JSONArray used = obj.getJSONArray("usedIngredients");
-                final JSONArray missed = obj.getJSONArray("missedIngredients");
+                // Extract and construct Ingredient Objects using helper method
+                final List<Ingredient> ingList = extractIngredients(obj);
 
-                for (int u = 0; u < used.length(); u++) {
-                    final JSONObject ingObj = used.getJSONObject(u);
-                    final String ingredientName = ingObj.getString("name");
-                    final int ingredientId = ingObj.optInt("id", -1);
-
-                    ingList.add(
-                            Ingredient.builder()
-                                    .setName(ingredientName)
-                                    .setId(ingredientId)
-                                    .build()
-                    );
-                }
-
-                for (int m = 0; m < missed.length(); m++) {
-                    final JSONObject ingObj = missed.getJSONObject(m);
-                    final String ingredientName = ingObj.getString("name");
-                    final int ingredientId = ingObj.optInt("id", -1);
-
-                    ingList.add(
-                            Ingredient.builder()
-                                    .setName(ingredientName)
-                                    .setId(ingredientId)
-                                    .build()
-                    );
-                }
-
-                Recipe recipe = Recipe.builder()
+                final Recipe recipe = Recipe.builder()
                         .setId(obj.getInt("id"))
                         .setTitle(obj.getString("title"))
                         .setImage(obj.getString("image"))
@@ -146,18 +119,14 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 );
             }
 
-// 用 Builder 一次性把 Recipe 所有字段设好
-            final Recipe recipe = Recipe.builder()
+            // Use builder to construct Recipe Objects
+            return Recipe.builder()
                     .setId(id)
                     .setTitle(obj.getString("title"))
                     .setIngredientNames(ingredients)
                     .setHealthScore(obj.optInt("healthScore", -1))
                     .setCalories(extractCalories(obj, includeNutrition))
                     .build();
-
-            return recipe;
-
-
         }
         catch (IOException error) {
             throw new RecipeNotFoundException("Error retrieving recipe info: " + error.getMessage());
@@ -188,7 +157,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                         .build();
             }
 
-// Build instructions
+            // Build instructions
             final JSONObject instructionBlock = array.getJSONObject(0);
             final JSONArray steps = instructionBlock.getJSONArray("steps");
 
@@ -199,6 +168,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 final int number = step.optInt("number", i + 1);
                 final String text = step.getString("step");
 
+                // Always apply a new line after every 60 characters wrapAt60 () for GUI formatting
                 if (stepBreakdown) {
                     sb.append(number).append(". ").append(wrapAt60(text)).append("\n");
                 }
@@ -207,7 +177,7 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
                 }
             }
 
-// Return recipe with computed instructions
+            // Return recipe with computed instructions
             return Recipe.builder()
                     .setId(id)
                     .setInstructions(sb.toString().trim())
@@ -234,6 +204,39 @@ public class SpoonacularRecipeFetcher implements RecipeFetcher {
         return new JSONArray(json);
     }
 
+    // Helper: Extract all ingredients need for recipes.
+    private List<Ingredient> extractIngredients(JSONObject recipeObj) {
+        final List<Ingredient> ingredients = new ArrayList<>();
+
+        // Process used ingredients
+        final JSONArray used = recipeObj.getJSONArray("usedIngredients");
+        for (int i = 0; i < used.length(); i++) {
+            final JSONObject ingObj = used.getJSONObject(i);
+            ingredients.add(createIngredient(ingObj));
+        }
+
+        // Process missed ingredients
+        final JSONArray missed = recipeObj.getJSONArray("missedIngredients");
+        for (int i = 0; i < missed.length(); i++) {
+            final JSONObject ingObj = missed.getJSONObject(i);
+            ingredients.add(createIngredient(ingObj));
+        }
+
+        return ingredients;
+    }
+
+    // Helper: Create Ingredient objects
+    private Ingredient createIngredient(JSONObject ingObj) {
+        final String name = ingObj.getString("name");
+        final int id = ingObj.optInt("id", -1);
+
+        return Ingredient.builder()
+                .setName(name)
+                .setId(id)
+                .build();
+    }
+
+    // Helper: Process calorie information for recipes
     private int extractCalories(JSONObject obj, boolean includeNutrition) {
 
         int result = -1;
