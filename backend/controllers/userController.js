@@ -16,6 +16,26 @@ exports.signup = async (req, res) => {
     }
 };
 
+exports.exists = async (req, res) => {
+    try {
+        const { user_name } = req.body;
+
+        if ( !user_name ) {
+            return res.status(400).json({ error: "Missing user_name" });
+        }
+
+        const user = await userServices.findUser(user_name);
+
+        if (user) {
+            return res.json({ exists: true });
+        } else {
+            return res.json({ exists: false });
+        }
+    } catch (err) {
+        res.status(500).json({ error: "Server error" });
+    }
+}
+
 exports.login = async (req, res) => {
 
     try {
