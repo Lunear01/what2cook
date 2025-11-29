@@ -7,10 +7,14 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import dataaccess.InMemoryCookingListDataAccess;
 import dataaccess.UserDataAccesssObject;
 import entity.Ingredient;
 import entity.User;
 import entity.UserBuilder;
+import interface_adapter.cookinglist.AddToCookingListController;
+import interface_adapter.cookinglist.AddToCookingListPresenter;
+import interface_adapter.cookinglist.CookingListViewModel;
 import interface_adapter.ingredient_search.IngredientSearchViewModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
@@ -24,15 +28,17 @@ import interface_adapter.signup.SignupViewModel;
 import recipeapi.CachingRecipeFetcher;
 import recipeapi.RecipeFetcher;
 import recipeapi.SpoonacularRecipeFetcher;
+import use_case.cookinglist.AddToCookingListInputBoundary;
+import use_case.cookinglist.AddToCookingListInteractor;
+import use_case.cookinglist.AddToCookingListOutputBoundary;
+import use_case.cookinglist.CookingListDataAccessInterface;
 import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.recipe_search.RecipeSearchInputBoundary;
 import use_case.recipe_search.RecipeSearchInteractor;
 import use_case.signup.*;
-import view.IngredientSearchView;
-import view.LoginView;
-import view.RecipeSearchView;
-import view.SignupView;
+import view.*;
+
 
 public final class RecipeAppBuilder {
 
@@ -106,6 +112,30 @@ public final class RecipeAppBuilder {
                 new RecipeSearchView(recipeSearchViewModel);
         recipeSearchView.setController(recipeSearchController);
 
+        //cookinglist
+        final CookingListViewModel cookingListViewModel =
+                new CookingListViewModel();
+
+        final AddToCookingListOutputBoundary cookingListPresenter =
+                new AddToCookingListPresenter(cookingListViewModel);
+
+        final CookingListDataAccessInterface cookingListDao =
+                new InMemoryCookingListDataAccess();
+
+        final AddToCookingListInputBoundary addToCookingListInteractor =
+                new AddToCookingListInteractor(cookingListDao, cookingListPresenter);
+
+        final AddToCookingListController addToCookingListController =
+                new AddToCookingListController(addToCookingListInteractor);
+
+        final CookingListView cookingListView =
+                new CookingListView(cookingListViewModel);
+        recipeSearchView.setCookingListController(addToCookingListController);
+
+        recipeSearchView.setCookingListController(addToCookingListController);
+
+
+
         // --- Frame and card layout ---
         final JFrame frame = new JFrame("What2Cook");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -130,11 +160,15 @@ public final class RecipeAppBuilder {
         final String signup = "signup";
         final String ingredient = "ingredient";
         final String recipe = "recipe";
+        //
+        final String cooking = "cooking";
 
         cardPanel.add(loginView, login);
         cardPanel.add(signupView, signup);
         cardPanel.add(ingredientSearchView, ingredient);
         cardPanel.add(recipeSearchView, recipe);
+        //
+        cardPanel.add(cookingListView, cooking);
 
         // --- Navigation wiring ---
         loginView.setOnSwitchToSignup(() -> {
@@ -148,6 +182,9 @@ public final class RecipeAppBuilder {
         });
 
         loginView.setOnLoginSuccess(() -> {
+            final String username = loginViewModel.getState().getUsername();
+            recipeSearchView.setCurrentUsername(username);
+
             frame.setTitle("What2Cook - Ingredients");
             cardLayout.show(cardPanel, ingredient);
         });
@@ -174,6 +211,12 @@ public final class RecipeAppBuilder {
             frame.setTitle("What2Cook - Recipes");
             cardLayout.show(cardPanel, recipe);
         });
+
+        recipeSearchView.setOnOpenCookingList(() -> {
+            frame.setTitle("What2Cook - Cooking List");
+            cardLayout.show(cardPanel, cooking);
+        });
+
 
         frame.add(cardPanel);
         frame.setTitle("What2Cook - Login");

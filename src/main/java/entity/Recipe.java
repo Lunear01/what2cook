@@ -55,4 +55,15 @@ public class Recipe {
     public static RecipeBuilder builder() {
         return new RecipeBuilder();
     }
+
+    public RecipeBuilder toBuilder() {
+        return new RecipeBuilder()
+                .setId(this.recipeID)
+                .setTitle(this.title)
+                .setImage(this.image)
+                .setIngredientNames(this.ingredientNames)
+                .setHealthScore(this.healthScore)
+                .setCalories(this.calories)
+                .setInstructions(this.instructions);
+    }
     }
