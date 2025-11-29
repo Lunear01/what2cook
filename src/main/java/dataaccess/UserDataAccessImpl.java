@@ -1,18 +1,23 @@
 package dataaccess;
 
 import entity.User;
+
 import org.json.JSONObject;
+import use_case.cookinglist.UserDataAccessInterface;
+import use_case.login.LoginUserDataAccessInterface;
+import use_case.signup.SignupUserDataAccessInterface;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class UserDataAccessImpl implements UserDataAccess {
+public class UserDataAccessImpl implements UserDataAccessInterface,
+        LoginUserDataAccessInterface, SignupUserDataAccessInterface {
 
     private final String baseUrl = "http://localhost:3000/user";
 
     @Override
-    public void signUp(String userName, String email, String password) throws Exception {
+    public void save(User user) throws Exception {
         final URL url = new URL(baseUrl + "/signup");
         final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -21,9 +26,9 @@ public class UserDataAccessImpl implements UserDataAccess {
         conn.setDoOutput(true);
 
         final JSONObject body = new JSONObject();
-        body.put("user_name", userName);
-        body.put("email", email);
-        body.put("password", password);
+        body.put("user_name", user.getName());
+        body.put("email", user.getEmail());
+        body.put("password", user.getPassword());
 
         final OutputStream os = conn.getOutputStream();
         os.write(body.toString().getBytes());
@@ -33,7 +38,7 @@ public class UserDataAccessImpl implements UserDataAccess {
     }
 
     @Override
-    public User login(String userName, String password) throws Exception {
+    public User get(String userName, String password) throws Exception {
         final URL url = new URL(baseUrl + "/login");
         final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -66,5 +71,34 @@ public class UserDataAccessImpl implements UserDataAccess {
                 .withEmail(userJson.getString("email"))
                 .withPassword(userJson.getString("password"))
                 .build();
+    }
+
+    @Override
+    public boolean exists(String userName) throws Exception {
+        final URL url = new URL(baseUrl + "/exists");
+        final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setDoOutput(true);
+
+        final JSONObject body = new JSONObject();
+        body.put("user_name", userName);
+
+        final OutputStream os = conn.getOutputStream();
+        os.write(body.toString().getBytes());
+        os.flush();
+
+        final BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        final StringBuilder sb = new StringBuilder();
+        String line;
+
+        while ((line = br.readLine()) != null) {
+            sb.append(line);
+        }
+
+        final JSONObject res = new JSONObject(sb.toString());
+
+        return res.getBoolean("exists");
     }
 }
