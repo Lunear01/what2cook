@@ -5,18 +5,20 @@ import entity.User;
 public interface UserDataAccess {
     /**
      * Sign up the user.
-     * @param user_name user's name
-     * @param email user's email
-     * @param password user's password
+     * @param user the User
      */
-    void save(String user_name, String email, String password) throws Exception;
+    void save(User user) throws Exception;
 
     /**
      * Login the user.
-     * @param email user's email
+     * @param user_name user's name
      * @param password user's password
      */
-    User get(String email, String password) throws Exception;
+    User get(String user_name, String password) throws Exception;
 
-    boolean exists(String email) throws Exception;
+    /**
+     * Check if the user exists.
+     * @param user_name user's name
+     */
+    boolean exists(String user_name) throws Exception;
 }

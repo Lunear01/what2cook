@@ -12,7 +12,7 @@ public class UserDataAccessImpl implements UserDataAccess {
     private final String baseUrl = "http://localhost:3000/user";
 
     @Override
-    public void save(String userName, String email, String password) throws Exception {
+    public void save(User user) throws Exception {
         final URL url = new URL(baseUrl + "/signup");
         final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -21,9 +21,9 @@ public class UserDataAccessImpl implements UserDataAccess {
         conn.setDoOutput(true);
 
         final JSONObject body = new JSONObject();
-        body.put("user_name", userName);
-        body.put("email", email);
-        body.put("password", password);
+        body.put("user_name", user.getName());
+        body.put("email", user.getEmail());
+        body.put("password", user.getPassword());
 
         final OutputStream os = conn.getOutputStream();
         os.write(body.toString().getBytes());
