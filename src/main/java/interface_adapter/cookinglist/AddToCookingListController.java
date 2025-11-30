@@ -1,8 +1,8 @@
 package interface_adapter.cookinglist;
 
 import entity.Recipe;
-import use_case.cookinglist.AddToCookingListInputBoundary;
-import use_case.cookinglist.AddToCookingListInputData;
+import use_case.cookinglist.AddToCookingList.AddToCookingListInputBoundary;
+import use_case.cookinglist.AddToCookingList.AddToCookingListInputData;
 
 public class AddToCookingListController {
     private final AddToCookingListInputBoundary interactor;

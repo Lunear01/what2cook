@@ -1,7 +1,7 @@
 package interface_adapter.cookinglist;
 
-import use_case.cookinglist.AddToCookingListOutputBoundary;
-import use_case.cookinglist.AddToCookingListOutputData;
+import use_case.cookinglist.AddToCookingList.AddToCookingListOutputBoundary;
+import use_case.cookinglist.AddToCookingList.AddToCookingListOutputData;
 
 public class AddToCookingListPresenter implements AddToCookingListOutputBoundary {
 

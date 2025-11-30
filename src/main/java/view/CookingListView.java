@@ -22,7 +22,7 @@ import entity.Recipe;
 import interface_adapter.cookinglist.CookingListState;
 import interface_adapter.cookinglist.CookingListViewModel;
 import interface_adapter.cookinglist.SortCookingListController;
-import use_case.cookinglist.SortCookingListInputData.SortType;
+import use_case.cookinglist.SortCookingList.SortCookingListInputData.SortType;
 
 public class CookingListView extends JPanel implements PropertyChangeListener {
 

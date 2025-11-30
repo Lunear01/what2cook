@@ -1,8 +1,8 @@
 package interface_adapter.cookinglist;
 
-import use_case.cookinglist.SortCookingListInputBoundary;
-import use_case.cookinglist.SortCookingListInputData;
-import use_case.cookinglist.SortCookingListInputData.SortType;
+import use_case.cookinglist.SortCookingList.SortCookingListInputBoundary;
+import use_case.cookinglist.SortCookingList.SortCookingListInputData;
+import use_case.cookinglist.SortCookingList.SortCookingListInputData.SortType;
 
 /**
  * Controller for sorting the cooking list.

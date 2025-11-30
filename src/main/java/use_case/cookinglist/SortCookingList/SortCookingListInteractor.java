@@ -1,10 +1,11 @@
-package use_case.cookinglist;
+package use_case.cookinglist.SortCookingList;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 import entity.Recipe;
+import use_case.cookinglist.RecipeDataAccessInterface;
 
 /**
  * Interactor for sorting the cooking list.

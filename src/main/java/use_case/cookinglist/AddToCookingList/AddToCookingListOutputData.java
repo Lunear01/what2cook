@@ -1,4 +1,4 @@
-package use_case.cookinglist;
+package use_case.cookinglist.AddToCookingList;
 
 import java.util.List;
 

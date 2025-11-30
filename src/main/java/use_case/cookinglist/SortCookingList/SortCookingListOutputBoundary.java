@@ -1,4 +1,4 @@
-package use_case.cookinglist;
+package use_case.cookinglist.SortCookingList;
 
 /**
  * Output boundary interface for sorting the cooking list.
