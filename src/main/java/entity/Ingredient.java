@@ -33,6 +33,4 @@ public class Ingredient {
                 .setId(this.ingredientId);
     }
 
-
-
 }
