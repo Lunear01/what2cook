@@ -20,7 +20,6 @@ public class SortCookingListOutputData {
         this.sortedCookingList = sortedCookingList;
         this.message = message;
     }
-    // not recorded on github
 
     public List<Recipe> getSortedCookingList() {
         return sortedCookingList;

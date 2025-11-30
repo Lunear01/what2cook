@@ -9,5 +9,4 @@ public interface SortCookingListInputBoundary {
      * @param inputData the input data containing sort parameters
      */
     void execute(SortCookingListInputData inputData);
-    // not recorded on github
 }

@@ -25,10 +25,8 @@ public class SortCookingListInteractor implements SortCookingListInputBoundary {
         final SortCookingListInputData.SortType sortType = inputData.getSortType();
         final List<Recipe> currentList = getCurrentList(username);
 
-        // 创建副本进行排序
         final List<Recipe> sortedList = new ArrayList<>(currentList);
 
-        // 根据排序类型进行排序
         final String message = sortRecipes(sortedList, sortType);
 
         presenter.present(new SortCookingListOutputData(sortedList, message));
