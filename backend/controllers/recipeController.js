@@ -3,13 +3,13 @@ const db = require("../config/db");
 
 exports.addRecipe = async (req, res) => {
     try {
-        const { user_name, recipe_name, recipe_id, recipes } = req.body;
+        const { user_name, recipe_id, recipes } = req.body;
 
-        if (!user_name || !recipe_name || !recipe_id || !recipes) {
+        if (!user_name || !recipe_id || !recipes) {
             return res.status(400).json({ error: "Missing fields" });
         }
 
-        const result = await recipeServices.addRecipe(user_name, recipe_name, recipe_id, recipes);
+        const result = await recipeServices.addRecipe(user_name, recipe_id, recipes);
 
         res.json({
             success: true,
