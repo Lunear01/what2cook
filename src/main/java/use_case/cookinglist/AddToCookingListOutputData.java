@@ -13,7 +13,6 @@ public class AddToCookingListOutputData {
         this.message = message;
     }
 
-
     public List<Recipe> getUpdatedCookingList() {
         return updatedCookingList;
     }

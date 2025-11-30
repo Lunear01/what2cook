@@ -1,30 +1,32 @@
 package use_case.cookinglist;
 
-import entity.Recipe;
-import org.json.JSONObject;
-
 import java.util.List;
 
+import entity.Recipe;
+
+/**
+ * Interface for recipe data access operations.
+ */
 public interface RecipeDataAccessInterface {
     /**
-     * add the recipe.
+     * Add the recipe.
      * @param userName the name of current user
      * @param recipe the recipe that need to be added
      */
     void addRecipe(String userName, Recipe recipe);
 
     /**
-     * get the recipe.
+     * Get the recipe.
      * @param userName the name of the current user
      * @return the list of the recipes that was created by user.
      */
     List<Recipe> getAllRecipes(String userName);
 
     /**
-     * delete the recipe.
+     * Delete the recipe.
      * @param userName the name of the current user
      * @param recipeID the id of the recipe that need to be deleted
      */
     void deleteRecipe(String userName, int recipeID);
-//make sure this is under use_case/cookinglist
+    // make sure this is under use_case/cookinglist
 }
