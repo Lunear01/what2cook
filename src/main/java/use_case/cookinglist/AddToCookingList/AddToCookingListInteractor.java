@@ -1,8 +1,9 @@
-package use_case.cookinglist;
+package use_case.cookinglist.AddToCookingList;
 
 import java.util.List;
 
 import entity.Recipe;
+import use_case.cookinglist.RecipeDataAccessInterface;
 
 /**
  * Interactor for adding recipes to the cooking list.

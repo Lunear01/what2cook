@@ -1,7 +1,7 @@
 package interface_adapter.cookinglist;
 
-import use_case.cookinglist.SortCookingListOutputBoundary;
-import use_case.cookinglist.SortCookingListOutputData;
+import use_case.cookinglist.SortCookingList.SortCookingListOutputBoundary;
+import use_case.cookinglist.SortCookingList.SortCookingListOutputData;
 
 public class SortCookingListPresenter implements SortCookingListOutputBoundary {
 

@@ -16,7 +16,7 @@ import java.util.List;
 
 public class RecipeDataAccessObject implements RecipeDataAccessInterface {
 
-    private final String BASE_URL = "http://172.20.10.7:3000/recipe";
+    private final String BASE_URL = "http://172.20.10.13:3000/recipe";
 
     private static final String GET = "GET";
     private static final String POST = "POST";
@@ -44,7 +44,8 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
         final JSONArray ingredients = new JSONArray();
         for (Ingredient ingredient : recipe.getIngredients()) {
             final JSONObject ing = new JSONObject();
-            ing.put("name", ingredient.getName());
+            ing.put("ingredient_name", ingredient.getName());
+            ing.put("ingredient_id", ingredient.getIngredientId());
             ingredients.put(ing);
         }
 
@@ -59,7 +60,7 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
         final JSONObject body = new JSONObject();
         body.put("user_name", userName);
         body.put("recipe_id", recipe.getId());
-        body.put("recipe", recipeJson);
+        body.put("recipes", recipeJson);
 
         try {
             final OutputStream os = conn.getOutputStream();
