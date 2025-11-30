@@ -10,6 +10,8 @@ import javax.swing.JPanel;
 import dataaccess.RecipeDataAccessObject;
 import dataaccess.UserDataAccesssObject;
 import entity.Ingredient;
+import entity.User;
+import entity.UserBuilder;
 import interface_adapter.cookinglist.AddToCookingListController;
 import interface_adapter.cookinglist.AddToCookingListPresenter;
 import interface_adapter.cookinglist.CookingListViewModel;
@@ -68,6 +70,20 @@ public final class RecipeAppBuilder {
 
         // --- Data access (gateway) ---
         final UserDataAccesssObject userDao = new UserDataAccesssObject();
+
+        // --- Demo users ---
+//        final User user1 = new UserBuilder()
+//                .withName("jonathan_calver2")
+//                .withPassword("password123")
+//                .withEmail("39485@adf.com")
+//                .build();
+//        final User user2 = new UserBuilder()
+//                .withName("david")
+//                .withPassword("pass456")
+//                .withEmail("dkh.kim@mail.utoronto.com")
+//                .build();
+//  userDao.save(user1);
+//        userDao.save(user2);
 
         // --- Login wiring ---
         final LoginViewModel loginViewModel = new LoginViewModel();
@@ -139,13 +155,14 @@ public final class RecipeAppBuilder {
         final CookingListView cookingListView =
                 new CookingListView(cookingListViewModel, sortCookingListController);
 
+        recipeSearchView.setCookingListController(addToCookingListController);
+
         // --- Favorite list wiring ---
         final FavoriteListViewModel favoriteListViewModel =
                 new FavoriteListViewModel();
 
         final AddFavoriteRecipeOutputBoundary favoritePresenter =
                 new AddFavoriteRecipePresenter(favoriteListViewModel);
-        cookingListView.setOnOpenRecipe(recipeSearchController::openRecipe);
 
         final AddFavoriteRecipeDataAccessInterface favoriteDao =
                 new InMemoryFavoriteRecipeDataAccess();
@@ -159,8 +176,14 @@ public final class RecipeAppBuilder {
         final FavoriteListView favoriteListView =
                 new FavoriteListView(favoriteListViewModel);
 
-        // 让 recipe 搜索页能把菜加到 favorites
-        recipeSearchView.setFavoriteController(addFavoriteRecipeController);
+        favoriteListView.setFavoriteController(addFavoriteRecipeController);
+
+        recipeSearchController.setFavoriteController(addFavoriteRecipeController);
+
+        final RecipeInstructionView recipeInstructionView =
+                new RecipeInstructionView();
+
+        recipeInstructionView.setFavoriteController(addFavoriteRecipeController);
 
         // --- Frame and card layout ---
         final JFrame frame = new JFrame("What2Cook");
@@ -189,6 +212,12 @@ public final class RecipeAppBuilder {
         //
         final String cooking = "cooking";
         final String favorites = "favorites";
+        final String recipeInstruction = "recipeInstruction";
+
+        favoriteListView.setOnBackToRecipes(() -> {
+            frame.setTitle("What2Cook - Recipes");
+            cardLayout.show(cardPanel, recipe);
+        });
 
         cardPanel.add(loginView, login);
         cardPanel.add(signupView, signup);
@@ -197,7 +226,9 @@ public final class RecipeAppBuilder {
         //
         cardPanel.add(cookingListView, cooking);
         cardPanel.add(favoriteListView, favorites);
+        cardPanel.add(recipeInstructionView, recipeInstruction);
 
+        recipeInstructionView.setOnBackToRecipeList(() -> {
         // 设置 cooking list 的 back 按钮返回到 recipe 页面
         cookingListView.setOnBack(() -> {
             frame.setTitle("What2Cook - Recipes");
@@ -215,10 +246,18 @@ public final class RecipeAppBuilder {
             cardLayout.show(cardPanel, login);
         });
 
+        recipeSearchView.setOnOpenInstruction(recipeObj -> {
+            recipeInstructionView.setRecipe(recipeObj);
+            frame.setTitle("What2Cook - Instructions");
+            cardLayout.show(cardPanel, recipeInstruction);
+        });
+
         loginView.setOnLoginSuccess(() -> {
             final String username = loginViewModel.getState().getUsername();
             recipeSearchView.setCurrentUsername(username);
-
+            // recipeInstructionView.setCurrentUsername(username);
+            recipeSearchController.setCurrentUsername(username);
+            favoriteListView.setCurrentUsername(username);
             frame.setTitle("What2Cook - Ingredients");
             cardLayout.show(cardPanel, ingredient);
         });

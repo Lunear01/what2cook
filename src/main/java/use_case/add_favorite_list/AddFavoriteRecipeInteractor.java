@@ -50,5 +50,24 @@ public class AddFavoriteRecipeInteractor implements AddFavoriteRecipeInputBounda
                         recipe.getTitle() + " added to your favorites!"
                 )
         );
+
+    }
+
+    @Override
+    public void remove(AddFavoriteRecipeInputData inputData) {
+
+        final String username = inputData.getUsername();
+        final Recipe recipe = inputData.getRecipe();
+
+        favoritesDao.removeFromFavorites(username, recipe);
+
+        final List<Recipe> updated = favoritesDao.getFavorites(username);
+
+        presenter.present(
+                new AddFavoriteRecipeOutputData(
+                        updated,
+                        recipe.getTitle() + " removed from your favorites!"
+                )
+        );
     }
 }
