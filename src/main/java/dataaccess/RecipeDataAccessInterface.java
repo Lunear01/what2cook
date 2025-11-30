@@ -22,7 +22,7 @@ public interface RecipeDataAccessInterface {
 
     /**
      * delete the recipe.
-     * @param userName the name of current user
+     * @param userName the name of the current user
      * @param recipeID the id of the recipe that need to be deleted
      */
     void deleteRecipe(String userName, int recipeID);

@@ -93,7 +93,7 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         signupButton.addActionListener(this);
     }
 
-    /* ========= setters for controllers & callbacks ========= */
+    /* setters for controllers & callbacks*/
 
     public void setLoginController(LoginController controller) {
         this.loginController = controller;
@@ -127,8 +127,7 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         this.onLoginSuccess = onLoginSuccess;
     }
 
-    /* ================== 事件处理 ================== */
-
+    // Event Handling
     @Override
     public void actionPerformed(ActionEvent e) {
         final Object src = e.getSource();
@@ -137,21 +136,20 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
             if (loginController != null) {
                 final String username = usernameField.getText().trim();
                 final String password = new String(passwordField.getPassword());
-                // 清空错误提示
+                // Clear on error
                 errorLabel.setText(" ");
                 loginController.login(username, password);
             }
         }
         else if (src == signupButton) {
-            // 这里只负责通知外面切 view，真正的切换由 Main 里的 CardLayout 完成
+            // Change view
             if (onSwitchToSignup != null) {
                 onSwitchToSignup.run();
             }
         }
     }
 
-    /* ========== ViewModel 改变时，刷新界面 ========== */
-
+    // Refresh upon change in ViewModel
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
 
@@ -160,11 +158,10 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         if (newVal instanceof LoginState) {
             final LoginState state = (LoginState) newVal;
 
-            // 更新文本框（可选）
+            // Update text field
             usernameField.setText(state.getUsername());
-            // 密码一般不回显，不设置 passwordField
 
-            // 显示错误信息
+            // Display error message
             final String err = state.getErrorMessage();
             if (err != null && !err.isEmpty()) {
                 errorLabel.setText(err);
@@ -173,13 +170,12 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
                 errorLabel.setText(" ");
             }
 
-            // 如果已登录成功，通知 Main 切换界面
+            // If login successful, change view in Main
             if (state.isLoggedIn() && onLoginSuccess != null) {
                 onLoginSuccess.run();
             }
         }
 
-        // 没有 return —— Checkstyle OK
     }
 }
 
