@@ -1,15 +1,18 @@
 package use_case.cookinglist;
 
-import entity.Recipe;
-
 import java.util.List;
 
-public class AddToCookingListInteractor implements AddToCookingListInputBoundary {
+import entity.Recipe;
 
-    private final CookingListDataAccessInterface cookingListDao;
+/**
+ * Interactor for adding recipes to the cooking list.
+ */
+public class AddToCookingListInteractor implements AddToCookingListInputBoundary {
+    // make sure this is using recipe data access interface instead of cooking list interface
+    private final RecipeDataAccessInterface cookingListDao;
     private final AddToCookingListOutputBoundary presenter;
 
-    public AddToCookingListInteractor(CookingListDataAccessInterface cookingListDao,
+    public AddToCookingListInteractor(RecipeDataAccessInterface cookingListDao,
                                       AddToCookingListOutputBoundary presenter) {
         this.cookingListDao = cookingListDao;
         this.presenter = presenter;
@@ -17,16 +20,11 @@ public class AddToCookingListInteractor implements AddToCookingListInputBoundary
 
     @Override
     public void execute(AddToCookingListInputData inputData) {
-
         final String username = inputData.getUsername();
         final Recipe recipe = inputData.getRecipe();
-
-        // 1. 当前列表
-        final List<Recipe> currentList = cookingListDao.getCookingList(username);
-
-        // 2. 判断是否已经存在
+        final List<Recipe> currentList = cookingListDao.getAllRecipes(username);
         final boolean exists = currentList.stream()
-                .anyMatch(r -> r.getId() == recipe.getId());
+                .anyMatch(recipeItem -> recipeItem.getId() == recipe.getId());
 
         if (exists) {
             presenter.present(
@@ -35,18 +33,16 @@ public class AddToCookingListInteractor implements AddToCookingListInputBoundary
                             recipe.getTitle() + " is already in your cooking list."
                     )
             );
-            return;
         }
-
-        cookingListDao.addToCookingList(username, recipe);
-
-        final List<Recipe> updatedList = cookingListDao.getCookingList(username);
-
-        presenter.present(
-                new AddToCookingListOutputData(
-                        updatedList,
-                        recipe.getTitle() + " added to your cooking list!"
-                )
-        );
+        else {
+            cookingListDao.addRecipe(username, recipe);
+            final List<Recipe> updatedList = cookingListDao.getAllRecipes(username);
+            presenter.present(
+                    new AddToCookingListOutputData(
+                            updatedList,
+                            recipe.getTitle() + " added to your cooking list!"
+                    )
+            );
+        }
     }
 }

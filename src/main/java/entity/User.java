@@ -1,5 +1,6 @@
 package entity;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -8,6 +9,7 @@ public final class User {
     private final String name;
     private final String password;
     private final String email;
+    private final List<Recipe> favoriteRecipes;
     // private final List<Recipe> personalCookingList;
     // private final List<Ingredient> refrigerator;
 
@@ -16,6 +18,7 @@ public final class User {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.favoriteRecipes = new ArrayList<>();
         // this.personalCookingList = personalCookingList;
         // this.refrigerator = refrigerator;
     }

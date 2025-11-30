@@ -26,6 +26,7 @@ public class SpoonacularRecipeFetcherTest {
             for (Recipe r : recipes) {
                 System.out.println("Recipe: " + r.getTitle() + " (ID: " + r.getId() + ")");
                 System.out.println("Image: " + r.getImage());
+                System.out.println("Ingredients: " + r.getIngredients());
             }
 
             // Basic assertions to ensure it's not empty

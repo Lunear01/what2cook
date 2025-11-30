@@ -16,6 +16,8 @@ public class AddToCookingListPresenter implements AddToCookingListOutputBoundary
         if (outputData.getUpdatedCookingList() != null) {
             viewModel.setPersonalCookingList(outputData.getUpdatedCookingList());
         }
-        viewModel.setStatusMessage(outputData.getMessage());
+        if (outputData.getMessage() != null) {
+            viewModel.setStatusMessage(outputData.getMessage());
+        }
     }
 }

@@ -8,7 +8,6 @@ import entity.Recipe;
 public class CookingListState {
     private List<Recipe> personalCookingList = new ArrayList<>();
 
-
     private String statusMessage = "";
 
     public List<Recipe> getPersonalCookingList() {

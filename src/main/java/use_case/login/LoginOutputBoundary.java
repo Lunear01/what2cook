@@ -1,5 +1,8 @@
 package use_case.login;
 
+/**
+ * Output Boundary for the Login Use Case.
+ */
 public interface LoginOutputBoundary {
     /**
      * Presents the successful login result to the presenter.
