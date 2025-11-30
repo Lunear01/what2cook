@@ -1,7 +1,7 @@
 const db = require("../config/db");
 
 const recipeServices = {
-    async addRecipe(user_name, recipe_name, recipe_id, recipes){
+    async addRecipe(user_name, recipe_id, recipes){
         const [userRows] = await db.execute(
             "SELECT user_id FROM user WHERE user_name = ?",
             [user_name]
@@ -14,8 +14,8 @@ const recipeServices = {
         const user_id = userRows[0].user_id;
 
         const [result] = await db.execute(
-            "INSERT INTO recipe (user_id, recipe_name, recipe_id, recipes) VALUES (?, ?, ?, ?)",
-            [user_id, recipe_name, recipe_id, recipes]
+            "INSERT INTO recipe (user_id, recipe_id, recipes) VALUES (?, ?, ?)",
+            [user_id, recipe_id, recipes]
         );
         return result;
     },

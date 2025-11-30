@@ -19,7 +19,7 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
     private final String baseUrl = "http://172.20.10.3:3000/recipe";
 
     @Override
-    public void addRecipe(String userName, int recipeID, JSONObject recipe) {
+    public void addRecipe(String userName, Recipe recipe) {
         try {
             final URL url = new URI(baseUrl + "/add").toURL();
             final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -27,10 +27,24 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(true);
 
+            final JSONArray ingredients = new JSONArray();
+            for  (Ingredient ingredient : recipe.getIngredients()) {
+                final JSONObject ing = new JSONObject();
+                ing.put("name", ingredient.getName());
+            }
+
+            final JSONObject recipeJson = new JSONObject();
+            recipeJson.put("image", recipe.getImage());
+            recipeJson.put("ingredients", ingredients);
+            recipeJson.put("id", recipe.getId());
+            recipeJson.put("calories", recipe.getCalories());
+            recipeJson.put("instructions", recipe.getInstructions());
+            recipeJson.put("healthScore", recipe.getHealthScore());
+
             final JSONObject body = new JSONObject();
             body.put("user_name", userName);
-            body.put("recipe", recipe);
-            body.put("recipe_id", recipeID);
+            body.put("recipe_id", recipe.getId());
+            body.put("recipe", recipeJson);
 
             final OutputStream os = conn.getOutputStream();
             os.write(body.toString().getBytes());
