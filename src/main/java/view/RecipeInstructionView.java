@@ -41,7 +41,6 @@ public class RecipeInstructionView extends JPanel {
         add(addToFavoritesButton);
         add(Box.createVerticalStrut(10));
 
-        // 点击 “Add to Favorite List”
         addToFavoritesButton.addActionListener(e -> {
             if (favoriteController == null) {
                 JOptionPane.showMessageDialog(
@@ -71,32 +70,36 @@ public class RecipeInstructionView extends JPanel {
                 return;
             }
 
-            // 调用 use case：加入收藏
-            favoriteController.add(currentUsername, currentRecipe);
+            try {
+                favoriteController.add(currentUsername, currentRecipe);
 
-            // 弹出 OK 对话框
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Recipe added to your favorites.",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Recipe added to your favorites.",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
 
-            // OK 之后回到 recipe 列表
-            if (onBackToRecipeList != null) {
-                onBackToRecipeList.run();
+                if (onBackToRecipeList != null) {
+                    onBackToRecipeList.run();
+                }
+            }
+            catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Failed to add recipe to favorites: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
         });
     }
 
-    /** 在进入本页面时设置当前菜谱，并更新显示内容 */
     public void setRecipe(Recipe recipe) {
         this.currentRecipe = recipe;
 
         if (recipe != null) {
             titleLabel.setText("Instructions for: " + recipe.getTitle());
-            // 这里暂时只显示标题，你如果有真正的 instructions 字符串，
-            // 可以改成 instructionsArea.setText(recipe.getInstructions());
             instructionsArea.setText("Cooking instructions for this recipe...");
         }
         else {

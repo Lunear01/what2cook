@@ -184,6 +184,8 @@ public final class RecipeAppBuilder {
         final FavoriteListView favoriteListView =
                 new FavoriteListView(favoriteListViewModel);
 
+        favoriteListView.setFavoriteController(addFavoriteRecipeController);
+
         // --- Fridge wiring (Add / Get / Delete) ---
         final FridgeViewModel fridgeViewModel = new FridgeViewModel();
         final FridgePresenter fridgePresenter = new FridgePresenter(fridgeViewModel);
@@ -229,6 +231,8 @@ public final class RecipeAppBuilder {
         // 让 recipe 搜索页能把菜加到 favorites 和 cooking list
         recipeSearchView.setFavoriteController(addFavoriteRecipeController);
         recipeSearchView.setCookingListController(addToCookingListController);
+
+        recipeSearchController.setFavoriteController(addFavoriteRecipeController);
 
         // 让 cooking list 能打开 recipe details
         cookingListView.setOnOpenRecipe(recipeSearchController::openRecipe);
