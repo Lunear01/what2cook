@@ -8,7 +8,6 @@ import entity.Recipe;
 public class CookingListState {
     private List<Recipe> personalCookingList = new ArrayList<>();
 
-    // 状态提示信息，比如 “XXX added to your cooking list”
     private String statusMessage = "";
 
     public List<Recipe> getPersonalCookingList() {

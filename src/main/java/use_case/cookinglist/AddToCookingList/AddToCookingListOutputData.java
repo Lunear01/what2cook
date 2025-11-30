@@ -1,4 +1,4 @@
-package use_case.cookinglist;
+package use_case.cookinglist.AddToCookingList;
 
 import java.util.List;
 
@@ -12,7 +12,6 @@ public class AddToCookingListOutputData {
         this.updatedCookingList = updatedCookingList;
         this.message = message;
     }
-
 
     public List<Recipe> getUpdatedCookingList() {
         return updatedCookingList;

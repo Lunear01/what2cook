@@ -1,7 +1,7 @@
 package interface_adapter.cookinglist;
 
-import use_case.cookinglist.SortCookingListOutputBoundary;
-import use_case.cookinglist.SortCookingListOutputData;
+import use_case.cookinglist.SortCookingList.SortCookingListOutputBoundary;
+import use_case.cookinglist.SortCookingList.SortCookingListOutputData;
 
 public class SortCookingListPresenter implements SortCookingListOutputBoundary {
 
@@ -16,7 +16,6 @@ public class SortCookingListPresenter implements SortCookingListOutputBoundary {
         if (outputData.getSortedCookingList() != null) {
             viewModel.setPersonalCookingList(outputData.getSortedCookingList());
         }
-        // Bug #8 修复: 添加 null 检查
         if (outputData.getMessage() != null) {
             viewModel.setStatusMessage(outputData.getMessage());
         }

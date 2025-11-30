@@ -1,8 +1,8 @@
 package use_case.add_favorite_list;
 
-import entity.Recipe;
-
 import java.util.List;
+
+import entity.Recipe;
 
 public class AddFavoriteRecipeOutputData {
 

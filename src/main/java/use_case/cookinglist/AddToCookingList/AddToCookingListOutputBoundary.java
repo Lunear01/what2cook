@@ -1,4 +1,4 @@
-package use_case.cookinglist;
+package use_case.cookinglist.AddToCookingList;
 
 public interface AddToCookingListOutputBoundary {
     /**

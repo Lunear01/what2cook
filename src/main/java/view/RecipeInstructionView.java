@@ -1,10 +1,19 @@
 package view;
 
+import java.awt.Component;
+import java.awt.Dimension;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
 import entity.Recipe;
 import interface_adapter.favoritelist.AddFavoriteRecipeController;
-
-import javax.swing.*;
-import java.awt.*;
 
 /**
  * Shows instructions for one recipe, with a button to add it to favorites.
@@ -21,6 +30,7 @@ public class RecipeInstructionView extends JPanel {
     private final JTextArea instructionsArea = new JTextArea(10, 40);
     private final JButton addToFavoritesButton =
             new JButton("Add to Favorites");
+    private final String errorE = "Error";
 
     public RecipeInstructionView() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -31,23 +41,25 @@ public class RecipeInstructionView extends JPanel {
         instructionsArea.setLineWrap(true);
         instructionsArea.setWrapStyleWord(true);
         final JScrollPane scrollPane = new JScrollPane(instructionsArea);
-        scrollPane.setPreferredSize(new Dimension(450, 250));
+        final int scrollPaneWidth = 450;
+        final int scrollPaneHeight = 250;
+        scrollPane.setPreferredSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
 
-        add(Box.createVerticalStrut(10));
+        final int verticalStrutHeight = 10;
+        add(Box.createVerticalStrut(verticalStrutHeight));
         add(titleLabel);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(verticalStrutHeight));
         add(scrollPane);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(verticalStrutHeight));
         add(addToFavoritesButton);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(verticalStrutHeight));
 
-        // 点击 “Add to Favorite List”
         addToFavoritesButton.addActionListener(e -> {
             if (favoriteController == null) {
                 JOptionPane.showMessageDialog(
                         this,
                         "Favorite feature is not configured.",
-                        "Error",
+                        errorE,
                         JOptionPane.ERROR_MESSAGE
                 );
                 return;
@@ -56,7 +68,7 @@ public class RecipeInstructionView extends JPanel {
                 JOptionPane.showMessageDialog(
                         this,
                         "User is not logged in.",
-                        "Error",
+                        errorE,
                         JOptionPane.ERROR_MESSAGE
                 );
                 return;
@@ -65,38 +77,47 @@ public class RecipeInstructionView extends JPanel {
                 JOptionPane.showMessageDialog(
                         this,
                         "No recipe selected.",
-                        "Error",
+                        errorE,
                         JOptionPane.ERROR_MESSAGE
                 );
                 return;
             }
 
-            // 调用 use case：加入收藏
-            favoriteController.add(currentUsername, currentRecipe);
+            try {
+                favoriteController.add(currentUsername, currentRecipe);
 
-            // 弹出 OK 对话框
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Recipe added to your favorites.",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Recipe added to your favorites.",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
 
-            // OK 之后回到 recipe 列表
-            if (onBackToRecipeList != null) {
-                onBackToRecipeList.run();
+                if (onBackToRecipeList != null) {
+                    onBackToRecipeList.run();
+                }
+            }
+            catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Failed to add recipe to favorites: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
         });
     }
 
-    /** 在进入本页面时设置当前菜谱，并更新显示内容 */
+    /**
+     * Updates the instruction view with the given recipe.
+     *
+     * @param recipe the recipe to display, or null to clear the view
+     */
     public void setRecipe(Recipe recipe) {
         this.currentRecipe = recipe;
 
         if (recipe != null) {
             titleLabel.setText("Instructions for: " + recipe.getTitle());
-            // 这里暂时只显示标题，你如果有真正的 instructions 字符串，
-            // 可以改成 instructionsArea.setText(recipe.getInstructions());
             instructionsArea.setText("Cooking instructions for this recipe...");
         }
         else {

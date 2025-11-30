@@ -28,6 +28,12 @@ public class AddFavoriteRecipeController {
         interactor.execute(inputData);
     }
 
+    /**
+     * Removes the given recipe from the user's favorite list.
+     *
+     * @param username the user whose favorite list is modified
+     * @param recipe   the recipe to remove
+     */
     public void remove(String username, Recipe recipe) {
         final AddFavoriteRecipeInputData inputData =
                 new AddFavoriteRecipeInputData(username, recipe);

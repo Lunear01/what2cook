@@ -18,10 +18,8 @@ public class AddFavoriteRecipePresenter implements AddFavoriteRecipeOutputBounda
     @Override
     public void present(AddFavoriteRecipeOutputData outputData) {
         if (outputData.getFavorites() != null) {
-            // 更新收藏列表
             viewModel.setFavoriteList(outputData.getFavorites());
         }
-        // 更新状态信息
         viewModel.setStatusMessage(outputData.getMessage());
     }
 }

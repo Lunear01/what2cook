@@ -39,7 +39,7 @@ public class FridgeViewModel {
      * @param newState the new state to set.
      */
     public void setState(FridgeState newState) {
-        FridgeState oldState = this.state;
+        final FridgeState oldState = this.state;
         this.state = newState;
         pcs.firePropertyChange("fridge", oldState, newState);
     }
@@ -51,7 +51,7 @@ public class FridgeViewModel {
      * @param ingredients the updated ingredient list.
      */
     public void update(List<String> ingredients) {
-        FridgeState newState = new FridgeState(new ArrayList<>(ingredients));
+        final FridgeState newState = new FridgeState(new ArrayList<>(ingredients));
         setState(newState);
     }
 }
