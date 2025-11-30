@@ -1,9 +1,12 @@
 package interface_adapter.cookinglist;
 
-import use_case.cookinglist.SortCookingListInputBoundary;
-import use_case.cookinglist.SortCookingListInputData;
-import use_case.cookinglist.SortCookingListInputData.SortType;
+import use_case.cookinglist.SortCookingList.SortCookingListInputBoundary;
+import use_case.cookinglist.SortCookingList.SortCookingListInputData;
+import use_case.cookinglist.SortCookingList.SortCookingListInputData.SortType;
 
+/**
+ * Controller for sorting the cooking list.
+ */
 public class SortCookingListController {
     private final SortCookingListInputBoundary interactor;
 
@@ -12,10 +15,10 @@ public class SortCookingListController {
     }
 
     /**
-     * 对指定用户的烹饪列表进行排序
+     * Sort the cooking list for the specified user.
      *
-     * @param username 用户名
-     * @param sortType 排序类型（按健康分数或卡路里）
+     * @param username the username.
+     * @param sortType the sort type (by health score or calories).
      */
     public void sort(String username, SortType sortType) {
         final SortCookingListInputData inputData =

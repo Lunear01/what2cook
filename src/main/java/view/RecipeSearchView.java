@@ -45,7 +45,6 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     private final JButton backButton = new JButton("Back");
     private final JButton addToCookingListButton = new JButton("Add to Cooking List");
     private final JButton viewCookingListButton = new JButton("View My Cooking List");
-    private final JButton addToFavoritesButton = new JButton("Add to Favorites");
     private final JButton viewFavoritesButton = new JButton("View My Favorites");
 
     private Recipe selectedRecipe;
@@ -60,6 +59,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     private Consumer<Recipe> onOpenInstruction;
 
     private String currentUsername;
+    private final String errorE = "Error";
 
     public RecipeSearchView(RecipeSearchViewModel viewModel) {
         this.viewModel = viewModel;
@@ -81,7 +81,6 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
 
         addToCookingListButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         viewCookingListButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        addToFavoritesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         viewFavoritesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
 
@@ -107,8 +106,6 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
             }
         });
 
-        addToFavoritesButton.addActionListener(event -> handleAddToFavorites());
-
         viewFavoritesButton.addActionListener(event -> {
             if (onOpenFavorites != null) {
                 onOpenFavorites.run();
@@ -125,7 +122,6 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         add(resultsCountLabel);
 
         add(addToCookingListButton);
-        add(addToFavoritesButton);
         add(viewCookingListButton);
         add(viewFavoritesButton);
     }
@@ -137,90 +133,49 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     }
 
     private void handleAddToCookingList() {
+
+        boolean canProceed = true;
+
         if (cookingListController == null) {
             JOptionPane.showMessageDialog(
                     this,
                     "Cooking list is not configured.",
-                    "Error",
+                    errorE,
                     JOptionPane.ERROR_MESSAGE
             );
-            return;
+            canProceed = false;
         }
-        if (currentUsername == null || currentUsername.isEmpty()) {
+        else if (currentUsername == null || currentUsername.isEmpty()) {
             JOptionPane.showMessageDialog(
                     this,
                     "User is not logged in.",
-                    "Error",
+                    errorE,
                     JOptionPane.ERROR_MESSAGE
             );
-            return;
+            canProceed = false;
         }
-        if (selectedRecipe == null) {
+        else if (selectedRecipe == null) {
             JOptionPane.showMessageDialog(
                     this,
                     "Please click a recipe card first.",
                     "No recipe selected",
                     JOptionPane.WARNING_MESSAGE
             );
-            return;
+            canProceed = false;
         }
-        try {
-            cookingListController.add(currentUsername, selectedRecipe);
-        }
-        catch (RuntimeException ex) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Failed to add recipe to cooking list: " + ex.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-        }
-    }
 
-    private void handleAddToFavorites() {
-        if (favoriteController == null) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Favorite feature is not configured.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
-        if (currentUsername == null || currentUsername.isEmpty()) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "User is not logged in.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-            return;
-        }
-        if (selectedRecipe == null) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Please click a recipe card first.",
-                    "No recipe selected",
-                    JOptionPane.WARNING_MESSAGE
-            );
-            return;
-        }
-        try {
-            favoriteController.add(currentUsername, selectedRecipe);
-            JOptionPane.showMessageDialog(
-                    this,
-                    selectedRecipe.getTitle() + " added to your favorites!",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-        }
-        catch (RuntimeException ex) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Failed to add recipe to favorites: " + ex.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+        if (canProceed) {
+            try {
+                cookingListController.add(currentUsername, selectedRecipe);
+            }
+            catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Failed to add recipe to cooking list: " + ex.getMessage(),
+                        errorE,
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
         }
     }
 
@@ -242,7 +197,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
                 JOptionPane.showMessageDialog(
                         this,
                         state.getError(),
-                        "Error",
+                        errorE,
                         JOptionPane.ERROR_MESSAGE
                 );
             }
@@ -321,9 +276,6 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
 
                 if (controller != null) {
                     controller.openRecipe(recipe);
-                }
-                if (onOpenInstruction != null) {
-                    onOpenInstruction.accept(recipe);
                 }
             }
         });

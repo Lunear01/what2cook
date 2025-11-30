@@ -3,12 +3,12 @@ package use_case.fridge.AddToFridge;
 public class AddToFridgeRequestModel {
     private final String username;
     private final int ingredientId;
-    private final String ingredient_name;
+    private final String ingredientName;
 
     public AddToFridgeRequestModel(String username, int ingredientId, String ingredient_name) {
         this.username = username;
         this.ingredientId = ingredientId;
-        this.ingredient_name = ingredient_name;
+        this.ingredientName = ingredient_name;
     }
 
     public String getUserName() {
@@ -20,7 +20,7 @@ public class AddToFridgeRequestModel {
     }
 
     public String getIngredientName() {
-        return ingredient_name;
+        return ingredientName;
     }
 
 }

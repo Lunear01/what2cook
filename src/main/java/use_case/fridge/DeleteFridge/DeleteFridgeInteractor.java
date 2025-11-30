@@ -17,7 +17,7 @@ public class DeleteFridgeInteractor implements DeleteFridgeInputBoundary {
 
         fridgeDataAccess.deleteIngredient(requestModel.getUserName(), requestModel.getIngredientId());
 
-        DeleteFridgeResponseModel response = new DeleteFridgeResponseModel(
+        final DeleteFridgeResponseModel response = new DeleteFridgeResponseModel(
                 requestModel.getUserName(),
                 requestModel.getIngredientId()
         );

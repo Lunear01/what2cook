@@ -1,7 +1,7 @@
 package interface_adapter.cookinglist;
 
-import use_case.cookinglist.AddToCookingListOutputBoundary;
-import use_case.cookinglist.AddToCookingListOutputData;
+import use_case.cookinglist.AddToCookingList.AddToCookingListOutputBoundary;
+import use_case.cookinglist.AddToCookingList.AddToCookingListOutputData;
 
 public class AddToCookingListPresenter implements AddToCookingListOutputBoundary {
 
@@ -16,7 +16,6 @@ public class AddToCookingListPresenter implements AddToCookingListOutputBoundary
         if (outputData.getUpdatedCookingList() != null) {
             viewModel.setPersonalCookingList(outputData.getUpdatedCookingList());
         }
-        // Bug #7 修复: 添加 null 检查
         if (outputData.getMessage() != null) {
             viewModel.setStatusMessage(outputData.getMessage());
         }

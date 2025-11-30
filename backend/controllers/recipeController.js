@@ -1,5 +1,4 @@
 const recipeServices = require("../services/recipeServices");
-const db = require("../config/db");
 
 exports.addRecipe = async (req, res) => {
     try {
@@ -18,7 +17,7 @@ exports.addRecipe = async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: err.message || "Failed to add recipe" });
+        res.status(500).json({ success: false, error: err.message || "Failed to add recipe" });
     }
 };
 
@@ -54,5 +53,24 @@ exports.deleteRecipe = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: err.message || "Failed to delete Recipe" });
+    }
+};
+
+
+exports.exists = async (req, res) => {
+    try {
+        const { user_name, recipe_id } = req.params;
+
+        if (!user_name || !recipe_id) {
+            return res.status(400).json({ error: "Missing fields" });
+        }
+
+        const result = await recipeServices.findRecipe(user_name, recipe_id);
+
+        return res.json({ exists: !!result });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
     }
 };

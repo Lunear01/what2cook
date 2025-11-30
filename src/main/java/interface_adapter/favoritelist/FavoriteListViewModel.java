@@ -28,7 +28,6 @@ public class FavoriteListViewModel extends ViewModel<FavoriteListState> {
         final FavoriteListState state = getState();
         state.setFavoriteList(recipes);
         setState(state);
-        // property 名你可以自定义, 对应 View 里加监听
         firePropertyChanged("favorites");
     }
 
