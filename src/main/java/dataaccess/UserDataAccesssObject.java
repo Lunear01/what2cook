@@ -121,7 +121,7 @@ public class UserDataAccesssObject implements
     public boolean existsByName(String userName) {
         final URL url;
         try {
-            url = new URI(baseUrl + "/exists" + userName).toURL();
+            url = new URI(baseUrl + "/" + userName).toURL();
         }
         catch (URISyntaxException e) {
             System.out.println(e.getMessage());
