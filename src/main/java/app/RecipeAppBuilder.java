@@ -176,14 +176,9 @@ public final class RecipeAppBuilder {
         final FavoriteListView favoriteListView =
                 new FavoriteListView(favoriteListViewModel);
 
-        favoriteListView.setFavoriteController(addFavoriteRecipeController);
-
-        recipeSearchController.setFavoriteController(addFavoriteRecipeController);
-
-        final RecipeInstructionView recipeInstructionView =
-                new RecipeInstructionView();
-
-        recipeInstructionView.setFavoriteController(addFavoriteRecipeController);
+        // 让 recipe 搜索页能把菜加到 favorites 和 cooking list
+        recipeSearchView.setFavoriteController(addFavoriteRecipeController);
+        recipeSearchView.setCookingListController(addToCookingListController);
 
         // --- Frame and card layout ---
         final JFrame frame = new JFrame("What2Cook");
