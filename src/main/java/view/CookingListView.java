@@ -1,15 +1,26 @@
 package view;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.function.Consumer;
 
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
+
 import entity.Recipe;
-import interface_adapter.cookinglist.CookingListViewModel;
 import interface_adapter.cookinglist.CookingListState;
+import interface_adapter.cookinglist.CookingListViewModel;
 import interface_adapter.cookinglist.SortCookingListController;
 import use_case.cookinglist.SortCookingListInputData.SortType;
 
@@ -58,57 +69,70 @@ public class CookingListView extends JPanel implements PropertyChangeListener {
         add(scrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        recipeList.addMouseListener(new java.awt.event.MouseAdapter() {
+        recipeList.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                if (e.getClickCount() == 2 && !recipeList.isSelectionEmpty()) {
-                    final int index = recipeList.getSelectedIndex();
-                    final java.util.List<Recipe> list = viewModel.getPersonalCookingList();
-                    if (index >= 0 && index < list.size() && onOpenRecipe != null) {
-                        final Recipe selected = list.get(index);
-                        onOpenRecipe.accept(selected);
-                    }
-                }
+            public void mouseClicked(MouseEvent event) {
+                handleRecipeDoubleClick(event);
             }
         });
 
-        backButton.addActionListener(e -> {
+        backButton.addActionListener(event -> {
             if (onBack != null) {
                 onBack.run();
             }
         });
 
-        sortByHealthButton.addActionListener(e -> {
-            if (currentUsername != null) {
-                try {
-                    sortController.sort(currentUsername, SortType.BY_HEALTH_SCORE);
-                } catch (RuntimeException ex) {
-                    JOptionPane.showMessageDialog(
-                            this,
-                            "Failed to sort: " + ex.getMessage(),
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE
-                    );
-                }
-            }
+        sortByHealthButton.addActionListener(event -> {
+            handleSortByHealth();
         });
 
-        sortByCaloriesButton.addActionListener(e -> {
-            if (currentUsername != null) {
-                try {
-                    sortController.sort(currentUsername, SortType.BY_CALORIES);
-                } catch (RuntimeException ex) {
-                    JOptionPane.showMessageDialog(
-                            this,
-                            "Failed to sort: " + ex.getMessage(),
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE
-                    );
-                }
-            }
+        sortByCaloriesButton.addActionListener(event -> {
+            handleSortByCalories();
         });
 
         updateFromState(viewModel.getState());
+    }
+
+    private void handleRecipeDoubleClick(MouseEvent event) {
+        if (event.getClickCount() == 2 && !recipeList.isSelectionEmpty()) {
+            final int index = recipeList.getSelectedIndex();
+            final List<Recipe> list = viewModel.getPersonalCookingList();
+            if (index >= 0 && index < list.size() && onOpenRecipe != null) {
+                final Recipe selected = list.get(index);
+                onOpenRecipe.accept(selected);
+            }
+        }
+    }
+
+    private void handleSortByHealth() {
+        if (currentUsername != null) {
+            try {
+                sortController.sort(currentUsername, SortType.BY_HEALTH_SCORE);
+            }
+            catch (Exception ex) {
+                showErrorDialog("Failed to sort: " + ex.getMessage());
+            }
+        }
+    }
+
+    private void handleSortByCalories() {
+        if (currentUsername != null) {
+            try {
+                sortController.sort(currentUsername, SortType.BY_CALORIES);
+            }
+            catch (Exception ex) {
+                showErrorDialog("Failed to sort: " + ex.getMessage());
+            }
+        }
+    }
+
+    private void showErrorDialog(String message) {
+        JOptionPane.showMessageDialog(
+                this,
+                message,
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+        );
     }
 
     private void updateFromState(CookingListState state) {
