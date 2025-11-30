@@ -24,14 +24,12 @@ public class AddToFridgeInteractorTest {
     private static final class FakeFridgeDao implements IngredientDataAccessInterface {
 
         String lastUsername;
-        int lastIngredientId;
         String lastIngredientName;
         int addCalls;
 
         @Override
-        public void addIngredient(String username, int ingredientId, String ingredientName) {
+        public void addIngredient(String username, String ingredientName) {
             this.lastUsername = username;
-            this.lastIngredientId = ingredientId;
             this.lastIngredientName = ingredientName;
             this.addCalls++;
         }
@@ -40,6 +38,11 @@ public class AddToFridgeInteractorTest {
         public void deleteIngredient(String username, int ingredientId) {
             // Not used in this test.
             throw new UnsupportedOperationException("deleteIngredient not used in this test");
+        }
+
+        @Override
+        public boolean exists(String username, int ingredientID) {
+            return false;
         }
 
         @Override
@@ -84,7 +87,6 @@ public class AddToFridgeInteractorTest {
         // DAO should be called once with correct values
         assertEquals(1, dao.addCalls);
         assertEquals("alice", dao.lastUsername);
-        assertEquals(42, dao.lastIngredientId);
         assertEquals("eggs", dao.lastIngredientName);
 
         // Presenter should receive the same response model
