@@ -7,7 +7,7 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import dataaccess.InMemoryCookingListDataAccessInterface;
+import dataaccess.RecipeDataAccessObject;
 import dataaccess.UserDataAccesssObject;
 import entity.Ingredient;
 import entity.User;
@@ -15,6 +15,8 @@ import entity.UserBuilder;
 import interface_adapter.cookinglist.AddToCookingListController;
 import interface_adapter.cookinglist.AddToCookingListPresenter;
 import interface_adapter.cookinglist.CookingListViewModel;
+import interface_adapter.cookinglist.SortCookingListController;
+import interface_adapter.cookinglist.SortCookingListPresenter;
 import interface_adapter.ingredient_search.IngredientSearchViewModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
@@ -31,7 +33,10 @@ import recipeapi.SpoonacularRecipeFetcher;
 import use_case.cookinglist.AddToCookingListInputBoundary;
 import use_case.cookinglist.AddToCookingListInteractor;
 import use_case.cookinglist.AddToCookingListOutputBoundary;
-import use_case.cookinglist.CookingListDataAccessInterface;
+import use_case.cookinglist.RecipeDataAccessInterface;
+import use_case.cookinglist.SortCookingListInputBoundary;
+import use_case.cookinglist.SortCookingListInteractor;
+import use_case.cookinglist.SortCookingListOutputBoundary;
 import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.recipe_search.RecipeSearchInputBoundary;
@@ -128,8 +133,8 @@ public final class RecipeAppBuilder {
         final AddToCookingListOutputBoundary cookingListPresenter =
                 new AddToCookingListPresenter(cookingListViewModel);
 
-        final CookingListDataAccessInterface cookingListDao =
-                new InMemoryCookingListDataAccessInterface();
+        final RecipeDataAccessInterface cookingListDao =
+                new RecipeDataAccessObject();
 
         final AddToCookingListInputBoundary addToCookingListInteractor =
                 new AddToCookingListInteractor(cookingListDao, cookingListPresenter);
@@ -137,8 +142,18 @@ public final class RecipeAppBuilder {
         final AddToCookingListController addToCookingListController =
                 new AddToCookingListController(addToCookingListInteractor);
 
+        // 排序功能的组件
+        final SortCookingListOutputBoundary sortCookingListPresenter =
+                new SortCookingListPresenter(cookingListViewModel);
+
+        final SortCookingListInputBoundary sortCookingListInteractor =
+                new SortCookingListInteractor(cookingListDao, sortCookingListPresenter);
+
+        final SortCookingListController sortCookingListController =
+                new SortCookingListController(sortCookingListInteractor);
+
         final CookingListView cookingListView =
-                new CookingListView(cookingListViewModel);
+                new CookingListView(cookingListViewModel, sortCookingListController);
 
         recipeSearchView.setCookingListController(addToCookingListController);
 
@@ -214,6 +229,8 @@ public final class RecipeAppBuilder {
         cardPanel.add(recipeInstructionView, recipeInstruction);
 
         recipeInstructionView.setOnBackToRecipeList(() -> {
+        // 设置 cooking list 的 back 按钮返回到 recipe 页面
+        cookingListView.setOnBack(() -> {
             frame.setTitle("What2Cook - Recipes");
             cardLayout.show(cardPanel, recipe);
         });
@@ -268,6 +285,10 @@ public final class RecipeAppBuilder {
         });
 
         recipeSearchView.setOnOpenCookingList(() -> {
+            // 设置当前用户名以支持排序功能
+            final String username = loginViewModel.getState().getUsername();
+            cookingListView.setCurrentUsername(username);
+
             frame.setTitle("What2Cook - Cooking List");
             cardLayout.show(cardPanel, cooking);
         });

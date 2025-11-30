@@ -1,15 +1,18 @@
 package use_case.cookinglist;
 
+import entity.Ingredient;
 import entity.Recipe;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.List;
 
 public class AddToCookingListInteractor implements AddToCookingListInputBoundary {
 
-    private final CookingListDataAccessInterface cookingListDao;
+    private final RecipeDataAccessInterface cookingListDao;
     private final AddToCookingListOutputBoundary presenter;
 
-    public AddToCookingListInteractor(CookingListDataAccessInterface cookingListDao,
+    public AddToCookingListInteractor(RecipeDataAccessInterface cookingListDao,
                                       AddToCookingListOutputBoundary presenter) {
         this.cookingListDao = cookingListDao;
         this.presenter = presenter;
@@ -22,7 +25,7 @@ public class AddToCookingListInteractor implements AddToCookingListInputBoundary
         final Recipe recipe = inputData.getRecipe();
 
         // 1. 当前列表
-        final List<Recipe> currentList = cookingListDao.getCookingList(username);
+        final List<Recipe> currentList = cookingListDao.getAllRecipes(username);
 
         // 2. 判断是否已经存在
         final boolean exists = currentList.stream()
@@ -38,9 +41,11 @@ public class AddToCookingListInteractor implements AddToCookingListInputBoundary
             return;
         }
 
-        cookingListDao.addToCookingList(username, recipe);
+        // 将 Recipe 转换为 JSONObject 并添加
+        final JSONObject recipeJSON = recipeToJSON(recipe);
+        cookingListDao.addRecipe(username, recipe.getId(), recipeJSON);
 
-        final List<Recipe> updatedList = cookingListDao.getCookingList(username);
+        final List<Recipe> updatedList = cookingListDao.getAllRecipes(username);
 
         presenter.present(
                 new AddToCookingListOutputData(
@@ -48,5 +53,30 @@ public class AddToCookingListInteractor implements AddToCookingListInputBoundary
                         recipe.getTitle() + " added to your cooking list!"
                 )
         );
+    }
+
+    /**
+     * 将 Recipe 对象转换为 JSONObject
+     */
+    private JSONObject recipeToJSON(Recipe recipe) {
+        final JSONObject json = new JSONObject();
+        json.put("recipeID", recipe.getId());
+        json.put("title", recipe.getTitle());
+        json.put("calories", recipe.getCalories());
+        json.put("healthScore", recipe.getHealthScore());
+        json.put("instructions", recipe.getInstructions());
+        json.put("image", recipe.getImage());
+
+        // 转换 ingredients
+        final JSONArray ingredientsArray = new JSONArray();
+        for (Ingredient ingredient : recipe.getIngredients()) {
+            final JSONObject ingredientJSON = new JSONObject();
+            ingredientJSON.put("ingredient_id", ingredient.getIngredientId());
+            ingredientJSON.put("ingredient_name", ingredient.getName());
+            ingredientsArray.put(ingredientJSON);
+        }
+        json.put("ingredientNames", ingredientsArray);
+
+        return json;
     }
 }
