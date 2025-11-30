@@ -249,4 +249,48 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
             throw new RuntimeException("Failed to delete recipe");
         }
     }
+
+    @Override
+    public boolean exists(String userName, int recipeID) {
+        final HttpURLConnection conn;
+        try {
+            final URL url = new URI(baseUrl + userName + "/exists/" + recipeID).toURL();
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod(GET);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(false);
+        }
+        catch (URISyntaxException uriSyntaxException) {
+            System.out.println("Invalid URI syntax");
+            throw new RuntimeException(uriSyntaxException);
+        }
+        catch (IOException ioException) {
+            throw new RuntimeException(ioException);
+        }
+
+        final StringBuilder sb = new StringBuilder();
+
+        try {
+            final BufferedReader br;
+
+            if (conn.getResponseCode() >= 200 && conn.getResponseCode() < 300) {
+                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            }
+            else {
+                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            }
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+        }
+        catch (IOException event) {
+            throw new RuntimeException(event);
+        }
+
+        final JSONObject res = new JSONObject(sb.toString());
+
+        return res.getBoolean("exists");
+    }
 }
