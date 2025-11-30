@@ -2,6 +2,10 @@ package use_case.login;
 
 import entity.User;
 
+/**
+ * Data Access Interface for the Login Use Case.
+ * Used to retrieve and save users from the database
+ */
 public interface LoginUserDataAccessInterface {
     /**
      * Returns the user with the given username, or {@code null} if no such user exists.
@@ -13,7 +17,7 @@ public interface LoginUserDataAccessInterface {
     User get(String username, String password);
 
     /**
-     * Saves the given user to the underlying data store.
+     * Saves the given user to the backend database.
      *
      * @param user the user to save
      */

@@ -10,11 +10,20 @@ public class LoginInteractor implements LoginInputBoundary {
     private final LoginUserDataAccessInterface userDataAccess;
     private final LoginOutputBoundary presenter;
 
+    /**
+     * Constructor for the LoginInteractor.
+     * @param userDataAccess the data access object for the user table
+     * @param presenter the presenter for the Login use case.
+     */
     public LoginInteractor(LoginUserDataAccessInterface userDataAccess, LoginOutputBoundary presenter) {
         this.userDataAccess = userDataAccess;
         this.presenter = presenter;
     }
 
+    /**
+     * Executes the Login use case.
+     * @param inputData the input data containing the user's login credentials.
+     */
     @Override
     public void execute(LoginInputData inputData) {
 
@@ -32,7 +41,7 @@ public class LoginInteractor implements LoginInputBoundary {
             errorMessage = "Password cannot be empty";
         }
         else {
-            // Get user
+            // Get user from the backend
             final User user = userDataAccess.get(username, password);
 
             if (user == null) {
@@ -47,7 +56,7 @@ public class LoginInteractor implements LoginInputBoundary {
             }
         }
 
-        // Now exactly ONE return path
+        // Now we have exactly ONE return path.
         if (errorMessage != null) {
             presenter.presentFailure(errorMessage);
         }

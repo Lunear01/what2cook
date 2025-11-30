@@ -58,7 +58,7 @@ public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
 
                     final Recipe updated = recipe.toBuilder()
                             .setHealthScore(info.getHealthScore())
-                            .setIngredientNames(info.getIngredientNames())
+                            .setIngredientNames(info.getIngredients())
                             .setCalories(info.getCalories())
                             .setInstructions(instructions.getInstructions())
                             .build();

@@ -41,47 +41,32 @@ public class UserDataAccesssObject implements
 
             conn.getInputStream();
         }
-        catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+        catch (URISyntaxException uriSyntaxException) {
+            System.out.println("Invalid URI syntax");
+            throw new RuntimeException(uriSyntaxException);
         }
-        catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException ioException) {
+            throw new RuntimeException(ioException);
         }
     }
 
     @Override
     public User get(String userName, String password) {
-        URL url;
-        try {
-            url = new URI(BASE_URL + "/login").toURL();
-        }
-        catch (URISyntaxException e) {
-            System.out.println(e.getMessage());
-            throw new RuntimeException(e);
-        }
-        catch (MalformedURLException e) {
-            System.out.println("Malformed URL");
-            throw new RuntimeException(e);
-        }
         HttpURLConnection conn;
         try {
+            final URL url = new URI(BASE_URL + "/login").toURL();
             conn = (HttpURLConnection) url.openConnection();
-        } catch (IOException e) {
-            System.out.println("Error opening connection");
-            throw new RuntimeException(e);
-        }
-
-        try {
             conn.setRequestMethod("POST");
-        } catch (ProtocolException e) {
-            System.out.println("Protocol error");
-            throw new RuntimeException(e);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
         }
-        conn.setRequestProperty("Content-Type", "application/json");
-        conn.setDoOutput(true);
+        catch (URISyntaxException uriSyntaxException) {
+            throw new RuntimeException(uriSyntaxException);
+        }
+        catch (IOException ioException) {
+            System.out.println(ioException.getMessage());
+            throw new RuntimeException(ioException);
+        }
 
         final JSONObject body = new JSONObject();
         body.put("user_name", userName);
@@ -100,8 +85,8 @@ public class UserDataAccesssObject implements
                 sb.append(line);
             }
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException ioException) {
+            throw new RuntimeException(ioException);
         }
         final JSONObject res = new JSONObject(sb.toString());
 
