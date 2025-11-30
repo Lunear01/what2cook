@@ -1,16 +1,27 @@
 package view;
 
-import entity.Recipe;
-import interface_adapter.favoritelist.AddFavoriteRecipeController;
-import interface_adapter.favoritelist.FavoriteListState;
-import interface_adapter.favoritelist.FavoriteListViewModel;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.List;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+
+import entity.Recipe;
+import interface_adapter.favoritelist.AddFavoriteRecipeController;
+import interface_adapter.favoritelist.FavoriteListState;
+import interface_adapter.favoritelist.FavoriteListViewModel;
 
 public class FavoriteListView extends JPanel implements PropertyChangeListener {
 
@@ -46,20 +57,24 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
         backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         favoritesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        scrollPane.setPreferredSize(new Dimension(450, 300));
 
-        add(Box.createVerticalStrut(10));
+        final int scrollPaneWidth = 450;
+        final int scrollPaneHeight = 300;
+        scrollPane.setPreferredSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
+
+        final int verticalStrutHeight = 10;
+        final int horizontalStrut5 = 5;
+        add(Box.createVerticalStrut(verticalStrutHeight));
         add(titleLabel);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(verticalStrutHeight));
         add(scrollPane);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(verticalStrutHeight));
         add(deleteButton);
-        add(Box.createVerticalStrut(5));
+        add(Box.createVerticalStrut(horizontalStrut5));
         add(backButton);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(horizontalStrut5));
         add(statusLabel);
 
-        // 点击 Delete
         deleteButton.addActionListener(e -> {
             final int index = favoritesList.getSelectedIndex();
             if (index < 0) {
@@ -94,7 +109,6 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
             favoriteController.remove(currentUsername, recipe);
         });
 
-        // 点击 Back
         backButton.addActionListener(e -> {
             if (onBackToRecipes != null) {
                 onBackToRecipes.run();
@@ -130,8 +144,6 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
             deleteButton.setEnabled(true);
         }
     }
-
-    // ==== setters 让 AppBuilder 注入 ====
 
     public void setFavoriteController(AddFavoriteRecipeController controller) {
         this.favoriteController = controller;

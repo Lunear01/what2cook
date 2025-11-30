@@ -33,9 +33,9 @@ public class FridgeController {
      * @param ingredient the name of the ingredient to add.
      */
     public void addIngredient(Ingredient ingredient) throws Exception {
-        String username = loginVm.getUsername();
+        final String username = loginVm.getUsername();
 
-        AddToFridgeRequestModel request = new AddToFridgeRequestModel(username, ingredient.getIngredientId(),ingredient.getName());
+        final AddToFridgeRequestModel request = new AddToFridgeRequestModel(username, ingredient.getIngredientId(),ingredient.getName());
         addUc.addIngredient(request);
     }
 
@@ -45,9 +45,9 @@ public class FridgeController {
      * @param ingredient the ingredient to delete.
      */
     public void deleteIngredient(Ingredient ingredient) throws Exception {
-        String username = loginVm.getUsername();
+        final String username = loginVm.getUsername();
 
-        DeleteFridgeRequestModel request = new DeleteFridgeRequestModel(username, ingredient.getIngredientId());
+        final DeleteFridgeRequestModel request = new DeleteFridgeRequestModel(username, ingredient.getIngredientId());
         deleteUc.deleteIngredient(request);
     }
 
@@ -57,9 +57,9 @@ public class FridgeController {
      *
      */
     public void GetIngredient() throws Exception {
-        String username = loginVm.getUsername();
+        final String username = loginVm.getUsername();
 
-        GetFridgeRequestModel request = new GetFridgeRequestModel(username);
+        final GetFridgeRequestModel request = new GetFridgeRequestModel(username);
         getUc.getIngredient(request);
     }
 

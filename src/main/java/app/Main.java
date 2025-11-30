@@ -15,7 +15,6 @@ public final class Main {
         // Prevent instantiation.
     }
 
-
     /**
      * Launches the What2Cook application.
      *

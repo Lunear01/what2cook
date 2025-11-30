@@ -7,6 +7,9 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import dataaccess.InMemoryFavoriteRecipeDataAccess;
+import dataaccess.IngredientDataAccessInterface;
+import dataaccess.IngredientDataAccessObject;
 import dataaccess.RecipeDataAccessObject;
 import dataaccess.UserDataAccesssObject;
 import entity.Ingredient;
@@ -15,6 +18,12 @@ import interface_adapter.cookinglist.AddToCookingListPresenter;
 import interface_adapter.cookinglist.CookingListViewModel;
 import interface_adapter.cookinglist.SortCookingListController;
 import interface_adapter.cookinglist.SortCookingListPresenter;
+import interface_adapter.favoritelist.AddFavoriteRecipeController;
+import interface_adapter.favoritelist.AddFavoriteRecipePresenter;
+import interface_adapter.favoritelist.FavoriteListViewModel;
+import interface_adapter.fridgemodify.FridgeController;
+import interface_adapter.fridgemodify.FridgePresenter;
+import interface_adapter.fridgemodify.FridgeViewModel;
 import interface_adapter.ingredient_search.IngredientSearchViewModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
@@ -39,19 +48,20 @@ import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.recipe_search.RecipeSearchInputBoundary;
 import use_case.recipe_search.RecipeSearchInteractor;
-import use_case.signup.*;
-import view.*;
-
-import dataaccess.InMemoryFavoriteRecipeDataAccess;
-
-import interface_adapter.favoritelist.AddFavoriteRecipeController;
-import interface_adapter.favoritelist.AddFavoriteRecipePresenter;
-import interface_adapter.favoritelist.FavoriteListViewModel;
-
-import use_case.add_favorite_list.AddFavoriteRecipeDataAccessInterface;
-import use_case.add_favorite_list.AddFavoriteRecipeInputBoundary;
-import use_case.add_favorite_list.AddFavoriteRecipeInteractor;
-import use_case.add_favorite_list.AddFavoriteRecipeOutputBoundary;
+import use_case.signup.EmailValidation;
+import use_case.signup.JmailValidationService;
+import use_case.signup.PasswordValidation;
+import use_case.signup.PasswordValidationService;
+import use_case.signup.SignupInputBoundary;
+import use_case.signup.SignupInteractor;
+import view.CookingListView;
+import view.FavoriteListView;
+import view.FridgeView;
+import view.IngredientSearchView;
+import view.LoginView;
+import view.RecipeInstructionView;
+import view.RecipeSearchView;
+import view.SignupView;
 
 public final class RecipeAppBuilder {
 
@@ -69,19 +79,9 @@ public final class RecipeAppBuilder {
         // --- Data access (gateway) ---
         final UserDataAccesssObject userDao = new UserDataAccesssObject();
 
-        // --- Demo users ---
-//        final User user1 = new UserBuilder()
-//                .withName("jonathan_calver2")
-//                .withPassword("password123")
-//                .withEmail("39485@adf.com")
-//                .build();
-//        final User user2 = new UserBuilder()
-//                .withName("david")
-//                .withPassword("pass456")
-//                .withEmail("dkh.kim@mail.utoronto.com")
-//                .build();
-//  userDao.save(user1);
-//        userDao.save(user2);
+        // Fridge data access for fridge use cases
+        final IngredientDataAccessInterface ingredientDataAccess =
+                new IngredientDataAccessObject();
 
         // --- Login wiring ---
         final LoginViewModel loginViewModel = new LoginViewModel();
@@ -124,7 +124,7 @@ public final class RecipeAppBuilder {
                 new RecipeSearchView(recipeSearchViewModel);
         recipeSearchView.setController(recipeSearchController);
 
-        // cookinglist
+        // --- Cooking list wiring ---
         final CookingListViewModel cookingListViewModel =
                 new CookingListViewModel();
 
@@ -140,7 +140,6 @@ public final class RecipeAppBuilder {
         final AddToCookingListController addToCookingListController =
                 new AddToCookingListController(addToCookingListInteractor);
 
-        // 排序功能的组件
         final SortCookingListOutputBoundary sortCookingListPresenter =
                 new SortCookingListPresenter(cookingListViewModel);
 
@@ -172,6 +171,45 @@ public final class RecipeAppBuilder {
         final FavoriteListView favoriteListView =
                 new FavoriteListView(favoriteListViewModel);
 
+        favoriteListView.setFavoriteController(addFavoriteRecipeController);
+
+        // --- Fridge wiring (Add / Get / Delete) ---
+        final FridgeViewModel fridgeViewModel = new FridgeViewModel();
+        final FridgePresenter fridgePresenter = new FridgePresenter(fridgeViewModel);
+
+        final AddToFridgeInputBoundary addToFridgeInteractor =
+                new AddToFridgeInteractor(ingredientDataAccess, fridgePresenter);
+
+        final GetFridgeInputBoundary getFridgeInteractor =
+                new GetFridgeInteractor(ingredientDataAccess, fridgePresenter);
+
+        final DeleteFridgeInputBoundary deleteFridgeInteractor =
+                new DeleteFridgeInteractor(ingredientDataAccess, fridgePresenter);
+
+        final FridgeController fridgeController =
+                new FridgeController(
+                        addToFridgeInteractor,
+                        getFridgeInteractor,
+                        deleteFridgeInteractor,
+                        loginViewModel
+                );
+
+        final FridgeView fridgeView = new FridgeView(fridgeViewModel);
+        fridgeView.setController(fridgeController);
+
+        // ★ 当在 Ingredient 页面点击 “Add” 时，同步加入 fridge
+        ingredientSearchView.setOnAddToFridge(name -> {
+            try {
+                final Ingredient ing = Ingredient.builder()
+                        .setName(name)
+                        .setId(-1)
+                        .build();
+                fridgeController.addIngredient(ing);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
         // --- Recipe Instruction View ---
         final RecipeInstructionView recipeInstructionView =
                 new RecipeInstructionView();
@@ -180,6 +218,8 @@ public final class RecipeAppBuilder {
         // 让 recipe 搜索页能把菜加到 favorites 和 cooking list
         recipeSearchView.setFavoriteController(addFavoriteRecipeController);
         recipeSearchView.setCookingListController(addToCookingListController);
+
+        recipeSearchController.setFavoriteController(addFavoriteRecipeController);
 
         // 让 cooking list 能打开 recipe details
         cookingListView.setOnOpenRecipe(recipeSearchController::openRecipe);
@@ -208,34 +248,41 @@ public final class RecipeAppBuilder {
         final String signup = "signup";
         final String ingredient = "ingredient";
         final String recipe = "recipe";
-        //
         final String cooking = "cooking";
         final String favorites = "favorites";
         final String recipeInstruction = "recipeInstruction";
-
+        final String fridge = "fridge";
+        final String recipeTitle = "What2Cook - Recipes";
+        final String ingredientTitle = "What2Cook - Ingredients";
         favoriteListView.setOnBackToRecipes(() -> {
-            frame.setTitle("What2Cook - Recipes");
+            frame.setTitle(recipeTitle);
             cardLayout.show(cardPanel, recipe);
+        });
+
+        // Fridge 页面的 Back：回到 Ingredients 页面
+        fridgeView.setOnBack(() -> {
+            frame.setTitle(ingredientTitle);
+            cardLayout.show(cardPanel, ingredient);
         });
 
         cardPanel.add(loginView, login);
         cardPanel.add(signupView, signup);
         cardPanel.add(ingredientSearchView, ingredient);
         cardPanel.add(recipeSearchView, recipe);
-        //
         cardPanel.add(cookingListView, cooking);
         cardPanel.add(favoriteListView, favorites);
         cardPanel.add(recipeInstructionView, recipeInstruction);
+        cardPanel.add(fridgeView, fridge);
 
-        // 设置 recipe instruction 的 back 按钮返回到 recipe 页面
+        // Instruction 页面的返回按钮：回到 recipes
         recipeInstructionView.setOnBackToRecipeList(() -> {
-            frame.setTitle("What2Cook - Recipes");
+            frame.setTitle(recipeTitle);
             cardLayout.show(cardPanel, recipe);
         });
 
-        // 设置 cooking list 的 back 按钮返回到 recipe 页面
+        // Cooking list 的返回按钮：回到 recipes
         cookingListView.setOnBack(() -> {
-            frame.setTitle("What2Cook - Recipes");
+            frame.setTitle(recipeTitle);
             cardLayout.show(cardPanel, recipe);
         });
 
@@ -250,12 +297,14 @@ public final class RecipeAppBuilder {
             cardLayout.show(cardPanel, login);
         });
 
+        // 从 recipe 列表打开 instruction 页
         recipeSearchView.setOnOpenInstruction(recipeObj -> {
             recipeInstructionView.setRecipe(recipeObj);
             frame.setTitle("What2Cook - Instructions");
             cardLayout.show(cardPanel, recipeInstruction);
         });
 
+        // 登录成功：进入 Ingredient 页面
         loginView.setOnLoginSuccess(() -> {
             final String username = loginViewModel.getState().getUsername();
             recipeSearchView.setCurrentUsername(username);
@@ -263,7 +312,7 @@ public final class RecipeAppBuilder {
             recipeSearchController.setCurrentUsername(username);
             favoriteListView.setCurrentUsername(username);
             cookingListView.setCurrentUsername(username);
-            frame.setTitle("What2Cook - Ingredients");
+            frame.setTitle(ingredientTitle);
             cardLayout.show(cardPanel, ingredient);
         });
 
@@ -272,9 +321,9 @@ public final class RecipeAppBuilder {
             final List<String> names =
                     ingredientSearchViewModel.getState().getIngredients();
 
-            final List<Ingredient> ingredients = new ArrayList<>();
+            final List<Ingredient> ingredientsList = new ArrayList<>();
             for (String name : names) {
-                ingredients.add(
+                ingredientsList.add(
                         Ingredient.builder()
                                 .setName(name)
                                 .setId(-1)
@@ -282,15 +331,32 @@ public final class RecipeAppBuilder {
                 );
             }
 
-            recipeSearchViewModel.setCurrentIngredients(ingredients);
-            recipeSearchController.searchByIngredients(ingredients);
+            recipeSearchViewModel.setCurrentIngredients(ingredientsList);
+            recipeSearchController.searchByIngredients(ingredientsList);
 
-            frame.setTitle("What2Cook - Recipes");
+            frame.setTitle(recipeTitle);
             cardLayout.show(cardPanel, recipe);
         });
 
+        // 从 Ingredient 页面打开 Fridge 页面
+        ingredientSearchView.setOnOpenFridge(() -> {
+            try {
+                fridgeController.GetIngredient();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            frame.setTitle("What2Cook - Fridge");
+            cardLayout.show(cardPanel, fridge);
+        });
+
+        // 从 recipe 页 “Back” 回到 Ingredient 页
+        recipeSearchView.setOnBack(() -> {
+            frame.setTitle(ingredientTitle);
+            cardLayout.show(cardPanel, ingredient);
+        });
+
+        // 从 recipes 打开 cooking list
         recipeSearchView.setOnOpenCookingList(() -> {
-            // 设置当前用户名以支持排序功能
             final String username = loginViewModel.getState().getUsername();
             cookingListView.setCurrentUsername(username);
 
@@ -298,6 +364,7 @@ public final class RecipeAppBuilder {
             cardLayout.show(cardPanel, cooking);
         });
 
+        // 从 recipes 打开 favorites
         recipeSearchView.setOnOpenFavorites(() -> {
             frame.setTitle("What2Cook - Favorites");
             cardLayout.show(cardPanel, favorites);
