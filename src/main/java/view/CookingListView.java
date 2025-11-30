@@ -4,22 +4,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
 import entity.Recipe;
 import interface_adapter.cookinglist.CookingListViewModel;
 import interface_adapter.cookinglist.CookingListState;
-
-import javax.swing.*;
-import java.awt.*;
-
+import interface_adapter.cookinglist.SortCookingListController;
+import use_case.cookinglist.SortCookingListInputData.SortType;
 
 public class CookingListView extends JPanel implements PropertyChangeListener {
 
     private final CookingListViewModel viewModel;
+    private final SortCookingListController sortController;
+    private String currentUsername;
 
     private final JLabel titleLabel = new JLabel("My Cooking List");
     private final JList<String> recipeList = new JList<>();
@@ -31,8 +29,9 @@ public class CookingListView extends JPanel implements PropertyChangeListener {
     private Runnable onBack;
     private Consumer<Recipe> onOpenRecipe;
 
-    public CookingListView(CookingListViewModel viewModel) {
+    public CookingListView(CookingListViewModel viewModel, SortCookingListController sortController) {
         this.viewModel = viewModel;
+        this.sortController = sortController;
         this.viewModel.addPropertyChangeListener(this);
 
         setLayout(new BorderLayout());
@@ -80,15 +79,15 @@ public class CookingListView extends JPanel implements PropertyChangeListener {
         });
 
         sortByHealthButton.addActionListener(e -> {
-            final List<Recipe> list = new ArrayList<>(viewModel.getPersonalCookingList());
-            list.sort(Comparator.comparingInt(Recipe::getHealthScore).reversed());
-            viewModel.setPersonalCookingList(list);
+            if (currentUsername != null) {
+                sortController.sort(currentUsername, SortType.BY_HEALTH_SCORE);
+            }
         });
 
         sortByCaloriesButton.addActionListener(e -> {
-            final List<Recipe> list = new ArrayList<>(viewModel.getPersonalCookingList());
-            list.sort(Comparator.comparingDouble(Recipe::getCalories));
-            viewModel.setPersonalCookingList(list);
+            if (currentUsername != null) {
+                sortController.sort(currentUsername, SortType.BY_CALORIES);
+            }
         });
 
         updateFromState(viewModel.getState());
@@ -112,6 +111,10 @@ public class CookingListView extends JPanel implements PropertyChangeListener {
 
     public void setOnOpenRecipe(Consumer<Recipe> onOpenRecipe) {
         this.onOpenRecipe = onOpenRecipe;
+    }
+
+    public void setCurrentUsername(String username) {
+        this.currentUsername = username;
     }
 
     @Override

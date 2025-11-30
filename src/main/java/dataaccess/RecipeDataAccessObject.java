@@ -4,6 +4,7 @@ import entity.Ingredient;
 import entity.Recipe;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import use_case.cookinglist.RecipeDataAccessInterface;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class RecipeDataAccessObject implements RecipeDataAccessInterface {
 
-    private final String baseUrl = "http://172.20.10.13:3000/recipe";
+    private final String baseUrl = "http://172.20.10.3:3000/recipe";
 
     @Override
     public void addRecipe(String userName, int recipeID, JSONObject recipe) {
