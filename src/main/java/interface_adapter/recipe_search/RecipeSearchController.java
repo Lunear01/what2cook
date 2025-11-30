@@ -2,12 +2,12 @@ package interface_adapter.recipe_search;
 
 import java.util.List;
 
-import javax.swing.*;
-
-import interface_adapter.favoritelist.AddFavoriteRecipeController;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 import entity.Ingredient;
 import entity.Recipe;
+import interface_adapter.favoritelist.AddFavoriteRecipeController;
 import use_case.recipe_search.RecipeSearchInputBoundary;
 import use_case.recipe_search.RecipeSearchInputData;
 
@@ -18,6 +18,8 @@ public class RecipeSearchController {
     private AddFavoriteRecipeController favoriteController;
 
     private String currentUsername;
+
+    private final String errorE = "Error";
 
     public RecipeSearchController(RecipeSearchInputBoundary interactor) {
         this.interactor = interactor;
@@ -34,13 +36,20 @@ public class RecipeSearchController {
         interactor.execute(inputData);
     }
 
-    /** Injects the controller used to add recipes to favorites. */
+    /**
+     * Injects the controller used to add recipes to favorites.
+     *
+     * @param favoriteController the controller of favorite.
+     *
+     * */
     public void setFavoriteController(AddFavoriteRecipeController favoriteController) {
         this.favoriteController = favoriteController;
     }
 
     /**
      * Sets the username of the currently logged-in user.
+     *
+     * @param username the name of user.
      */
     public void setCurrentUsername(String username) {
         this.currentUsername = username;
@@ -79,7 +88,7 @@ public class RecipeSearchController {
 
         boolean keepOpen = true;
         while (keepOpen) {
-            int choice = JOptionPane.showOptionDialog(
+            final int choice = JOptionPane.showOptionDialog(
                     null,
                     sb.toString(),
                     recipe.getTitle(),
@@ -90,7 +99,7 @@ public class RecipeSearchController {
                     options[1]
             );
 
-            if (choice != 0) { // choice == 1 或 JOptionPane.CLOSED_OPTION(-1)
+            if (choice != 0) {
                 keepOpen = false;
                 break;
             }
@@ -100,17 +109,16 @@ public class RecipeSearchController {
                 JOptionPane.showMessageDialog(
                         null,
                         "Favorite feature is not configured.",
-                        "Error",
+                        errorE,
                         JOptionPane.ERROR_MESSAGE
                 );
-                // 继续停在页面上
                 continue;
             }
             if (currentUsername == null || currentUsername.isEmpty()) {
                 JOptionPane.showMessageDialog(
                         null,
                         "User is not logged in.",
-                        "Error",
+                        errorE,
                         JOptionPane.ERROR_MESSAGE
                 );
                 continue;
@@ -130,27 +138,39 @@ public class RecipeSearchController {
                 JOptionPane.showMessageDialog(
                         null,
                         "Failed to add recipe to favorites: " + ex.getMessage(),
-                        "Error",
+                        errorE,
                         JOptionPane.ERROR_MESSAGE
                 );
             }
         }
     }
 
+    /**
+     * Loads an image from the given URL string and scales it to a fixed width.
+     *
+     * @param urlStr the URL of the image to load
+     * @return an ImageIcon if loading succeeds; otherwise null
+     */
     private ImageIcon loadImage(String urlStr) {
+        ImageIcon result = null;
+
         try {
-            java.net.URL url = new java.net.URL(urlStr);
+            final java.net.URL url = new java.net.URL(urlStr);
             java.awt.Image img = javax.imageio.ImageIO.read(url);
 
-            // Scaling if needed
-            img = img.getScaledInstance(300, -1, java.awt.Image.SCALE_SMOOTH);
+            if (img != null) {
+                final int width = 300;
+                img = img.getScaledInstance(width, -1, java.awt.Image.SCALE_SMOOTH);
+                result = new ImageIcon(img);
+            }
+        }
+        catch (Exception ex) {
+            System.out.println("Failed to load image: " + ex.getMessage());
+            // result remains null
+        }
 
-            return new ImageIcon(img);
-        }
-        catch (Exception e) {
-            System.out.println("Failed to load image: " + e.getMessage());
-            return null;
-        }
+        return result;
     }
+
 }
 
