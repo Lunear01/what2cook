@@ -8,4 +8,6 @@ router.get("/:user_name", ingredientController.getIngredients);
 
 router.delete("/delete", ingredientController.deleteIngredient);
 
+router.get("/:user_name/exists/:ingredient_id", ingredientController.exists);
+
 module.exports = router;

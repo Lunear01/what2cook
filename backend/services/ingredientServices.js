@@ -1,7 +1,7 @@
 const db = require("../config/db");
 
 const ingredientServices = {
-    async addIngredient(user_name, ingredient_name, ingredient_id){
+    async addIngredient(user_name, ingredient_name){
         const [userRows] = await db.execute(
             "SELECT user_id FROM user WHERE user_name = ?",
             [user_name]
@@ -14,8 +14,8 @@ const ingredientServices = {
         const user_id = userRows[0].user_id;
 
         const [result] = await db.execute(
-            "INSERT INTO ingredient (user_id, ingredient_name, ingredient_id) VALUES (?, ?, ?)",
-            [user_id, ingredient_name, ingredient_id]
+            "INSERT INTO ingredient (user_id, ingredient_name) VALUES (?, ?)",
+            [user_id, ingredient_name]
         );
         return result;
     },
@@ -63,7 +63,27 @@ const ingredientServices = {
         );
 
         return result;
+    },
+
+    async findIngredient(user_name, ingredient_id){
+        const [userRows] = await db.execute(
+            "SELECT user_id FROM user WHERE user_name = ?",
+            [user_name]
+        );
+
+        if (userRows.length === 0) {
+            throw new Error("User not found")
+        }
+
+        const user_id = userRows[0].user_id;
+
+        const [ingredient_row] = await db.execute(
+            "SELECT * FROM ingredient WHERE user_id = ? AND ingredient_id = ?",
+            [user_id, ingredient_id]
+        );
+        return ingredient_row[0]
     }
 };
+
 
 module.exports = ingredientServices;

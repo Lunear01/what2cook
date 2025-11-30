@@ -43,14 +43,16 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
         final JSONArray ingredients = new JSONArray();
         for (Ingredient ingredient : recipe.getIngredients()) {
             final JSONObject ing = new JSONObject();
-            ing.put("name", ingredient.getName());
+            ing.put("ingredient_name", ingredient.getName());
+            ing.put("ingredient_id", ingredient.getIngredientId());
             ingredients.put(ing);
         }
 
         final JSONObject recipeJson = new JSONObject();
+        recipeJson.put("title", recipe.getTitle());
         recipeJson.put("image", recipe.getImage());
         recipeJson.put("ingredients", ingredients);
-        recipeJson.put("id", recipe.getId());
+        recipeJson.put("recipe_id", recipe.getId());
         recipeJson.put("calories", recipe.getCalories());
         recipeJson.put("instructions", recipe.getInstructions());
         recipeJson.put("healthScore", recipe.getHealthScore());
@@ -175,7 +177,7 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
                 ingredientList.add(ing);
             }
             final Recipe ing = Recipe.builder()
-                    .setId(obj.getInt("recipeID"))
+                    .setId(obj.getInt("recipe_id"))
                     .setTitle(obj.getString("title"))
                     // may have some issue will fix later
                     .setIngredientNames(ingredientList)

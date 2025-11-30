@@ -16,10 +16,9 @@ public class AddToFridgeInteractor implements AddToFridgeInputBoundary {
     @Override
     public AddToFridgeResponseModel addIngredient(AddToFridgeRequestModel requestModel) throws Exception {
 
-        fridgeDataAccess.addIngredient(requestModel.getUserName(), requestModel.getIngredientId(),
-                requestModel.getIngredientName());
+        fridgeDataAccess.addIngredient(requestModel.getUserName(), requestModel.getIngredientName());
 
-        AddToFridgeResponseModel response = new AddToFridgeResponseModel(
+        final AddToFridgeResponseModel response = new AddToFridgeResponseModel(
                 requestModel.getUserName(),
                 requestModel.getIngredientId(),
                 requestModel.getIngredientName()
