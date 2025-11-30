@@ -11,54 +11,56 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-// ----- Fakes -----
-
-class FakeFavoritesDao implements AddFavoriteRecipeDataAccessInterface {
-
-    final List<Recipe> favorites = new ArrayList<>();
-
-    int addCalls = 0;
-    int removeCalls = 0;
-    String lastUsernameAdd;
-    String lastUsernameRemove;
-    Recipe lastAdded;
-    Recipe lastRemoved;
-
-    @Override
-    public List<Recipe> getFavorites(String username) {
-        // return copy to simulate real DAO
-        return new ArrayList<>(favorites);
-    }
-
-    @Override
-    public void addToFavorites(String username, Recipe recipe) {
-        addCalls++;
-        lastUsernameAdd = username;
-        lastAdded = recipe;
-        favorites.add(recipe);
-    }
-
-    @Override
-    public void removeFromFavorites(String username, Recipe recipe) {
-        removeCalls++;
-        lastUsernameRemove = username;
-        lastRemoved = recipe;
-        favorites.removeIf(r -> r.getId() == recipe.getId());
-    }
-}
-
-class FakeAddFavoritePresenter implements AddFavoriteRecipeOutputBoundary {
-    AddFavoriteRecipeOutputData lastOutput;
-
-    @Override
-    public void present(AddFavoriteRecipeOutputData data) {
-        this.lastOutput = data;
-    }
-}
-
 // ----- Tests -----
 
 public class AddFavoriteRecipeInteractorTest {
+
+    // ----- Fakes -----
+
+    private static class FakeFavoritesDao implements AddFavoriteRecipeDataAccessInterface {
+
+        final List<Recipe> favorites = new ArrayList<>();
+
+        int addCalls = 0;
+        int removeCalls = 0;
+        String lastUsernameAdd;
+        String lastUsernameRemove;
+        Recipe lastAdded;
+        Recipe lastRemoved;
+
+        @Override
+        public List<Recipe> getFavorites(String username) {
+            // return copy to simulate real DAO
+            return new ArrayList<>(favorites);
+        }
+
+        @Override
+        public void addToFavorites(String username, Recipe recipe) {
+            addCalls++;
+            lastUsernameAdd = username;
+            lastAdded = recipe;
+            favorites.add(recipe);
+        }
+
+        @Override
+        public void removeFromFavorites(String username, Recipe recipe) {
+            removeCalls++;
+            lastUsernameRemove = username;
+            lastRemoved = recipe;
+            favorites.removeIf(r -> r.getId() == recipe.getId());
+        }
+    }
+
+    private static class FakeAddFavoritePresenter implements AddFavoriteRecipeOutputBoundary {
+        AddFavoriteRecipeOutputData lastOutput;
+
+        @Override
+        public void present(AddFavoriteRecipeOutputData data) {
+            this.lastOutput = data;
+        }
+    }
+
+    // ----- Test fields -----
 
     private FakeFavoritesDao dao;
     private FakeAddFavoritePresenter presenter;
