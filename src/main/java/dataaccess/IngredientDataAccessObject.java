@@ -3,6 +3,7 @@ package dataaccess;
 import entity.Ingredient;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import use_case.fridge.IngredientDataAccessInterface;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class IngredientDataAccessObject implements IngredientDataAccessInterface {
 
-    private static final String baseUrl = "http://172.20.10.13:3000/ingredient";
+    private static final String BaseUrl = "http://172.20.10.13:3000/";
 
     private static final String GET = "GET";
     private static final String POST = "POST";
@@ -24,7 +25,7 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
     public void addIngredient(String userName, String ingredientName) {
         final HttpURLConnection conn;
         try {
-            final URL url = new URI(baseUrl + "/add").toURL();
+            final URL url = new URI(BaseUrl + "ingredient/add").toURL();
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(POST);
             conn.setRequestProperty("Content-Type", "application/json");
@@ -84,11 +85,11 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
     public List<Ingredient> getAllIngredients(String userName) {
         final HttpURLConnection conn;
         try {
-            final URL url = new URI(baseUrl + "/add").toURL();
+            final URL url = new URI(BaseUrl + "/" + userName).toURL();
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(GET);
             conn.setRequestProperty("Content-Type", "application/json");
-            conn.setDoOutput(true);
+            conn.setDoOutput(false);
         }
         catch (URISyntaxException uriSyntaxException) {
             System.out.println("Invalid URI syntax");
@@ -96,18 +97,6 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
         }
         catch (IOException ioException) {
             throw new RuntimeException(ioException);
-        }
-
-        final JSONObject body = new JSONObject();
-        body.put("user_name", userName);
-
-        try {
-            final OutputStream os = conn.getOutputStream();
-            os.write(body.toString().getBytes());
-            os.flush();
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
         }
 
         final StringBuilder sb = new StringBuilder();
@@ -126,8 +115,8 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
                 sb.append(line);
             }
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException event) {
+            throw new RuntimeException(event);
         }
 
         final JSONObject res = new JSONObject(sb.toString());
@@ -157,7 +146,7 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
     public void deleteIngredient(String userName, int ingredientID) {
         final HttpURLConnection conn;
         try {
-            final URL url = new URI(baseUrl + "/delete").toURL();
+            final URL url = new URI(BaseUrl + "/delete").toURL();
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(DELETE);
             conn.setRequestProperty("Content-Type", "application/json");
@@ -179,8 +168,8 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
             os.write(body.toString().getBytes());
             os.flush();
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException event) {
+            throw new RuntimeException(event);
         }
 
         final StringBuilder sb = new StringBuilder();
@@ -199,8 +188,8 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
                 sb.append(line);
             }
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException event) {
+            throw new RuntimeException(event);
         }
 
         final JSONObject res = new JSONObject(sb.toString());
@@ -216,7 +205,7 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
     public boolean exists(String userName, int ingredientID) {
         final HttpURLConnection conn;
         try {
-            final URL url = new URI("http://172.20.10.13:3000/" + userName + "/exists/" + ingredientID).toURL();
+            final URL url = new URI(BaseUrl + userName + "/exists/" + ingredientID).toURL();
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(GET);
             conn.setRequestProperty("Content-Type", "application/json");
@@ -247,8 +236,8 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
                 sb.append(line);
             }
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException event) {
+            throw new RuntimeException(event);
         }
 
         final JSONObject res = new JSONObject(sb.toString());

@@ -1,4 +1,4 @@
-package dataaccess;
+package use_case.fridge;
 
 import entity.Ingredient;
 
@@ -8,7 +8,6 @@ public interface IngredientDataAccessInterface {
     /**
      * add the ingredient.
      * @param userName the name of current user
-     * @param ingredientID the id of the ingredient that need to be added
      * @param ingredientName the name of the ingredient that need to be added
      */
     void addIngredient(String userName, String ingredientName);

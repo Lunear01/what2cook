@@ -15,8 +15,9 @@ public class UserDataAccesssObject implements
         LoginUserDataAccessInterface, SignupUserDataAccessInterface {
 
     private static final String POST = "POST";
+    private static final String GET = "GET";
 
-    private static final String baseUrl = "http://172.20.10.7:3000/user";
+    private static final String baseUrl = "http://172.20.10.13:3000/user";
 
     @Override
     public void save(User user) {
@@ -120,7 +121,7 @@ public class UserDataAccesssObject implements
     public boolean existsByName(String userName) {
         final URL url;
         try {
-            url = new URI(baseUrl + "/exists").toURL();
+            url = new URI(baseUrl + "/exists" + userName).toURL();
         }
         catch (URISyntaxException e) {
             System.out.println(e.getMessage());
@@ -135,16 +136,9 @@ public class UserDataAccesssObject implements
         final StringBuilder sb;
         try {
             conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
+            conn.setRequestMethod(GET);
             conn.setRequestProperty("Content-Type", "application/json");
-            conn.setDoOutput(true);
-
-            final JSONObject body = new JSONObject();
-            body.put("user_name", userName);
-
-            final OutputStream os = conn.getOutputStream();
-            os.write(body.toString().getBytes());
-            os.flush();
+            conn.setDoOutput(false);
 
             final BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             sb = new StringBuilder();

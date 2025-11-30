@@ -1,6 +1,6 @@
 package use_case.fridge.GetFridge;
 
-import dataaccess.IngredientDataAccessInterface;
+import use_case.fridge.IngredientDataAccessInterface;
 import entity.Ingredient;
 
 import java.util.List;

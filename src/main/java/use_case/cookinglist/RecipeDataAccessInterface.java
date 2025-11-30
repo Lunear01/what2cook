@@ -26,5 +26,6 @@ public interface RecipeDataAccessInterface {
      * @param recipeID the id of the recipe that need to be deleted
      */
     void deleteRecipe(String userName, int recipeID);
+
 //make sure this is under use_case/cookinglist
 }
