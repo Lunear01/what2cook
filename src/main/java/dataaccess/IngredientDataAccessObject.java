@@ -3,7 +3,6 @@ package dataaccess;
 import entity.Ingredient;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import use_case.fridge.IngredientDataAccessInterface;
 
 import java.io.*;
 import java.net.HttpURLConnection;

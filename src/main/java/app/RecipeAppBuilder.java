@@ -7,7 +7,7 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import use_case.fridge.IngredientDataAccessInterface;
+import dataaccess.IngredientDataAccessInterface;
 import dataaccess.IngredientDataAccessObject;
 import dataaccess.InMemoryFavoriteRecipeDataAccess;
 import dataaccess.RecipeDataAccessObject;

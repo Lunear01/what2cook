@@ -1,6 +1,6 @@
 package use_case.fridge.DeleteFridge;
 
-import use_case.fridge.IngredientDataAccessInterface;
+import dataaccess.IngredientDataAccessInterface;
 
 public class DeleteFridgeInteractor implements DeleteFridgeInputBoundary {
     private final IngredientDataAccessInterface fridgeDataAccess;
