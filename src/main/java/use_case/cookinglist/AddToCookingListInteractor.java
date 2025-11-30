@@ -22,16 +22,10 @@ public class AddToCookingListInteractor implements AddToCookingListInputBoundary
         final String username = inputData.getUsername();
         final Recipe recipe = inputData.getRecipe();
 
-        // 1. 当前列表（如果用户是第一次使用，可能返回404，使用空列表）
-        List<Recipe> currentList;
-        try {
-            currentList = cookingListDao.getAllRecipes(username);
-        } catch (RuntimeException e) {
-            // 用户第一次使用，还没有 cooking list，使用空列表
-            currentList = new ArrayList<>();
-        }
+        // Bug #4 修复: 移除过于宽泛的异常处理，因为 DAO 层现在正确处理 404
+        final List<Recipe> currentList = cookingListDao.getAllRecipes(username);
 
-        // 2. 判断是否已经存在
+        // 判断是否已经存在
         final boolean exists = currentList.stream()
                 .anyMatch(r -> r.getId() == recipe.getId());
 
@@ -45,18 +39,11 @@ public class AddToCookingListInteractor implements AddToCookingListInputBoundary
             return;
         }
 
-        // 直接添加 Recipe 对象
+        // 添加 Recipe 对象
         cookingListDao.addRecipe(username, recipe);
 
         // 获取更新后的列表
-        List<Recipe> updatedList;
-        try {
-            updatedList = cookingListDao.getAllRecipes(username);
-        } catch (RuntimeException e) {
-            // 如果获取失败，至少返回当前添加的 recipe
-            updatedList = new ArrayList<>(currentList);
-            updatedList.add(recipe);
-        }
+        final List<Recipe> updatedList = cookingListDao.getAllRecipes(username);
 
         presenter.present(
                 new AddToCookingListOutputData(

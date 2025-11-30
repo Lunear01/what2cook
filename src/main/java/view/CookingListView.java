@@ -80,13 +80,31 @@ public class CookingListView extends JPanel implements PropertyChangeListener {
 
         sortByHealthButton.addActionListener(e -> {
             if (currentUsername != null) {
-                sortController.sort(currentUsername, SortType.BY_HEALTH_SCORE);
+                try {
+                    sortController.sort(currentUsername, SortType.BY_HEALTH_SCORE);
+                } catch (RuntimeException ex) {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Failed to sort: " + ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
             }
         });
 
         sortByCaloriesButton.addActionListener(e -> {
             if (currentUsername != null) {
-                sortController.sort(currentUsername, SortType.BY_CALORIES);
+                try {
+                    sortController.sort(currentUsername, SortType.BY_CALORIES);
+                } catch (RuntimeException ex) {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Failed to sort: " + ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
             }
         });
 
