@@ -75,22 +75,27 @@ public class RecipeSearchController {
         sb.append("\nInstructions:\n");
         sb.append(recipe.getInstructions());
 
-        // 两个按钮：Add to Favorite List / Close
         final Object[] options = {"Add to Favorite List", "Close"};
 
-        final int choice = JOptionPane.showOptionDialog(
-                null,
-                sb.toString(),
-                recipe.getTitle(),
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.INFORMATION_MESSAGE,
-                icon,
-                options,
-                options[1]
-        );
+        boolean keepOpen = true;
+        while (keepOpen) {
+            int choice = JOptionPane.showOptionDialog(
+                    null,
+                    sb.toString(),
+                    recipe.getTitle(),
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE,
+                    icon,
+                    options,
+                    options[1]
+            );
 
-        // 点击了 "Add to Favorite List"
-        if (choice == 0) {
+            if (choice != 0) { // choice == 1 或 JOptionPane.CLOSED_OPTION(-1)
+                keepOpen = false;
+                break;
+            }
+
+            // choice == 0 → Add to Favorite List
             if (favoriteController == null) {
                 JOptionPane.showMessageDialog(
                         null,
@@ -98,7 +103,8 @@ public class RecipeSearchController {
                         "Error",
                         JOptionPane.ERROR_MESSAGE
                 );
-                return;
+                // 继续停在页面上
+                continue;
             }
             if (currentUsername == null || currentUsername.isEmpty()) {
                 JOptionPane.showMessageDialog(
@@ -107,20 +113,27 @@ public class RecipeSearchController {
                         "Error",
                         JOptionPane.ERROR_MESSAGE
                 );
-                return;
+                continue;
             }
 
-            // 调用 use case，把这道菜加入 favorite list
-            favoriteController.add(currentUsername, recipe);
+            try {
+                favoriteController.add(currentUsername, recipe);
 
-            // 弹一个 OK 的提示框
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Recipe added to your favorite list!",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-            // 之后弹窗就已经关了，用户自然回到 recipe 列表界面
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Recipe added to your favorite list!",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+            catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Failed to add recipe to favorites: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
         }
     }
 

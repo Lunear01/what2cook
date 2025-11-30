@@ -45,7 +45,6 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     private final JButton backButton = new JButton("Back");
     private final JButton addToCookingListButton = new JButton("Add to Cooking List");
     private final JButton viewCookingListButton = new JButton("View My Cooking List");
-    private final JButton addToFavoritesButton = new JButton("Add to Favorites");
     private final JButton viewFavoritesButton = new JButton("View My Favorites");
 
     private Recipe selectedRecipe;
@@ -81,7 +80,6 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
 
         addToCookingListButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         viewCookingListButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        addToFavoritesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         viewFavoritesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
 
@@ -107,8 +105,6 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
             }
         });
 
-        addToFavoritesButton.addActionListener(event -> handleAddToFavorites());
-
         viewFavoritesButton.addActionListener(event -> {
             if (onOpenFavorites != null) {
                 onOpenFavorites.run();
@@ -125,7 +121,6 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         add(resultsCountLabel);
 
         add(addToCookingListButton);
-        add(addToFavoritesButton);
         add(viewCookingListButton);
         add(viewFavoritesButton);
     }
@@ -321,9 +316,6 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
 
                 if (controller != null) {
                     controller.openRecipe(recipe);
-                }
-                if (onOpenInstruction != null) {
-                    onOpenInstruction.accept(recipe);
                 }
             }
         });
