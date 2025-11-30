@@ -7,9 +7,9 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import dataaccess.InMemoryFavoriteRecipeDataAccess;
 import dataaccess.IngredientDataAccessInterface;
 import dataaccess.IngredientDataAccessObject;
-import dataaccess.InMemoryFavoriteRecipeDataAccess;
 import dataaccess.RecipeDataAccessObject;
 import dataaccess.UserDataAccesssObject;
 import entity.Ingredient;
@@ -213,7 +213,7 @@ public final class RecipeAppBuilder {
         // ★ 当在 Ingredient 页面点击 “Add” 时，同步加入 fridge
         ingredientSearchView.setOnAddToFridge(name -> {
             try {
-                Ingredient ing = Ingredient.builder()
+                final Ingredient ing = Ingredient.builder()
                         .setName(name)
                         .setId(-1)
                         .build();
@@ -265,15 +265,16 @@ public final class RecipeAppBuilder {
         final String favorites = "favorites";
         final String recipeInstruction = "recipeInstruction";
         final String fridge = "fridge";
-
+        final String recipeTitle = "What2Cook - Recipes";
+        final String ingredientTitle = "What2Cook - Ingredients";
         favoriteListView.setOnBackToRecipes(() -> {
-            frame.setTitle("What2Cook - Recipes");
+            frame.setTitle(recipeTitle);
             cardLayout.show(cardPanel, recipe);
         });
 
         // Fridge 页面的 Back：回到 Ingredients 页面
         fridgeView.setOnBack(() -> {
-            frame.setTitle("What2Cook - Ingredients");
+            frame.setTitle(ingredientTitle);
             cardLayout.show(cardPanel, ingredient);
         });
 
@@ -288,13 +289,13 @@ public final class RecipeAppBuilder {
 
         // Instruction 页面的返回按钮：回到 recipes
         recipeInstructionView.setOnBackToRecipeList(() -> {
-            frame.setTitle("What2Cook - Recipes");
+            frame.setTitle(recipeTitle);
             cardLayout.show(cardPanel, recipe);
         });
 
         // Cooking list 的返回按钮：回到 recipes
         cookingListView.setOnBack(() -> {
-            frame.setTitle("What2Cook - Recipes");
+            frame.setTitle(recipeTitle);
             cardLayout.show(cardPanel, recipe);
         });
 
@@ -324,7 +325,7 @@ public final class RecipeAppBuilder {
             recipeSearchController.setCurrentUsername(username);
             favoriteListView.setCurrentUsername(username);
             cookingListView.setCurrentUsername(username);
-            frame.setTitle("What2Cook - Ingredients");
+            frame.setTitle(ingredientTitle);
             cardLayout.show(cardPanel, ingredient);
         });
 
@@ -346,7 +347,7 @@ public final class RecipeAppBuilder {
             recipeSearchViewModel.setCurrentIngredients(ingredientsList);
             recipeSearchController.searchByIngredients(ingredientsList);
 
-            frame.setTitle("What2Cook - Recipes");
+            frame.setTitle(recipeTitle);
             cardLayout.show(cardPanel, recipe);
         });
 
@@ -363,7 +364,7 @@ public final class RecipeAppBuilder {
 
         // 从 recipe 页 “Back” 回到 Ingredient 页
         recipeSearchView.setOnBack(() -> {
-            frame.setTitle("What2Cook - Ingredients");
+            frame.setTitle(ingredientTitle);
             cardLayout.show(cardPanel, ingredient);
         });
 

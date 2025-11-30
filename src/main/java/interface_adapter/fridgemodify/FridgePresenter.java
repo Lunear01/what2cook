@@ -1,14 +1,14 @@
 package interface_adapter.fridgemodify;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import use_case.fridge.AddToFridge.AddToFridgeOutputBoundary;
 import use_case.fridge.AddToFridge.AddToFridgeResponseModel;
 import use_case.fridge.DeleteFridge.DeleteFridgeOutputBoundary;
 import use_case.fridge.DeleteFridge.DeleteFridgeResponseModel;
 import use_case.fridge.GetFridge.GetFridgeOutputBoundary;
 import use_case.fridge.GetFridge.GetFridgeResponseModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Unified presenter for Add / Delete / Get fridge use cases.
@@ -28,10 +28,10 @@ public class FridgePresenter implements
     @Override
     public AddToFridgeResponseModel prepareSuccessView(AddToFridgeResponseModel responseModel) {
 
-        FridgeState state = viewModel.getState();
+        final FridgeState state = viewModel.getState();
         state.setErrorMessage("");
 
-        List<String> updated = new ArrayList<>(state.getIngredients());
+        final List<String> updated = new ArrayList<>(state.getIngredients());
         updated.add(responseModel.getIngredientName());
 
         state.setIngredients(updated);
@@ -44,10 +44,10 @@ public class FridgePresenter implements
     @Override
     public DeleteFridgeResponseModel prepareSuccessView(DeleteFridgeResponseModel responseModel) {
 
-        FridgeState state = viewModel.getState();
+        final FridgeState state = viewModel.getState();
         state.setErrorMessage("");
 
-        List<String> updated = new ArrayList<>(state.getIngredients());
+        final List<String> updated = new ArrayList<>(state.getIngredients());
 
         // the ingredientName is NOT known in delete response, so remove by ID index
         // For now: simply do updated.removeIf(...)
@@ -63,10 +63,10 @@ public class FridgePresenter implements
     @Override
     public GetFridgeResponseModel prepareSuccessView(GetFridgeResponseModel responseModel) {
 
-        FridgeState state = viewModel.getState();
+        final FridgeState state = viewModel.getState();
         state.setErrorMessage("");
 
-        List<String> names = new ArrayList<>();
+        final List<String> names = new ArrayList<>();
         responseModel.getIngredients().forEach(i -> names.add(i.getName()));
 
         state.setIngredients(names);
@@ -96,7 +96,7 @@ public class FridgePresenter implements
 
     // Helper to reduce code duplication
     private void setError(String errorMessage) {
-        FridgeState state = viewModel.getState();
+        final FridgeState state = viewModel.getState();
         state.setErrorMessage(errorMessage);
         viewModel.setState(state);
     }
