@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddToCookingListInteractor implements AddToCookingListInputBoundary {
-
+//make sure this is using recipe data access interface instead of cooking list interface
     private final RecipeDataAccessInterface cookingListDao;
     private final AddToCookingListOutputBoundary presenter;
 
@@ -22,10 +22,8 @@ public class AddToCookingListInteractor implements AddToCookingListInputBoundary
         final String username = inputData.getUsername();
         final Recipe recipe = inputData.getRecipe();
 
-        // Bug #4 修复: 移除过于宽泛的异常处理，因为 DAO 层现在正确处理 404
         final List<Recipe> currentList = cookingListDao.getAllRecipes(username);
 
-        // 判断是否已经存在
         final boolean exists = currentList.stream()
                 .anyMatch(r -> r.getId() == recipe.getId());
 
@@ -39,12 +37,9 @@ public class AddToCookingListInteractor implements AddToCookingListInputBoundary
             return;
         }
 
-        // 添加 Recipe 对象
         cookingListDao.addRecipe(username, recipe);
 
-        // 获取更新后的列表
         final List<Recipe> updatedList = cookingListDao.getAllRecipes(username);
-
         presenter.present(
                 new AddToCookingListOutputData(
                         updatedList,

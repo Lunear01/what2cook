@@ -18,11 +18,10 @@ public class UserDataAccesssObject implements
     private static final String POST = "POST";
     private static final String PUT = "PUT";
 
-    private static final String BASE_URL = "http://172.20.10.7:3000/user";
+    private static final String BASE_URL = "http://192.168.2.13:3000/user";
 
     @Override
     public void save(User user) {
-
         try {
             final URL url = new URI(BASE_URL + "/signup").toURL();
             final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
