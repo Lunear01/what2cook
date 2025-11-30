@@ -14,16 +14,15 @@ import use_case.signup.SignupUserDataAccessInterface;
 public class UserDataAccesssObject implements
         LoginUserDataAccessInterface, SignupUserDataAccessInterface {
 
-    private static final String GET = "GET";
     private static final String POST = "POST";
-    private static final String PUT = "PUT";
 
-    private static final String BASE_URL = "http://192.168.2.13:3000/user";
+    private static final String baseUrl = "http://172.20.10.7:3000/user";
 
     @Override
     public void save(User user) {
+
         try {
-            final URL url = new URI(BASE_URL + "/signup").toURL();
+            final URL url = new URI(baseUrl + "/signup").toURL();
             final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(POST);
             conn.setDoOutput(true);
@@ -53,7 +52,7 @@ public class UserDataAccesssObject implements
     public User get(String userName, String password) {
         final HttpURLConnection conn;
         try {
-            final URL url = new URI(BASE_URL + "/login").toURL();
+            final URL url = new URI(baseUrl + "/login").toURL();
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(POST);
             conn.setRequestProperty("Content-Type", "application/json");
@@ -121,7 +120,7 @@ public class UserDataAccesssObject implements
     public boolean existsByName(String userName) {
         final URL url;
         try {
-            url = new URI(BASE_URL + "/exists").toURL();
+            url = new URI(baseUrl + "/exists").toURL();
         }
         catch (URISyntaxException e) {
             System.out.println(e.getMessage());
