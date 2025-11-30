@@ -37,13 +37,17 @@ import interface_adapter.signup.SignupViewModel;
 import recipeapi.CachingRecipeFetcher;
 import recipeapi.RecipeFetcher;
 import recipeapi.SpoonacularRecipeFetcher;
+import use_case.add_favorite_list.AddFavoriteRecipeDataAccessInterface;
+import use_case.add_favorite_list.AddFavoriteRecipeInputBoundary;
+import use_case.add_favorite_list.AddFavoriteRecipeInteractor;
+import use_case.add_favorite_list.AddFavoriteRecipeOutputBoundary;
 import use_case.cookinglist.AddToCookingList.AddToCookingListInputBoundary;
 import use_case.cookinglist.AddToCookingList.AddToCookingListInteractor;
 import use_case.cookinglist.AddToCookingList.AddToCookingListOutputBoundary;
 import use_case.cookinglist.RecipeDataAccessInterface;
-import use_case.cookinglist.SortCookingListInputBoundary;
-import use_case.cookinglist.SortCookingListInteractor;
-import use_case.cookinglist.SortCookingListOutputBoundary;
+import use_case.cookinglist.SortCookingList.SortCookingListInputBoundary;
+import use_case.cookinglist.SortCookingList.SortCookingListInteractor;
+import use_case.cookinglist.SortCookingList.SortCookingListOutputBoundary;
 import use_case.fridge.AddToFridge.AddToFridgeInputBoundary;
 import use_case.fridge.AddToFridge.AddToFridgeInteractor;
 import use_case.fridge.DeleteFridge.DeleteFridgeInputBoundary;
@@ -211,7 +215,8 @@ public final class RecipeAppBuilder {
                         .setId(-1)
                         .build();
                 fridgeController.addIngredient(ing);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 ex.printStackTrace();
             }
         });
