@@ -44,11 +44,11 @@ public class LoginInteractor implements LoginInputBoundary {
             // Get user from the backend
             final User user = userDataAccess.get(username, password);
 
-            if (user == null) {
+            if (!userDataAccess.existsByName(username)) {
                 errorMessage = "User not found";
             }
-            else if (!user.getPassword().equals(password)) {
-                errorMessage = "Incorrect password";
+            else if (user == null) {
+                errorMessage = "Wrong username or password";
             }
             else {
                 // Success

@@ -52,43 +52,62 @@ public class UserDataAccesssObject implements
 
     @Override
     public User get(String userName, String password) {
-        HttpURLConnection conn;
+        final HttpURLConnection conn;
         try {
             final URL url = new URI(BASE_URL + "/login").toURL();
             conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
+            conn.setRequestMethod(POST);
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(true);
         }
         catch (URISyntaxException uriSyntaxException) {
+            System.out.println("Invalid URI syntax");
             throw new RuntimeException(uriSyntaxException);
         }
         catch (IOException ioException) {
-            System.out.println(ioException.getMessage());
             throw new RuntimeException(ioException);
         }
 
         final JSONObject body = new JSONObject();
         body.put("user_name", userName);
         body.put("password", password);
-        StringBuilder sb;
+
         try {
             final OutputStream os = conn.getOutputStream();
             os.write(body.toString().getBytes());
             os.flush();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-            final BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
+        try {
+            final BufferedReader br;
+
+            if (conn.getResponseCode() >= 200 && conn.getResponseCode() < 300) {
+                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            }
+            else {
+                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            }
+
             String line;
-
             while ((line = br.readLine()) != null) {
                 sb.append(line);
             }
         }
-        catch (IOException ioException) {
-            throw new RuntimeException(ioException);
+        catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
         final JSONObject res = new JSONObject(sb.toString());
+
+        final String message = res.getString("message");
+
+        if (!message.equals("Login success")) {
+            return null; // may have issue look later.
+        }
 
         final JSONObject userJson = res.getJSONObject("user");
 
@@ -101,7 +120,7 @@ public class UserDataAccesssObject implements
 
     @Override
     public boolean existsByName(String userName) {
-        URL url;
+        final URL url;
         try {
             url = new URI(BASE_URL + "/exists").toURL();
         }
@@ -114,8 +133,8 @@ public class UserDataAccesssObject implements
             throw new RuntimeException(e);
         }
 
-        HttpURLConnection conn;
-        StringBuilder sb;
+        final HttpURLConnection conn;
+        final StringBuilder sb;
         try {
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
