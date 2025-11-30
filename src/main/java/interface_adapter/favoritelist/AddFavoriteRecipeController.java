@@ -27,4 +27,10 @@ public class AddFavoriteRecipeController {
                 new AddFavoriteRecipeInputData(username, recipe);
         interactor.execute(inputData);
     }
+
+    public void remove(String username, Recipe recipe) {
+        final AddFavoriteRecipeInputData inputData =
+                new AddFavoriteRecipeInputData(username, recipe);
+        interactor.remove(inputData);
+    }
 }

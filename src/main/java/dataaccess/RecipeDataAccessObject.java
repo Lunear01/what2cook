@@ -4,6 +4,7 @@ import entity.Ingredient;
 import entity.Recipe;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import use_case.cookinglist.RecipeDataAccessInterface;
 
 import java.io.*;
 import java.net.HttpURLConnection;

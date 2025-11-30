@@ -7,12 +7,16 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import dataaccess.InMemoryCookingListDataAccessInterface;
+import dataaccess.RecipeDataAccessObject;
 import dataaccess.UserDataAccesssObject;
 import entity.Ingredient;
+import entity.User;
+import entity.UserBuilder;
 import interface_adapter.cookinglist.AddToCookingListController;
 import interface_adapter.cookinglist.AddToCookingListPresenter;
 import interface_adapter.cookinglist.CookingListViewModel;
+import interface_adapter.cookinglist.SortCookingListController;
+import interface_adapter.cookinglist.SortCookingListPresenter;
 import interface_adapter.ingredient_search.IngredientSearchViewModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
@@ -29,7 +33,10 @@ import recipeapi.SpoonacularRecipeFetcher;
 import use_case.cookinglist.AddToCookingListInputBoundary;
 import use_case.cookinglist.AddToCookingListInteractor;
 import use_case.cookinglist.AddToCookingListOutputBoundary;
-import use_case.cookinglist.CookingListDataAccessInterface;
+import use_case.cookinglist.RecipeDataAccessInterface;
+import use_case.cookinglist.SortCookingListInputBoundary;
+import use_case.cookinglist.SortCookingListInteractor;
+import use_case.cookinglist.SortCookingListOutputBoundary;
 import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.recipe_search.RecipeSearchInputBoundary;
@@ -63,6 +70,20 @@ public final class RecipeAppBuilder {
 
         // --- Data access (gateway) ---
         final UserDataAccesssObject userDao = new UserDataAccesssObject();
+
+        // --- Demo users ---
+//        final User user1 = new UserBuilder()
+//                .withName("jonathan_calver2")
+//                .withPassword("password123")
+//                .withEmail("39485@adf.com")
+//                .build();
+//        final User user2 = new UserBuilder()
+//                .withName("david")
+//                .withPassword("pass456")
+//                .withEmail("dkh.kim@mail.utoronto.com")
+//                .build();
+//  userDao.save(user1);
+//        userDao.save(user2);
 
         // --- Login wiring ---
         final LoginViewModel loginViewModel = new LoginViewModel();
@@ -112,8 +133,8 @@ public final class RecipeAppBuilder {
         final AddToCookingListOutputBoundary cookingListPresenter =
                 new AddToCookingListPresenter(cookingListViewModel);
 
-        final CookingListDataAccessInterface cookingListDao =
-                new InMemoryCookingListDataAccessInterface();
+        final RecipeDataAccessInterface cookingListDao =
+                new RecipeDataAccessObject();
 
         final AddToCookingListInputBoundary addToCookingListInteractor =
                 new AddToCookingListInteractor(cookingListDao, cookingListPresenter);
@@ -121,8 +142,20 @@ public final class RecipeAppBuilder {
         final AddToCookingListController addToCookingListController =
                 new AddToCookingListController(addToCookingListInteractor);
 
+        // 排序功能的组件
+        final SortCookingListOutputBoundary sortCookingListPresenter =
+                new SortCookingListPresenter(cookingListViewModel);
+
+        final SortCookingListInputBoundary sortCookingListInteractor =
+                new SortCookingListInteractor(cookingListDao, sortCookingListPresenter);
+
+        final SortCookingListController sortCookingListController =
+                new SortCookingListController(sortCookingListInteractor);
+
         final CookingListView cookingListView =
-                new CookingListView(cookingListViewModel);
+                new CookingListView(cookingListViewModel, sortCookingListController);
+
+        recipeSearchView.setCookingListController(addToCookingListController);
 
         // --- Favorite list wiring ---
         final FavoriteListViewModel favoriteListViewModel =
@@ -130,7 +163,6 @@ public final class RecipeAppBuilder {
 
         final AddFavoriteRecipeOutputBoundary favoritePresenter =
                 new AddFavoriteRecipePresenter(favoriteListViewModel);
-        cookingListView.setOnOpenRecipe(recipeSearchController::openRecipe);
 
         final AddFavoriteRecipeDataAccessInterface favoriteDao =
                 new InMemoryFavoriteRecipeDataAccess();
@@ -144,8 +176,9 @@ public final class RecipeAppBuilder {
         final FavoriteListView favoriteListView =
                 new FavoriteListView(favoriteListViewModel);
 
-        // 让 recipe 搜索页能把菜加到 favorites
+        // 让 recipe 搜索页能把菜加到 favorites 和 cooking list
         recipeSearchView.setFavoriteController(addFavoriteRecipeController);
+        recipeSearchView.setCookingListController(addToCookingListController);
 
         // --- Frame and card layout ---
         final JFrame frame = new JFrame("What2Cook");
@@ -174,6 +207,12 @@ public final class RecipeAppBuilder {
         //
         final String cooking = "cooking";
         final String favorites = "favorites";
+        final String recipeInstruction = "recipeInstruction";
+
+        favoriteListView.setOnBackToRecipes(() -> {
+            frame.setTitle("What2Cook - Recipes");
+            cardLayout.show(cardPanel, recipe);
+        });
 
         cardPanel.add(loginView, login);
         cardPanel.add(signupView, signup);
@@ -182,12 +221,14 @@ public final class RecipeAppBuilder {
         //
         cardPanel.add(cookingListView, cooking);
         cardPanel.add(favoriteListView, favorites);
+        cardPanel.add(recipeInstructionView, recipeInstruction);
 
-        recipeSearchView.setOnOpenCookingList(() -> {
-            frame.setTitle("What2Cook - Cooking List");
-            cardLayout.show(cardPanel, cooking);
+        recipeInstructionView.setOnBackToRecipeList(() -> {
+        // 设置 cooking list 的 back 按钮返回到 recipe 页面
+        cookingListView.setOnBack(() -> {
+            frame.setTitle("What2Cook - Recipes");
+            cardLayout.show(cardPanel, recipe);
         });
-
 
         // --- Navigation wiring ---
         loginView.setOnSwitchToSignup(() -> {
@@ -200,10 +241,18 @@ public final class RecipeAppBuilder {
             cardLayout.show(cardPanel, login);
         });
 
+        recipeSearchView.setOnOpenInstruction(recipeObj -> {
+            recipeInstructionView.setRecipe(recipeObj);
+            frame.setTitle("What2Cook - Instructions");
+            cardLayout.show(cardPanel, recipeInstruction);
+        });
+
         loginView.setOnLoginSuccess(() -> {
             final String username = loginViewModel.getState().getUsername();
             recipeSearchView.setCurrentUsername(username);
-
+            // recipeInstructionView.setCurrentUsername(username);
+            recipeSearchController.setCurrentUsername(username);
+            favoriteListView.setCurrentUsername(username);
             frame.setTitle("What2Cook - Ingredients");
             cardLayout.show(cardPanel, ingredient);
         });
@@ -231,6 +280,10 @@ public final class RecipeAppBuilder {
         });
 
         recipeSearchView.setOnOpenCookingList(() -> {
+            // 设置当前用户名以支持排序功能
+            final String username = loginViewModel.getState().getUsername();
+            cookingListView.setCurrentUsername(username);
+
             frame.setTitle("What2Cook - Cooking List");
             cardLayout.show(cardPanel, cooking);
         });

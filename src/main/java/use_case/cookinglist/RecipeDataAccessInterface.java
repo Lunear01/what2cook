@@ -1,4 +1,4 @@
-package dataaccess;
+package use_case.cookinglist;
 
 import entity.Recipe;
 import org.json.JSONObject;
