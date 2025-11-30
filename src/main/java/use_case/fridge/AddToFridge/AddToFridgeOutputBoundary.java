@@ -6,5 +6,4 @@ public interface AddToFridgeOutputBoundary {
 
     AddToFridgeResponseModel prepareFailView(String errorMessage);
 
-
 }
