@@ -32,4 +32,13 @@ public class InMemoryFavoriteRecipeDataAccess
             favorites.add(recipe);
         }
     }
+
+    /** NEW: remove recipe from favorites */
+    @Override
+    public void removeFromFavorites(String username, Recipe recipe) {
+        final List<Recipe> favorites =
+                favoritesByUser.getOrDefault(username, new ArrayList<>());
+
+        favorites.removeIf(r -> r.getId() == recipe.getId());
+    }
 }
