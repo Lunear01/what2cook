@@ -71,20 +71,6 @@ public final class RecipeAppBuilder {
         // --- Data access (gateway) ---
         final UserDataAccesssObject userDao = new UserDataAccesssObject();
 
-        // --- Demo users ---
-//        final User user1 = new UserBuilder()
-//                .withName("jonathan_calver2")
-//                .withPassword("password123")
-//                .withEmail("39485@adf.com")
-//                .build();
-//        final User user2 = new UserBuilder()
-//                .withName("david")
-//                .withPassword("pass456")
-//                .withEmail("dkh.kim@mail.utoronto.com")
-//                .build();
-//  userDao.save(user1);
-//        userDao.save(user2);
-
         // --- Login wiring ---
         final LoginViewModel loginViewModel = new LoginViewModel();
         final LoginPresenter loginPresenter = new LoginPresenter(loginViewModel);
@@ -142,7 +128,6 @@ public final class RecipeAppBuilder {
         final AddToCookingListController addToCookingListController =
                 new AddToCookingListController(addToCookingListInteractor);
 
-        // 排序功能的组件
         final SortCookingListOutputBoundary sortCookingListPresenter =
                 new SortCookingListPresenter(cookingListViewModel);
 
@@ -179,11 +164,9 @@ public final class RecipeAppBuilder {
                 new RecipeInstructionView();
         recipeInstructionView.setFavoriteController(addFavoriteRecipeController);
 
-        // 让 recipe 搜索页能把菜加到 favorites 和 cooking list
         recipeSearchView.setFavoriteController(addFavoriteRecipeController);
         recipeSearchView.setCookingListController(addToCookingListController);
 
-        // 让 cooking list 能打开 recipe details
         cookingListView.setOnOpenRecipe(recipeSearchController::openRecipe);
 
         // --- Frame and card layout ---
@@ -210,7 +193,6 @@ public final class RecipeAppBuilder {
         final String signup = "signup";
         final String ingredient = "ingredient";
         final String recipe = "recipe";
-        //
         final String cooking = "cooking";
         final String favorites = "favorites";
         final String recipeInstruction = "recipeInstruction";
@@ -224,18 +206,15 @@ public final class RecipeAppBuilder {
         cardPanel.add(signupView, signup);
         cardPanel.add(ingredientSearchView, ingredient);
         cardPanel.add(recipeSearchView, recipe);
-        //
         cardPanel.add(cookingListView, cooking);
         cardPanel.add(favoriteListView, favorites);
         cardPanel.add(recipeInstructionView, recipeInstruction);
 
-        // 设置 recipe instruction 的 back 按钮返回到 recipe 页面
         recipeInstructionView.setOnBackToRecipeList(() -> {
             frame.setTitle("What2Cook - Recipes");
             cardLayout.show(cardPanel, recipe);
         });
 
-        // 设置 cooking list 的 back 按钮返回到 recipe 页面
         cookingListView.setOnBack(() -> {
             frame.setTitle("What2Cook - Recipes");
             cardLayout.show(cardPanel, recipe);
@@ -291,8 +270,12 @@ public final class RecipeAppBuilder {
             cardLayout.show(cardPanel, recipe);
         });
 
+        recipeSearchView.setOnBack(() -> {
+            frame.setTitle("What2Cook - Ingredients");
+            cardLayout.show(cardPanel, ingredient);
+        });
+
         recipeSearchView.setOnOpenCookingList(() -> {
-            // 设置当前用户名以支持排序功能
             final String username = loginViewModel.getState().getUsername();
             cookingListView.setCurrentUsername(username);
 
