@@ -6,7 +6,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import use_case.cookinglist.RecipeDataAccessInterface;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,6 +24,11 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
     private static final String GET = "GET";
     private static final String POST = "POST";
     private static final String DELETE = "DELETE";
+    private static final String CONTENT_TYPE = "Content-Type";
+    private static final String APPLICATION_JSON = "application/json";
+    private static final String INVALID_URI_SYNTAX = "Invalid URI syntax";
+    private static final String USER_NAME = "user_name";
+    private static final String SUCCESS = "success";
 
     @Override
     public void addRecipe(String userName, Recipe recipe) {
@@ -29,11 +37,11 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
             final URL url = new URI(BASE_URL + "/add").toURL();
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(POST);
-            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
             conn.setDoOutput(true);
         }
         catch (URISyntaxException uriSyntaxException) {
-            System.out.println("Invalid URI syntax");
+            System.out.println(INVALID_URI_SYNTAX);
             throw new RuntimeException(uriSyntaxException);
         }
         catch (IOException ioException) {
@@ -58,7 +66,7 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
         recipeJson.put("healthScore", recipe.getHealthScore());
 
         final JSONObject body = new JSONObject();
-        body.put("user_name", userName);
+        body.put(USER_NAME, userName);
         body.put("recipe_id", recipe.getId());
         body.put("recipes", recipeJson);
 
@@ -74,8 +82,9 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
         final StringBuilder sb = new StringBuilder();
         try {
             final BufferedReader br;
-
-            if (conn.getResponseCode() >= 200 && conn.getResponseCode() < 300) {
+            final int lowerLimit = 200;
+            final int upperLimit = 300;
+            if (conn.getResponseCode() >= lowerLimit && conn.getResponseCode() < upperLimit) {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             }
             else {
@@ -93,7 +102,7 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
 
         final JSONObject res = new JSONObject(sb.toString());
 
-        final boolean success = res.getBoolean("success");
+        final boolean success = res.getBoolean(SUCCESS);
 
         if (!success) {
             throw new RuntimeException("Failed to add recipe");
@@ -107,22 +116,35 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
             final URL url = new URI(BASE_URL + "/" + userName).toURL();
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(GET);
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setDoOutput(false);
+            conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
+            conn.setDoOutput(true);
         }
         catch (URISyntaxException uriSyntaxException) {
-            System.out.println("Invalid URI syntax");
+            System.out.println(INVALID_URI_SYNTAX);
             throw new RuntimeException(uriSyntaxException);
         }
         catch (IOException ioException) {
             throw new RuntimeException(ioException);
         }
 
+        final JSONObject body = new JSONObject();
+        body.put(USER_NAME, userName);
+
+        try {
+            final OutputStream os = conn.getOutputStream();
+            os.write(body.toString().getBytes());
+            os.flush();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         final StringBuilder sb = new StringBuilder();
         try {
             final BufferedReader br;
-
-            if (conn.getResponseCode() >= 200 && conn.getResponseCode() < 300) {
+            final int lowerLimit = 200;
+            final int upperLimit = 300;
+            if (conn.getResponseCode() >= lowerLimit && conn.getResponseCode() < upperLimit) {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             }
             else {
@@ -140,7 +162,7 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
 
         final JSONObject res = new JSONObject(sb.toString());
 
-        final boolean success = res.getBoolean("success");
+        final boolean success = res.getBoolean(SUCCESS);
 
         if (!success) {
             throw new RuntimeException("Failed to get recipe");
@@ -186,18 +208,18 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
             final URL url = new URI(BASE_URL + "/delete").toURL();
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(DELETE);
-            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
             conn.setDoOutput(true);
         }
         catch (URISyntaxException uriSyntaxException) {
-            System.out.println("Invalid URI syntax");
+            System.out.println(INVALID_URI_SYNTAX);
             throw new RuntimeException(uriSyntaxException);
         }
         catch (IOException ioException) {
             throw new RuntimeException(ioException);
         }
         final JSONObject body = new JSONObject();
-        body.put("user_name", user_name);
+        body.put(USER_NAME, user_name);
         body.put("recipe_id", recipeID);
 
         try {
@@ -212,8 +234,9 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
         final StringBuilder sb = new StringBuilder();
         try {
             final BufferedReader br;
-
-            if (conn.getResponseCode() >= 200 && conn.getResponseCode() < 300) {
+            final int lowerLimit = 200;
+            final int upperLimit = 300;
+            if (conn.getResponseCode() >= lowerLimit && conn.getResponseCode() < upperLimit) {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             }
             else {
@@ -231,7 +254,7 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
 
         final JSONObject res = new JSONObject(sb.toString());
 
-        final boolean success = res.getBoolean("success");
+        final boolean success = res.getBoolean(SUCCESS);
 
         if (!success) {
             throw new RuntimeException("Failed to delete recipe");
