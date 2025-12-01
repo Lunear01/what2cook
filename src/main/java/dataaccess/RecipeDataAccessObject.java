@@ -16,7 +16,7 @@ import java.util.List;
 
 public class RecipeDataAccessObject implements RecipeDataAccessInterface {
 
-    private final String BASE_URL = "http://172.20.10.13:3000/recipe";
+    private final String BASE_URL = "http://172.20.10.7:3000/recipe";
 
     private static final String GET = "GET";
     private static final String POST = "POST";
@@ -108,7 +108,7 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(GET);
             conn.setRequestProperty("Content-Type", "application/json");
-            conn.setDoOutput(true);
+            conn.setDoOutput(false);
         }
         catch (URISyntaxException uriSyntaxException) {
             System.out.println("Invalid URI syntax");
@@ -116,18 +116,6 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
         }
         catch (IOException ioException) {
             throw new RuntimeException(ioException);
-        }
-
-        final JSONObject body = new JSONObject();
-        body.put("user_name", userName);
-
-        try {
-            final OutputStream os = conn.getOutputStream();
-            os.write(body.toString().getBytes());
-            os.flush();
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
         }
 
         final StringBuilder sb = new StringBuilder();
