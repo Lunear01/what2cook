@@ -226,13 +226,11 @@ public final class RecipeAppBuilder {
                 new RecipeInstructionView();
         recipeInstructionView.setFavoriteController(addFavoriteRecipeController);
 
-        // 让 recipe 搜索页能把菜加到 favorites 和 cooking list
         recipeSearchView.setFavoriteController(addFavoriteRecipeController);
         recipeSearchView.setCookingListController(addToCookingListController);
 
         recipeSearchController.setFavoriteController(addFavoriteRecipeController);
 
-        // 让 cooking list 能打开 recipe details
         cookingListView.setOnOpenRecipe(recipeSearchController::openRecipe);
 
         // --- Frame and card layout ---
