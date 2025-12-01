@@ -7,17 +7,17 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import dataaccess.InMemoryCookingListDataAccess;
 import dataaccess.InMemoryFavoriteRecipeDataAccess;
-import dataaccess.InMemoryUserDataAccess;
 import dataaccess.IngredientDataAccessInterface;
 import dataaccess.IngredientDataAccessObject;
 import dataaccess.RecipeDataAccessObject;
 import dataaccess.UserDataAccesssObject;
 import entity.Ingredient;
-import interface_adapter.cookinglist.CookingListController;
-import interface_adapter.cookinglist.CookingListPresenter;
+import interface_adapter.cookinglist.AddToCookingListController;
+import interface_adapter.cookinglist.AddToCookingListPresenter;
 import interface_adapter.cookinglist.CookingListViewModel;
+import interface_adapter.cookinglist.SortCookingListController;
+import interface_adapter.cookinglist.SortCookingListPresenter;
 import interface_adapter.favoritelist.AddFavoriteRecipeController;
 import interface_adapter.favoritelist.AddFavoriteRecipePresenter;
 import interface_adapter.favoritelist.FavoriteListViewModel;
@@ -44,9 +44,6 @@ import use_case.add_favorite_list.AddFavoriteRecipeOutputBoundary;
 import use_case.cookinglist.AddToCookingList.AddToCookingListInputBoundary;
 import use_case.cookinglist.AddToCookingList.AddToCookingListInteractor;
 import use_case.cookinglist.AddToCookingList.AddToCookingListOutputBoundary;
-import use_case.cookinglist.GetCookingList.GetCookingListInputBoundary;
-import use_case.cookinglist.GetCookingList.GetCookingListInteractor;
-import use_case.cookinglist.GetCookingList.GetCookingListOutputBoundary;
 import use_case.cookinglist.RecipeDataAccessInterface;
 import use_case.cookinglist.SortCookingList.SortCookingListInputBoundary;
 import use_case.cookinglist.SortCookingList.SortCookingListInteractor;
@@ -140,26 +137,29 @@ public final class RecipeAppBuilder {
         final CookingListViewModel cookingListViewModel =
                 new CookingListViewModel();
 
-        final CookingListPresenter cookingListPresenter =
-                new CookingListPresenter(cookingListViewModel);
+        final AddToCookingListOutputBoundary cookingListPresenter =
+                new AddToCookingListPresenter(cookingListViewModel);
 
         final RecipeDataAccessInterface cookingListDao =
-                new InMemoryCookingListDataAccess();
+                new RecipeDataAccessObject();
 
         final AddToCookingListInputBoundary addToCookingListInteractor =
                 new AddToCookingListInteractor(cookingListDao, cookingListPresenter);
 
+        final AddToCookingListController addToCookingListController =
+                new AddToCookingListController(addToCookingListInteractor);
+
+        final SortCookingListOutputBoundary sortCookingListPresenter =
+                new SortCookingListPresenter(cookingListViewModel);
+
         final SortCookingListInputBoundary sortCookingListInteractor =
-                new SortCookingListInteractor(cookingListDao, cookingListPresenter);
+                new SortCookingListInteractor(cookingListDao, sortCookingListPresenter);
 
-        final GetCookingListInputBoundary getCookingListInteractor =
-                new GetCookingListInteractor(cookingListDao, cookingListPresenter);
-
-        final CookingListController cookingListController =
-                new CookingListController(addToCookingListInteractor, getCookingListInteractor, sortCookingListInteractor);
+        final SortCookingListController sortCookingListController =
+                new SortCookingListController(sortCookingListInteractor);
 
         final CookingListView cookingListView =
-                new CookingListView(cookingListViewModel, cookingListController);
+                new CookingListView(cookingListViewModel, sortCookingListController);
 
         // Favorite list
         final FavoriteListViewModel favoriteListViewModel =
@@ -222,7 +222,7 @@ public final class RecipeAppBuilder {
         recipeInstructionView.setFavoriteController(addFavoriteRecipeController);
 
         recipeSearchView.setFavoriteController(addFavoriteRecipeController);
-        recipeSearchView.setCookingListController(cookingListController);
+        recipeSearchView.setCookingListController(addToCookingListController);
 
         recipeSearchController.setFavoriteController(addFavoriteRecipeController);
 
