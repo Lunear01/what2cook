@@ -26,6 +26,9 @@ public class IngredientBuilder {
         return this;
     }
 
+    /**
+     * Builds and returns an Ingredient.
+     */
     public Ingredient build() {
 
         return new Ingredient(name, ingredientId);

@@ -1,12 +1,12 @@
 package dataaccess;
 
-import entity.Recipe;
-import use_case.add_favorite_list.AddFavoriteRecipeDataAccessInterface;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import entity.Recipe;
+import use_case.add_favorite_list.AddFavoriteRecipeDataAccessInterface;
 
 /**
  * In-memory implementation of the favorite recipe data access.
@@ -33,7 +33,12 @@ public class InMemoryFavoriteRecipeDataAccess
         }
     }
 
-    /** NEW: remove recipe from favorites */
+    /**
+     * Removes a recipe from the user's list of favorite recipes.
+     *
+     * @param username the user's name
+     * @param recipe   the recipe to remove
+     */
     @Override
     public void removeFromFavorites(String username, Recipe recipe) {
         final List<Recipe> favorites =

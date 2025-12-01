@@ -52,10 +52,16 @@ public class Recipe {
         return image;
     }
 
+    /**
+     * Returns a new RecipeBuilder.
+     */
     public static RecipeBuilder builder() {
         return new RecipeBuilder();
     }
 
+    /**
+     * Converts this Recipe into a RecipeBuilder.
+     */
     public RecipeBuilder toBuilder() {
         return new RecipeBuilder()
                 .setId(this.recipeID)
