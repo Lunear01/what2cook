@@ -4,21 +4,20 @@ import java.util.List;
 
 import entity.Recipe;
 
+/**
+ * Interactor for adding recipes to the user's favorite list.
+ * If the recipe is already in the list, it does not add it again
+ * and simply returns the existing list with a message.
+ */
 public class AddFavoriteRecipeInteractor implements AddFavoriteRecipeInputBoundary {
 
     private final AddFavoriteRecipeDataAccessInterface favoritesDao;
     private final AddFavoriteRecipeOutputBoundary presenter;
-    private String lastMessage = "";
 
     public AddFavoriteRecipeInteractor(AddFavoriteRecipeDataAccessInterface favoritesDao,
                                        AddFavoriteRecipeOutputBoundary presenter) {
         this.favoritesDao = favoritesDao;
         this.presenter = presenter;
-
-    }
-
-    public String getLastMessage() {
-        return lastMessage;
     }
 
     @Override
@@ -32,28 +31,25 @@ public class AddFavoriteRecipeInteractor implements AddFavoriteRecipeInputBounda
         final boolean exists = currentFavorites.stream()
                 .anyMatch(recipeE -> recipeE.getId() == recipe.getId());
 
-        final List<Recipe> updatedFavorites;
-        final String message;
+        final AddFavoriteRecipeOutputData outputData;
 
         if (exists) {
             outputData = new AddFavoriteRecipeOutputData(
                     currentFavorites,
                     recipe.getTitle() + " is already in your favorites."
             );
-        } else {
+        }
+        else {
             favoritesDao.addToFavorites(username, recipe);
-            updatedFavorites = favoritesDao.getFavorites(username);
-            message = recipe.getTitle() + " added to your favorites!";
+            final List<Recipe> updated = favoritesDao.getFavorites(username);
+
+            outputData = new AddFavoriteRecipeOutputData(
+                    updated,
+                    recipe.getTitle() + " added to your favorites!"
+            );
         }
 
-        // 记录这次 message，留给 controller 用
-        lastMessage = message;
-
-        presenter.present(
-                new AddFavoriteRecipeOutputData(
-                        updatedFavorites,
-                        message
-                )
-        );
+        presenter.present(outputData);
     }
+
 }
