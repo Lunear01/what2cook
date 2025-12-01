@@ -42,7 +42,6 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
     private final JButton deleteButton = new JButton("Delete Selected");
     private final JButton backButton = new JButton("Back to Recipes");
 
-    // 用来根据选中的 index 找到对应的 Recipe
     private List<Recipe> currentFavorites = Collections.emptyList();
 
     public FavoriteListView(FavoriteListViewModel viewModel) {
@@ -128,7 +127,12 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
     }
 
     private void updateList(List<Recipe> favorites) {
-        currentFavorites = (favorites == null) ? Collections.emptyList() : favorites;
+        if (favorites == null) {
+            currentFavorites = Collections.emptyList();
+        }
+        else {
+            currentFavorites = favorites;
+        }
 
         listModel.clear();
         if (currentFavorites.isEmpty()) {

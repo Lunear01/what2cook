@@ -127,14 +127,15 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
      *
      * @param conn the HTTP connection to write to
      * @param body the JSON body to send
+     * @throws RuntimeException if an I/O error occurs
      */
     private void sendBody(HttpURLConnection conn, JSONObject body) {
         try (OutputStream os = conn.getOutputStream()) {
             os.write(body.toString().getBytes());
             os.flush();
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -142,6 +143,7 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
      * Reads the HTTP response and returns it as a JSON object.
      *
      * @param conn the HTTP connection from which to read the response
+     * @throws RuntimeException if an I/O error occurs
      */
     private JSONObject readResponseAsJson(HttpURLConnection conn) {
         final StringBuilder sb = new StringBuilder();
@@ -151,8 +153,8 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
                 sb.append(line);
             }
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
         return new JSONObject(sb.toString());
     }

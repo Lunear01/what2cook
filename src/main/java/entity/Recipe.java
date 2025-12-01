@@ -54,6 +54,8 @@ public class Recipe {
 
     /**
      * Returns a new RecipeBuilder.
+     *
+     * @return return new builder for recipe.
      */
     public static RecipeBuilder builder() {
         return new RecipeBuilder();
@@ -61,6 +63,8 @@ public class Recipe {
 
     /**
      * Converts this Recipe into a RecipeBuilder.
+     *
+     * @return return new builder for recipe.
      */
     public RecipeBuilder toBuilder() {
         return new RecipeBuilder()
