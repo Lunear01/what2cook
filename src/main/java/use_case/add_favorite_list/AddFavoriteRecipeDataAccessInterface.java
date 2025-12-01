@@ -21,12 +21,4 @@ public interface AddFavoriteRecipeDataAccessInterface {
      * @param recipe   the recipe to add.
      */
     void addToFavorites(String username, Recipe recipe);
-
-    /**
-     * Removes the given recipe from the user's favorites list.
-     *
-     * @param username the user's name.
-     * @param recipe   the recipe to remove.
-     */
-    void removeFromFavorites(String username, Recipe recipe);
 }
