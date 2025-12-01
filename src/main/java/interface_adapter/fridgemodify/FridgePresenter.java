@@ -3,6 +3,7 @@ package interface_adapter.fridgemodify;
 import java.util.ArrayList;
 import java.util.List;
 
+import entity.Ingredient;
 import use_case.fridge.AddToFridge.AddToFridgeOutputBoundary;
 import use_case.fridge.AddToFridge.AddToFridgeResponseModel;
 import use_case.fridge.DeleteFridge.DeleteFridgeOutputBoundary;
@@ -10,9 +11,6 @@ import use_case.fridge.DeleteFridge.DeleteFridgeResponseModel;
 import use_case.fridge.GetFridge.GetFridgeOutputBoundary;
 import use_case.fridge.GetFridge.GetFridgeResponseModel;
 
-/**
- * Unified presenter for Add / Delete / Get fridge use cases.
- */
 public class FridgePresenter implements
         AddToFridgeOutputBoundary,
         DeleteFridgeOutputBoundary,
@@ -24,34 +22,38 @@ public class FridgePresenter implements
         this.viewModel = viewModel;
     }
 
-    // ------------ SUCCESS: Add ------------
     @Override
     public AddToFridgeResponseModel prepareSuccessView(AddToFridgeResponseModel responseModel) {
 
         final FridgeState state = viewModel.getState();
         state.setErrorMessage("");
 
-        final List<String> updated = new ArrayList<>(state.getIngredients());
-        updated.add(responseModel.getIngredientName());
+        final List<Ingredient> updated = new ArrayList<>(state.getIngredients());
 
+        // Construct new Ingredient
+        final Ingredient newIngredient = Ingredient.builder()
+                .setName(responseModel.getIngredientName())
+                .setId(responseModel.getIngredientId())
+                .build();
+
+        updated.add(newIngredient);
         state.setIngredients(updated);
-        viewModel.setState(state);
 
+        viewModel.setState(state);
         return responseModel;
     }
 
-    // ------------ SUCCESS: Delete ------------
+    // ========== SUCCESS: Delete from fridge ==========
     @Override
     public DeleteFridgeResponseModel prepareSuccessView(DeleteFridgeResponseModel responseModel) {
 
         final FridgeState state = viewModel.getState();
         state.setErrorMessage("");
 
-        final List<String> updated = new ArrayList<>(state.getIngredients());
+        final List<Ingredient> updated = new ArrayList<>(state.getIngredients());
 
-        // the ingredientName is NOT known in delete response, so remove by ID index
-        // For now: simply do updated.removeIf(...)
-        updated.removeIf(name -> name.hashCode() == responseModel.getIngredientId());
+        // Remove ingredient by ID
+        updated.removeIf(ing -> ing.getIngredientId() == responseModel.getIngredientId());
 
         state.setIngredients(updated);
         viewModel.setState(state);
@@ -59,23 +61,21 @@ public class FridgePresenter implements
         return responseModel;
     }
 
-    // ------------ SUCCESS: Get ------------
+    // ========== SUCCESS: Get fridge ==========
     @Override
     public GetFridgeResponseModel prepareSuccessView(GetFridgeResponseModel responseModel) {
 
         final FridgeState state = viewModel.getState();
         state.setErrorMessage("");
 
-        final List<String> names = new ArrayList<>();
-        responseModel.getIngredients().forEach(i -> names.add(i.getName()));
+        // Directly store the Ingredient list
+        state.setIngredients(responseModel.getIngredients());
 
-        state.setIngredients(names);
         viewModel.setState(state);
-
         return responseModel;
     }
 
-    // ------------ FAIL (shared by all 3 interfaces) ------------
+    // ========== FAIL (shared) ==========
     @Override
     public AddToFridgeResponseModel prepareFailView(String errorMessage) {
         setError(errorMessage);
@@ -94,7 +94,7 @@ public class FridgePresenter implements
         return null;
     }
 
-    // Helper to reduce code duplication
+    // Helper for all failure cases
     private void setError(String errorMessage) {
         final FridgeState state = viewModel.getState();
         state.setErrorMessage(errorMessage);

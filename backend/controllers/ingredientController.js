@@ -13,7 +13,8 @@ exports.addIngredient = async (req, res) => {
         res.json({
             success: true,
             message: "Ingredient added",
-            ingredient: result
+            ingredient_name: result.ingredient_name,
+            ingredient_id: result.insertId
         });
     } catch (err) {
         console.error(err);

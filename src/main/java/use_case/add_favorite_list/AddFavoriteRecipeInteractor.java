@@ -4,6 +4,11 @@ import java.util.List;
 
 import entity.Recipe;
 
+/**
+ * Interactor for adding recipes to the user's favorite list.
+ * If the recipe is already in the list, it does not add it again
+ * and simply returns the existing list with a message.
+ */
 public class AddFavoriteRecipeInteractor implements AddFavoriteRecipeInputBoundary {
 
     private final AddFavoriteRecipeDataAccessInterface favoritesDao;
@@ -32,30 +37,23 @@ public class AddFavoriteRecipeInteractor implements AddFavoriteRecipeInputBounda
         final boolean exists = currentFavorites.stream()
                 .anyMatch(recipeE -> recipeE.getId() == recipe.getId());
 
-        final List<Recipe> updatedFavorites;
-        final String message;
+        final AddFavoriteRecipeOutputData outputData;
 
         if (exists) {
-            // 已经存在：不再 add，只用当前列表
-            updatedFavorites = currentFavorites;
-            message = recipe.getTitle() + " is already in your favorites.";
+            outputData = new AddFavoriteRecipeOutputData(
+                    currentFavorites,
+                    recipe.getTitle() + " is already in your favorites."
+            );
         }
         else {
             // 不存在：先加入 DAO，再重新取一次列表
             favoritesDao.addToFavorites(username, recipe);
-            updatedFavorites = favoritesDao.getFavorites(username);
-            message = recipe.getTitle() + " added to your favorites!";
-        }
+            final List<Recipe> updated = favoritesDao.getFavorites(username);
 
         // 记录本次 message，给 controller 用
         lastMessage = message;
 
-        presenter.present(
-                new AddFavoriteRecipeOutputData(
-                        updatedFavorites,
-                        message
-                )
-        );
+        presenter.present(outputData);
     }
 
     /**

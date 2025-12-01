@@ -9,31 +9,33 @@ import entity.Ingredient;
  * State for the fridge view.
  */
 public class FridgeState {
-
-    private List<String> myFridge = new ArrayList<>();
-    private String errorMessage = "";
+    private List<Ingredient> ingredients;
+    private String errorMessage;
 
     public FridgeState() {
-
+        this.ingredients = new ArrayList<>();
+        this.errorMessage = "";
     }
 
-    public FridgeState(List<String> ingredients) {
-        this.myFridge = new ArrayList<>(ingredients);
+    public FridgeState(List<Ingredient> ingredients) {
+        this.ingredients = new ArrayList<>(ingredients);
+        this.errorMessage = "";
     }
 
-    public List<String> getIngredients() {
-        return new ArrayList<>(myFridge);
+    public List<Ingredient> getIngredients() {
+        return new ArrayList<>(ingredients);
     }
 
-    public void setIngredients(List<String> ingredients) {
-        this.myFridge = new ArrayList<>(ingredients);
+    public void setIngredients(List<Ingredient> newList) {
+        this.ingredients = new ArrayList<>(newList);
     }
 
     public String getErrorMessage() {
         return errorMessage;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public void setErrorMessage(String msg) {
+        this.errorMessage = msg;
     }
 }
+
