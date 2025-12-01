@@ -19,15 +19,15 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import entity.Recipe;
+import interface_adapter.cookinglist.CookingListController;
 import interface_adapter.cookinglist.CookingListState;
 import interface_adapter.cookinglist.CookingListViewModel;
-import interface_adapter.cookinglist.SortCookingListController;
 import use_case.cookinglist.SortCookingList.SortCookingListInputData.SortType;
 
 public class CookingListView extends JPanel implements PropertyChangeListener {
 
     private final CookingListViewModel viewModel;
-    private final SortCookingListController sortController;
+    private final CookingListController controller;
     private String currentUsername;
 
     private final JLabel titleLabel = new JLabel("My Cooking List");
@@ -40,9 +40,10 @@ public class CookingListView extends JPanel implements PropertyChangeListener {
     private Runnable onBack;
     private Consumer<Recipe> onOpenRecipe;
 
-    public CookingListView(CookingListViewModel viewModel, SortCookingListController sortController) {
+    public CookingListView(CookingListViewModel viewModel,
+                           CookingListController controller) {
         this.viewModel = viewModel;
-        this.sortController = sortController;
+        this.controller = controller;
         this.viewModel.addPropertyChangeListener(this);
 
         setLayout(new BorderLayout());
@@ -107,7 +108,7 @@ public class CookingListView extends JPanel implements PropertyChangeListener {
     private void handleSortByHealth() {
         if (currentUsername != null) {
             try {
-                sortController.sort(currentUsername, SortType.BY_HEALTH_SCORE);
+                controller.sortCookingList(currentUsername, SortType.BY_HEALTH_SCORE);
             }
             catch (Exception ex) {
                 showErrorDialog("Failed to sort: " + ex.getMessage());
@@ -118,7 +119,7 @@ public class CookingListView extends JPanel implements PropertyChangeListener {
     private void handleSortByCalories() {
         if (currentUsername != null) {
             try {
-                sortController.sort(currentUsername, SortType.BY_CALORIES);
+                controller.sortCookingList(currentUsername, SortType.BY_CALORIES);
             }
             catch (Exception ex) {
                 showErrorDialog("Failed to sort: " + ex.getMessage());
@@ -157,6 +158,16 @@ public class CookingListView extends JPanel implements PropertyChangeListener {
 
     public void setCurrentUsername(String username) {
         this.currentUsername = username;
+        loadCookingList();
+    }
+
+    /**
+     * Load the cooking list for the current user.
+     */
+    public void loadCookingList() {
+        if (currentUsername != null) {
+            controller.getCookingList(currentUsername);
+        }
     }
 
     @Override

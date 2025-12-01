@@ -22,7 +22,7 @@ import javax.swing.SwingConstants;
 
 import entity.Ingredient;
 import entity.Recipe;
-import interface_adapter.cookinglist.AddToCookingListController;
+import interface_adapter.cookinglist.CookingListController;
 import interface_adapter.favoritelist.AddFavoriteRecipeController;
 import interface_adapter.recipe_search.RecipeSearchController;
 import interface_adapter.recipe_search.RecipeSearchState;
@@ -50,7 +50,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     private Recipe selectedRecipe;
 
     private RecipeSearchController controller;
-    private AddToCookingListController cookingListController;
+    private CookingListController cookingListController;
     private AddFavoriteRecipeController favoriteController;
 
     private Runnable onOpenCookingList;
@@ -166,7 +166,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
 
         if (canProceed) {
             // 不再 try/catch RuntimeException，直接调用
-            cookingListController.add(currentUsername, selectedRecipe);
+            cookingListController.addRecipe(currentUsername, selectedRecipe);
         }
     }
 
@@ -277,7 +277,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         this.controller = controller;
     }
 
-    public void setCookingListController(AddToCookingListController cookingListController) {
+    public void setCookingListController(CookingListController cookingListController) {
         this.cookingListController = cookingListController;
     }
 

@@ -151,30 +151,36 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
         final List<Recipe> recipeList = new ArrayList<>();
 
         for (int i = 0; i < recipesArray.length(); i++) {
-
             final JSONObject obj = recipesArray.getJSONObject(i);
+
+            // Backend returns nested structure: {recipe_id: X, recipes: {...}}
+            // Extract the nested "recipes" object containing the actual recipe data
+            final JSONObject recipeData = obj.getJSONObject("recipes");
+
+            // Parse ingredients from the nested recipeData
+            final JSONArray ingredientsArray = recipeData.getJSONArray("ingredients");
             final List<Ingredient> ingredientList = new ArrayList<>();
-            final JSONArray ingredientsArray = obj.getJSONArray("ingredients");
 
             for (int j = 0; j < ingredientsArray.length(); j++) {
-                final JSONObject object = ingredientsArray.getJSONObject(j);
+                final JSONObject ingredientObj = ingredientsArray.getJSONObject(j);
                 final Ingredient ing = Ingredient.builder()
-                        .setName(object.getString("ingredient_name"))
-                        .setId(object.getInt("ingredient_id"))
+                        .setName(ingredientObj.getString("ingredient_name"))
+                        .setId(ingredientObj.getInt("ingredient_id"))
                         .build();
                 ingredientList.add(ing);
             }
-            final Recipe ing = Recipe.builder()
+
+            // Build Recipe: recipe_id from outer object, other fields from nested recipeData
+            final Recipe recipe = Recipe.builder()
                     .setId(obj.getInt("recipe_id"))
-                    .setTitle(obj.getString("title"))
-                    // may have some issue will fix later
+                    .setTitle(recipeData.getString("title"))
                     .setIngredientNames(ingredientList)
-                    .setCalories(obj.getDouble("calories"))
-                    .setHealthScore(obj.getInt("healthScore"))
-                    .setInstructions(obj.getString("instructions"))
-                    .setImage(obj.getString("image"))
+                    .setCalories(recipeData.getDouble("calories"))
+                    .setHealthScore(recipeData.getInt("healthScore"))
+                    .setInstructions(recipeData.getString("instructions"))
+                    .setImage(recipeData.getString("image"))
                     .build();
-            recipeList.add(ing);
+            recipeList.add(recipe);
         }
         return recipeList;
     }
