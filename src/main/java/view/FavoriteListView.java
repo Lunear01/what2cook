@@ -6,6 +6,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -42,8 +43,8 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
     private final JButton deleteButton = new JButton("Delete Selected");
     private final JButton backButton = new JButton("Back to Recipes");
 
-    // 用来根据选中的 index 找到对应的 Recipe
     private List<Recipe> currentFavorites = Collections.emptyList();
+    private Consumer<Recipe> onOpenInstruction;
 
     public FavoriteListView(FavoriteListViewModel viewModel) {
         this.viewModel = viewModel;
@@ -61,6 +62,21 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
         final int scrollPaneWidth = 450;
         final int scrollPaneHeight = 300;
         scrollPane.setPreferredSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
+
+        final int doubleClickCount = 2;
+        favoritesList.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == doubleClickCount) {
+                    final int index = favoritesList.locationToIndex(e.getPoint());
+                    if (index >= 0 && index < currentFavorites.size()
+                            && onOpenInstruction != null) {
+                        final Recipe recipe = currentFavorites.get(index);
+                        onOpenInstruction.accept(recipe);
+                    }
+                }
+            }
+        });
 
         final int verticalStrutHeight = 10;
         final int horizontalStrut5 = 5;
@@ -128,7 +144,12 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
     }
 
     private void updateList(List<Recipe> favorites) {
-        currentFavorites = (favorites == null) ? Collections.emptyList() : favorites;
+        if (favorites == null) {
+            currentFavorites = Collections.emptyList();
+        }
+        else {
+            currentFavorites = favorites;
+        }
 
         listModel.clear();
         if (currentFavorites.isEmpty()) {
@@ -155,5 +176,9 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
 
     public void setOnBackToRecipes(Runnable onBackToRecipes) {
         this.onBackToRecipes = onBackToRecipes;
+    }
+
+    public void setOnOpenInstruction(Consumer<Recipe> onOpenInstruction) {
+        this.onOpenInstruction = onOpenInstruction;
     }
 }

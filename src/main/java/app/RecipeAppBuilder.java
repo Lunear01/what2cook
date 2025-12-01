@@ -208,7 +208,6 @@ public final class RecipeAppBuilder {
         final FridgeView fridgeView = new FridgeView(fridgeViewModel);
         fridgeView.setController(fridgeController);
 
-        // ★ 当在 Ingredient 页面点击 “Add” 时，同步加入 fridge
         ingredientSearchView.setOnAddToFridge(name -> {
             try {
                 fridgeController.addIngredient(name);
@@ -223,13 +222,11 @@ public final class RecipeAppBuilder {
                 new RecipeInstructionView();
         recipeInstructionView.setFavoriteController(addFavoriteRecipeController);
 
-        // 让 recipe 搜索页能把菜加到 favorites 和 cooking list
         recipeSearchView.setFavoriteController(addFavoriteRecipeController);
         recipeSearchView.setCookingListController(addToCookingListController);
 
         recipeSearchController.setFavoriteController(addFavoriteRecipeController);
 
-        // 让 cooking list 能打开 recipe details
         cookingListView.setOnOpenRecipe(recipeSearchController::openRecipe);
 
         // --- Frame and card layout ---
@@ -282,19 +279,16 @@ public final class RecipeAppBuilder {
         cardPanel.add(recipeInstructionView, recipeInstruction);
         cardPanel.add(fridgeView, fridge);
 
-        // Instruction 页面的返回按钮：回到 recipes
         recipeInstructionView.setOnBackToRecipeList(() -> {
             frame.setTitle(recipeTitle);
             cardLayout.show(cardPanel, recipe);
         });
 
-        // Cooking list 的返回按钮：回到 recipes
         cookingListView.setOnBack(() -> {
             frame.setTitle(recipeTitle);
             cardLayout.show(cardPanel, recipe);
         });
 
-        // --- Navigation wiring ---
         loginView.setOnSwitchToSignup(() -> {
             frame.setTitle("What2Cook - Sign Up");
             cardLayout.show(cardPanel, signup);
@@ -305,11 +299,14 @@ public final class RecipeAppBuilder {
             cardLayout.show(cardPanel, login);
         });
 
-        // 从 recipe 列表打开 instruction 页
         recipeSearchView.setOnOpenInstruction(recipeObj -> {
             recipeInstructionView.setRecipe(recipeObj);
             frame.setTitle("What2Cook - Instructions");
             cardLayout.show(cardPanel, recipeInstruction);
+        });
+
+        favoriteListView.setOnOpenInstruction(recipeObj -> {
+            recipeSearchController.openRecipe(recipeObj);
         });
 
         // 登录成功：进入 Ingredient 页面
@@ -346,24 +343,22 @@ public final class RecipeAppBuilder {
             cardLayout.show(cardPanel, recipe);
         });
 
-        // 从 Ingredient 页面打开 Fridge 页面
         ingredientSearchView.setOnOpenFridge(() -> {
             try {
                 fridgeController.GetIngredient();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 ex.printStackTrace();
             }
             frame.setTitle("What2Cook - Fridge");
             cardLayout.show(cardPanel, fridge);
         });
 
-        // 从 recipe 页 “Back” 回到 Ingredient 页
         recipeSearchView.setOnBack(() -> {
             frame.setTitle(ingredientTitle);
             cardLayout.show(cardPanel, ingredient);
         });
 
-        // 从 recipes 打开 cooking list
         recipeSearchView.setOnOpenCookingList(() -> {
             final String username = loginViewModel.getState().getUsername();
             cookingListView.setCurrentUsername(username);
@@ -372,7 +367,6 @@ public final class RecipeAppBuilder {
             cardLayout.show(cardPanel, cooking);
         });
 
-        // 从 recipes 打开 favorites
         recipeSearchView.setOnOpenFavorites(() -> {
             frame.setTitle("What2Cook - Favorites");
             cardLayout.show(cardPanel, favorites);

@@ -124,24 +124,15 @@ public class RecipeSearchController {
                 continue;
             }
 
-            try {
-                favoriteController.add(currentUsername, recipe);
+            final String message =
+                    favoriteController.addAndGetMessage(currentUsername, recipe);
 
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Recipe added to your favorite list!",
-                        "Success",
-                        JOptionPane.INFORMATION_MESSAGE
-                );
-            }
-            catch (RuntimeException ex) {
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Failed to add recipe to favorites: " + ex.getMessage(),
-                        errorE,
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
+            JOptionPane.showMessageDialog(
+                    null,
+                    message,
+                    "Favorite",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
         }
     }
 

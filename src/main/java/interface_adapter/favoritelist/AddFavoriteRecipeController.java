@@ -3,6 +3,7 @@ package interface_adapter.favoritelist;
 import entity.Recipe;
 import use_case.add_favorite_list.AddFavoriteRecipeInputBoundary;
 import use_case.add_favorite_list.AddFavoriteRecipeInputData;
+import use_case.add_favorite_list.AddFavoriteRecipeInteractor;
 
 /**
  * Controller for adding a recipe to the user's favorite list.
@@ -26,6 +27,22 @@ public class AddFavoriteRecipeController {
         final AddFavoriteRecipeInputData inputData =
                 new AddFavoriteRecipeInputData(username, recipe);
         interactor.execute(inputData);
+    }
+
+    public String addAndGetMessage(String username, Recipe recipe) {
+        final AddFavoriteRecipeInputData inputData =
+                new AddFavoriteRecipeInputData(username, recipe);
+        interactor.execute(inputData);
+
+        // 这里做一次安全的 downcast 拿到 lastMessage
+        if (interactor instanceof AddFavoriteRecipeInteractor) {
+            final AddFavoriteRecipeInteractor concrete =
+                    (AddFavoriteRecipeInteractor) interactor;
+            return concrete.getLastMessage();
+        }
+
+        // 理论上不会走到这里，给个兜底
+        return "";
     }
 
     /**
