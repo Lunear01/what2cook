@@ -1,9 +1,9 @@
 package interface_adapter.ingredient_search;
 
-import interface_adapter.ViewModel;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import interface_adapter.ViewModel;
 
 /**
  * ViewModel for the Ingredient Search screen.
@@ -19,25 +19,33 @@ public class IngredientSearchViewModel extends ViewModel<IngredientSearchState> 
     }
 
     /**
-     * Replace the whole ingredient list.
+     * Replaces the full ingredient list with the provided one.
+     *
+     * @param ingredients the new list of ingredient names
      */
-    public void setIngredients(List<String> ingredients) {
-        IngredientSearchState newState = new IngredientSearchState(getState());
+    public void setIngredients(final List<String> ingredients) {
+        final IngredientSearchState newState =
+                new IngredientSearchState(getState());
+
         newState.setIngredients(new ArrayList<>(ingredients));
-        // setState 会自动 fire PropertyChange
+
         setState(newState);
     }
 
     /**
-     * Add a single ingredient name to the list and notify the view immediately.
+     * Adds a single ingredient to the current list.
+     *
+     * @param ingredientName the ingredient name to add
      */
-    public void addIngredient(String ingredientName) {
+    public void addIngredient(final String ingredientName) {
         if (ingredientName == null || ingredientName.isBlank()) {
             return;
         }
 
-        IngredientSearchState current = getState();
-        IngredientSearchState newState = new IngredientSearchState(current);
+        final IngredientSearchState current = getState();
+        final IngredientSearchState newState =
+                new IngredientSearchState(current);
+
         newState.getIngredients().add(ingredientName.trim());
 
         setState(newState);
