@@ -14,7 +14,7 @@ import java.util.List;
 
 public class IngredientDataAccessObject implements IngredientDataAccessInterface {
 
-    private static final String BaseUrl = "http://172.20.10.13:3000/";
+    private static final String BaseUrl = "http://172.20.10.7:3000/ingredient";
 
     private static final String GET = "GET";
     private static final String POST = "POST";
@@ -24,7 +24,7 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
     public void addIngredient(String userName, String ingredientName) {
         final HttpURLConnection conn;
         try {
-            final URL url = new URI(BaseUrl + "ingredient/add").toURL();
+            final URL url = new URI(BaseUrl + "/add").toURL();
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(POST);
             conn.setRequestProperty("Content-Type", "application/json");
