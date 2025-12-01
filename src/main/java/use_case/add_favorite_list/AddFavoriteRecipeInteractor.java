@@ -47,7 +47,6 @@ public class AddFavoriteRecipeInteractor implements AddFavoriteRecipeInputBounda
             message = recipe.getTitle() + " added to your favorites!";
         }
 
-        // 记录本次 message，给 controller 用
         lastMessage = message;
 
         presenter.present(
