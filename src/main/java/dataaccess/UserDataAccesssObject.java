@@ -17,7 +17,7 @@ public class UserDataAccesssObject implements
     private static final String POST = "POST";
     private static final String GET = "GET";
 
-    private static final String baseUrl = "http://172.20.10.7:3000/user";
+    private static final String baseUrl = "http://172.20.10.3:3000/user";
 
     @Override
     public void save(User user) {

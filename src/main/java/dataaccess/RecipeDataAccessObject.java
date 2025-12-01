@@ -16,7 +16,7 @@ import java.util.List;
 
 public class RecipeDataAccessObject implements RecipeDataAccessInterface {
 
-    private final String BASE_URL = "http://172.20.10.7:3000/recipe";
+    private final String BASE_URL = "http://172.20.10.3:3000/recipe";
 
     private static final String GET = "GET";
     private static final String POST = "POST";

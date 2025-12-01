@@ -125,12 +125,17 @@ public class RecipeSearchController {
             }
 
             try {
-                favoriteController.add(currentUsername, recipe);
+                // 使用 controller 返回的 message（可能是 already in / added）
+                String message = favoriteController.addAndGetMessage(currentUsername, recipe);
+
+                if (message == null || message.isEmpty()) {
+                    message = "Favorite updated!";
+                }
 
                 JOptionPane.showMessageDialog(
                         null,
-                        "Recipe added to your favorite list!",
-                        "Success",
+                        message,
+                        "Favorite",
                         JOptionPane.INFORMATION_MESSAGE
                 );
             }

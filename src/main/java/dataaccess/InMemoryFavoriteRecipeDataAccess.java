@@ -32,18 +32,4 @@ public class InMemoryFavoriteRecipeDataAccess
             favorites.add(recipe);
         }
     }
-
-    /**
-     * Removes a recipe from the user's list of favorite recipes.
-     *
-     * @param username the user's name
-     * @param recipe   the recipe to remove
-     */
-    @Override
-    public void removeFromFavorites(String username, Recipe recipe) {
-        final List<Recipe> favorites =
-                favoritesByUser.getOrDefault(username, new ArrayList<>());
-
-        favorites.removeIf(r -> r.getId() == recipe.getId());
-    }
 }
