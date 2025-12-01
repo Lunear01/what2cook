@@ -30,7 +30,7 @@ exports.getRecipes = async (req, res) => {
         res.json({ success: true, recipes: recipesList });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: err.message || "Failed to get recipes" });
+        res.status(500).json({ success: false, error: err.message || "Failed to get recipes" });
     }
 };
 
@@ -52,7 +52,7 @@ exports.deleteRecipe = async (req, res) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: err.message || "Failed to delete Recipe" });
+        res.status(500).json({ success: false, error: err.message || "Failed to delete Recipe" });
     }
 };
 
@@ -66,7 +66,7 @@ exports.exists = async (req, res) => {
         }
 
         const result = await recipeServices.findRecipe(user_name, recipe_id);
-
+ 
         return res.json({ exists: !!result });
 
     } catch (err) {

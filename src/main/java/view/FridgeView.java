@@ -21,10 +21,12 @@ public class FridgeView extends JPanel implements PropertyChangeListener {
 
     private final JTextField inputField = new JTextField(10);
     private final JButton addButton = new JButton("Add");
+    private final JButton deleteButton = new JButton("Delete");
     private final JButton backButton = new JButton("Back");
 
-    /** Callback set by RecipeAppBuilder，用来返回到 Ingredient 页面。 */
     private Runnable onBack;
+
+    private List<Ingredient> currentIngredients;
 
     public FridgeView(FridgeViewModel viewModel) {
         this.viewModel = viewModel;
@@ -32,25 +34,21 @@ public class FridgeView extends JPanel implements PropertyChangeListener {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        // Title
         JLabel title = new JLabel("My Fridge");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(title);
 
-        // List
         add(new JScrollPane(ingredientList));
 
-        // 输入 + Add 按钮
         JPanel inputPanel = new JPanel();
         inputPanel.add(inputField);
         inputPanel.add(addButton);
+        inputPanel.add(deleteButton);
         add(inputPanel);
 
-        // Back 按钮
         backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(backButton);
 
-        // 监听 Add
         addButton.addActionListener(e -> {
             String name = inputField.getText().trim();
             if (name.isEmpty()) {
@@ -67,7 +65,28 @@ public class FridgeView extends JPanel implements PropertyChangeListener {
             inputField.setText("");
         });
 
-        // 监听 Back
+        deleteButton.addActionListener(e -> {
+            int idx = ingredientList.getSelectedIndex();
+            if (idx < 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Please select an ingredient to delete.",
+                        "No Selection",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            Ingredient selectedIng = currentIngredients.get(idx);
+
+            try {
+                controller.deleteIngredient(selectedIng);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Failed to delete ingredient: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
         backButton.addActionListener(e -> {
             if (onBack != null) {
                 onBack.run();
@@ -79,7 +98,6 @@ public class FridgeView extends JPanel implements PropertyChangeListener {
         this.controller = controller;
     }
 
-    /** 在 RecipeAppBuilder 里调用，用来设置返回动作。 */
     public void setOnBack(Runnable onBack) {
         this.onBack = onBack;
     }
@@ -94,6 +112,7 @@ public class FridgeView extends JPanel implements PropertyChangeListener {
     }
 
     private void updateList(List<Ingredient> ingredients) {
+        this.currentIngredients = ingredients;
         listModel.clear();
         if (ingredients != null) {
             for (Ingredient ing : ingredients) {
