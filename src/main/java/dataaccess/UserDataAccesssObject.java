@@ -163,8 +163,8 @@ public class UserDataAccesssObject implements
             os.write(body.toString().getBytes());
             os.flush();
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -183,8 +183,8 @@ public class UserDataAccesssObject implements
                 sb.append(line);
             }
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
         return new JSONObject(sb.toString());
     }
@@ -212,13 +212,13 @@ public class UserDataAccesssObject implements
         try {
             url = new URI(baseUrl + "/" + userName).toURL();
         }
-        catch (URISyntaxException e) {
-            System.out.println(e.getMessage());
-            throw new RuntimeException(e);
+        catch (URISyntaxException ex) {
+            System.out.println(ex.getMessage());
+            throw new RuntimeException(ex);
         }
-        catch (MalformedURLException e) {
+        catch (MalformedURLException ex) {
             System.out.println("Malformed URL");
-            throw new RuntimeException(e);
+            throw new RuntimeException(ex);
         }
 
         final HttpURLConnection conn;
@@ -237,9 +237,9 @@ public class UserDataAccesssObject implements
                 sb.append(line);
             }
         }
-        catch (IOException e) {
-            System.out.println("Error opening connection: " + e.getMessage());
-            throw new RuntimeException(e);
+        catch (IOException ex) {
+            System.out.println("Error opening connection: " + ex.getMessage());
+            throw new RuntimeException(ex);
         }
 
         final JSONObject res = new JSONObject(sb.toString());

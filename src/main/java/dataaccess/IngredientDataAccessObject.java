@@ -103,8 +103,8 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
             os.write(body.toString().getBytes());
             os.flush();
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -123,8 +123,8 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
                 sb.append(line);
             }
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
         return new JSONObject(sb.toString());
     }
