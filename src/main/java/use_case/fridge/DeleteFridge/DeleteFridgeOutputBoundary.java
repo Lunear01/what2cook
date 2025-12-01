@@ -1,6 +1,5 @@
 package use_case.fridge.DeleteFridge;
 
-
 public interface DeleteFridgeOutputBoundary {
     /**
      * Prepares the success view for deleting an ingredient from the fridge.
