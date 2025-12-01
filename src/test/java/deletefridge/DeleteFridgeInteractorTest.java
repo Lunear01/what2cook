@@ -87,7 +87,7 @@ public class DeleteFridgeInteractorTest {
         assertEquals("alice", dao.lastUsername);
         assertEquals(42, dao.lastIngredientId);
 
-        // Presenter should receive the same response model
+        // Presenter should receive the same response model.
         assertNotNull(out);
         assertSame(out, presenter.lastSuccess);
         assertEquals("alice", out.getUserName());
