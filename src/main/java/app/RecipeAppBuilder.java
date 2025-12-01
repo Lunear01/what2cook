@@ -86,14 +86,12 @@ public final class RecipeAppBuilder {
      */
     public static JFrame build() {
 
-        // --- Data access (gateway) ---
+        // Data access
         final UserDataAccesssObject userDao = new UserDataAccesssObject();
-
-        // Fridge data access for fridge use cases
         final IngredientDataAccessInterface ingredientDataAccess =
                 new IngredientDataAccessObject();
 
-        // --- Login wiring ---
+        // Login
         final LoginViewModel loginViewModel = new LoginViewModel();
         final LoginPresenter loginPresenter = new LoginPresenter(loginViewModel);
         final LoginInputBoundary loginInteractor =
@@ -101,7 +99,7 @@ public final class RecipeAppBuilder {
         final LoginController loginController =
                 new LoginController(loginInteractor);
 
-        // --- Signup wiring ---
+        // Signup
         final SignupViewModel signupViewModel = new SignupViewModel();
         final SignupPresenter signupPresenter = new SignupPresenter(signupViewModel);
         final EmailValidation emailValidator = new JmailValidationService();
@@ -111,19 +109,20 @@ public final class RecipeAppBuilder {
         final SignupController signupController =
                 new SignupController(signupInteractor);
 
-        // --- Ingredient search wiring ---
+        // Ingredient search
         final IngredientSearchViewModel ingredientSearchViewModel =
                 new IngredientSearchViewModel();
         final IngredientSearchView ingredientSearchView =
                 new IngredientSearchView(ingredientSearchViewModel);
 
-        // --- Recipe search wiring (Clean Architecture) ---
+        // Recipe search
         final RecipeSearchViewModel recipeSearchViewModel =
                 new RecipeSearchViewModel();
         final RecipeSearchPresenter recipeSearchPresenter =
                 new RecipeSearchPresenter(recipeSearchViewModel);
 
-        final RecipeFetcher fetcher = new CachingRecipeFetcher(new SpoonacularRecipeFetcher());
+        final RecipeFetcher fetcher =
+                new CachingRecipeFetcher(new SpoonacularRecipeFetcher());
         final RecipeSearchInputBoundary recipeSearchInteractor =
                 new RecipeSearchInteractor(fetcher, recipeSearchPresenter);
 
@@ -134,7 +133,7 @@ public final class RecipeAppBuilder {
                 new RecipeSearchView(recipeSearchViewModel);
         recipeSearchView.setController(recipeSearchController);
 
-        // --- Cooking list wiring ---
+        // Cooking list
         final CookingListViewModel cookingListViewModel =
                 new CookingListViewModel();
 
@@ -162,7 +161,7 @@ public final class RecipeAppBuilder {
         final CookingListView cookingListView =
                 new CookingListView(cookingListViewModel, sortCookingListController);
 
-        // --- Favorite list wiring ---
+        // Favorite list
         final FavoriteListViewModel favoriteListViewModel =
                 new FavoriteListViewModel();
 
@@ -183,7 +182,7 @@ public final class RecipeAppBuilder {
 
         favoriteListView.setFavoriteController(addFavoriteRecipeController);
 
-        // --- Fridge wiring (Add / Get / Delete) ---
+        // Fridge (add / get / delete)
         final FridgeViewModel fridgeViewModel = new FridgeViewModel();
         final FridgePresenter fridgePresenter = new FridgePresenter(fridgeViewModel);
 
@@ -217,7 +216,7 @@ public final class RecipeAppBuilder {
             }
         });
 
-        // --- Recipe Instruction View ---
+        // Recipe instructions
         final RecipeInstructionView recipeInstructionView =
                 new RecipeInstructionView();
         recipeInstructionView.setFavoriteController(addFavoriteRecipeController);
@@ -229,7 +228,7 @@ public final class RecipeAppBuilder {
 
         cookingListView.setOnOpenRecipe(recipeSearchController::openRecipe);
 
-        // --- Frame and card layout ---
+        // Frame and layout
         final JFrame frame = new JFrame("What2Cook");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         final int frameWidth = 500;
@@ -240,7 +239,7 @@ public final class RecipeAppBuilder {
         final CardLayout cardLayout = new CardLayout();
         final JPanel cardPanel = new JPanel(cardLayout);
 
-        // --- Views ---
+        // Views
         final LoginView loginView = new LoginView(loginViewModel);
         loginView.setLoginController(loginController);
         loginView.setSignupController(signupController);
@@ -259,16 +258,17 @@ public final class RecipeAppBuilder {
         final String fridge = "fridge";
         final String recipeTitle = "What2Cook - Recipes";
         final String ingredientTitle = "What2Cook - Ingredients";
+
         favoriteListView.setOnBackToRecipes(() -> {
             frame.setTitle(recipeTitle);
             cardLayout.show(cardPanel, recipe);
         });
 
-//        // Fridge 页面的 Back：回到 Ingredients 页面
-//        fridgeView.setOnBack(() -> {
-//            frame.setTitle(ingredientTitle);
-//            cardLayout.show(cardPanel, ingredient);
-//        });
+        // Back button on fridge view: go back to ingredient page
+        fridgeView.setOnBack(() -> {
+            frame.setTitle(ingredientTitle);
+            cardLayout.show(cardPanel, ingredient);
+        });
 
         cardPanel.add(loginView, login);
         cardPanel.add(signupView, signup);
@@ -309,7 +309,6 @@ public final class RecipeAppBuilder {
             recipeSearchController.openRecipe(recipeObj);
         });
 
-        // 登录成功：进入 Ingredient 页面
         loginView.setOnLoginSuccess(() -> {
             final String username = loginViewModel.getState().getUsername();
             recipeSearchView.setCurrentUsername(username);
@@ -321,7 +320,7 @@ public final class RecipeAppBuilder {
             cardLayout.show(cardPanel, ingredient);
         });
 
-        // --- Ingredient → Recipe flow ---
+        // Ingredient → Recipe flow
         ingredientSearchView.setOnNext(() -> {
             final List<String> names =
                     ingredientSearchViewModel.getState().getIngredients();
