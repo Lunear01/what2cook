@@ -63,7 +63,7 @@ public class UserDataAccesssObject implements
      * Logs in the user with the given credentials and returns the User object
      * if the login is successful; otherwise returns {@code null}.
      *
-     * @param userName the user name used to log in
+     * @param userName the username used to log in
      * @param password the password used to log in
      * @return the logged-in User, or {@code null} if login fails
      * @throws RuntimeException if the HTTP request fails
@@ -77,7 +77,7 @@ public class UserDataAccesssObject implements
     /**
      * Sends the login request to the backend and returns the JSON response.
      *
-     * @param userName the user name used to log in
+     * @param userName the username used to log in
      * @param password the password used to log in
      * @return the JSON response from the backend
      * @throws RuntimeException if an I/O error occurs
