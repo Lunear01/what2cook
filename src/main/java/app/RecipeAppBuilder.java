@@ -307,6 +307,11 @@ public final class RecipeAppBuilder {
             cardLayout.show(cardPanel, recipeInstruction);
         });
 
+        favoriteListView.setOnOpenInstruction(recipeObj -> {
+            recipeSearchController.openRecipe(recipeObj);
+        });
+
+        // 登录成功：进入 Ingredient 页面
         loginView.setOnLoginSuccess(() -> {
             final String username = loginViewModel.getState().getUsername();
             recipeSearchView.setCurrentUsername(username);
