@@ -33,6 +33,7 @@ public class AddToFridgeInteractorTest {
             this.lastUsername = username;
             this.lastIngredientName = ingredientName;
             this.addCalls++;
+            return 42; // return a dummy ingredient ID
         }
 
         @Override
