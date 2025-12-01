@@ -28,7 +28,7 @@ public class DeleteFridgeInteractorTest {
         int deleteCalls;
 
         @Override
-        public void addIngredient(String username, String ingredientName) {
+        public int addIngredient(String username, String ingredientName) {
             throw new UnsupportedOperationException("addIngredient not used in this test");
         }
 

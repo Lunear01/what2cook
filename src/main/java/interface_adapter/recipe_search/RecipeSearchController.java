@@ -124,12 +124,11 @@ public class RecipeSearchController {
                 continue;
             }
 
-            final String message =
-                    favoriteController.addAndGetMessage(currentUsername, recipe);
+            favoriteController.add(currentUsername, recipe);
 
             JOptionPane.showMessageDialog(
                     null,
-                    message,
+                    "Favorite updated!",
                     "Favorite",
                     JOptionPane.INFORMATION_MESSAGE
             );

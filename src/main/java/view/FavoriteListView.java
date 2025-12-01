@@ -78,6 +78,13 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
             }
         });
 
+        // Back 按钮：回到 recipes
+        backButton.addActionListener(e -> {
+            if (onBackToRecipes != null) {
+                onBackToRecipes.run();
+            }
+        });
+
         final int verticalStrutHeight = 10;
         final int horizontalStrut5 = 5;
         add(Box.createVerticalStrut(verticalStrutHeight));

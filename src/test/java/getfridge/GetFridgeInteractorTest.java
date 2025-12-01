@@ -28,7 +28,7 @@ public class GetFridgeInteractorTest {
         int getCalls;
 
         @Override
-        public void addIngredient(String userName, String ingredientName) {
+        public int addIngredient(String userName, String ingredientName) {
             throw new UnsupportedOperationException("addIngredient not used in this test");
         }
 

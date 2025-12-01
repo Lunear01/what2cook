@@ -29,7 +29,7 @@ public class AddToFridgeInteractorTest {
         int addCalls;
 
         @Override
-        public void addIngredient(String username, String ingredientName) {
+        public int addIngredient(String username, String ingredientName) {
             this.lastUsername = username;
             this.lastIngredientName = ingredientName;
             this.addCalls++;
@@ -81,7 +81,7 @@ public class AddToFridgeInteractorTest {
         AddToFridgeInteractor interactor = new AddToFridgeInteractor(dao, presenter);
 
         AddToFridgeRequestModel request =
-                new AddToFridgeRequestModel("alice", 42, "eggs");
+                new AddToFridgeRequestModel("alice",  "eggs");
 
         AddToFridgeResponseModel out = interactor.addIngredient(request);
 

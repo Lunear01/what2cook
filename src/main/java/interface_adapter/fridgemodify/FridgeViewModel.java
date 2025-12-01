@@ -1,5 +1,7 @@
 package interface_adapter.fridgemodify;
 
+import entity.Ingredient;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -44,14 +46,4 @@ public class FridgeViewModel {
         pcs.firePropertyChange("fridge", oldState, newState);
     }
 
-    /**
-     * Convenience helper to update only the ingredient list.
-     * Creates a new FridgeState with the given ingredients.
-     *
-     * @param ingredients the updated ingredient list.
-     */
-    public void update(List<String> ingredients) {
-        final FridgeState newState = new FridgeState(new ArrayList<>(ingredients));
-        setState(newState);
-    }
 }
