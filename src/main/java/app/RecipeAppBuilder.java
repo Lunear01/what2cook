@@ -306,11 +306,14 @@ public final class RecipeAppBuilder {
             cardLayout.show(cardPanel, login);
         });
 
-        // 从 recipe 列表打开 instruction 页
         recipeSearchView.setOnOpenInstruction(recipeObj -> {
             recipeInstructionView.setRecipe(recipeObj);
             frame.setTitle("What2Cook - Instructions");
             cardLayout.show(cardPanel, recipeInstruction);
+        });
+
+        favoriteListView.setOnOpenInstruction(recipeObj -> {
+            recipeSearchController.openRecipe(recipeObj);
         });
 
         // 登录成功：进入 Ingredient 页面
