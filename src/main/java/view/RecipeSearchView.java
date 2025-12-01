@@ -23,7 +23,6 @@ import javax.swing.SwingConstants;
 import entity.Ingredient;
 import entity.Recipe;
 import interface_adapter.cookinglist.AddToCookingListController;
-import interface_adapter.favoritelist.AddFavoriteRecipeController;
 import interface_adapter.recipe_search.RecipeSearchController;
 import interface_adapter.recipe_search.RecipeSearchState;
 import interface_adapter.recipe_search.RecipeSearchViewModel;
@@ -164,7 +163,6 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         }
 
         if (canProceed) {
-            // 不再 try/catch RuntimeException，直接调用
             cookingListController.add(currentUsername, selectedRecipe);
         }
     }
@@ -176,12 +174,21 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         if (newValue instanceof RecipeSearchState) {
             final RecipeSearchState state = (RecipeSearchState) newValue;
 
-            System.out.println("DEBUG recipes size = "
-                    + (state.getRecipes() == null ? "null" : state.getRecipes().size()));
+            // --- Fix AvoidInlineConditionals ---
+            final List<Recipe> recipes = state.getRecipes();
+            final String sizeText;
+            if (recipes == null) {
+                sizeText = "null";
+            }
+            else {
+                sizeText = Integer.toString(recipes.size());
+            }
+            System.out.println("DEBUG recipes size = " + sizeText);
+            // -----------------------------------
 
             updateIngredients(state.getIngredients());
-            updateRecipes(state.getRecipes());
-            updateResultCount(state.getRecipes());
+            updateRecipes(recipes);
+            updateResultCount(recipes);
 
             if (state.getError() != null) {
                 JOptionPane.showMessageDialog(
@@ -230,7 +237,10 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     }
 
     private void updateResultCount(List<Recipe> recipes) {
-        final int count = (recipes == null) ? 0 : recipes.size();
+        int count = 0;
+        if (recipes != null) {
+            count = recipes.size();
+        }
         resultsCountLabel.setText(count + " results");
     }
 

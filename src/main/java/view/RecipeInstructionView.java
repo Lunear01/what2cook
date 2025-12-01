@@ -20,6 +20,8 @@ import interface_adapter.favoritelist.AddFavoriteRecipeController;
  */
 public class RecipeInstructionView extends JPanel {
 
+    private static final String ERROR_TITLE = "Error";
+
     private Recipe currentRecipe;
     private String currentUsername;
 
@@ -30,7 +32,6 @@ public class RecipeInstructionView extends JPanel {
     private final JTextArea instructionsArea = new JTextArea(10, 40);
     private final JButton addToFavoritesButton =
             new JButton("Add to Favorites");
-    private final String errorE = "Error";
 
     public RecipeInstructionView() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -54,58 +55,56 @@ public class RecipeInstructionView extends JPanel {
         add(addToFavoritesButton);
         add(Box.createVerticalStrut(verticalStrutHeight));
 
-        addToFavoritesButton.addActionListener(e -> {
-            if (favoriteController == null) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Favorite feature is not configured.",
-                        errorE,
-                        JOptionPane.ERROR_MESSAGE
-                );
-                return;
-            }
-            if (currentUsername == null || currentUsername.isEmpty()) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "User is not logged in.",
-                        errorE,
-                        JOptionPane.ERROR_MESSAGE
-                );
-                return;
-            }
-            if (currentRecipe == null) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "No recipe selected.",
-                        errorE,
-                        JOptionPane.ERROR_MESSAGE
-                );
-                return;
-            }
+        // Lambda 只干一件事：调用私有方法，避免 LambdaBodyLength / ReturnCount / 参数命名问题
+        addToFavoritesButton.addActionListener(event -> handleAddToFavorites());
+    }
 
-            try {
-                favoriteController.add(currentUsername, currentRecipe);
+    private void handleAddToFavorites() {
+        boolean canProceed = true;
 
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Recipe added to your favorites.",
-                        "Success",
-                        JOptionPane.INFORMATION_MESSAGE
-                );
+        if (favoriteController == null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Favorite feature is not configured.",
+                    ERROR_TITLE,
+                    JOptionPane.ERROR_MESSAGE
+            );
+            canProceed = false;
+        }
+        else if (currentUsername == null || currentUsername.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "User is not logged in.",
+                    ERROR_TITLE,
+                    JOptionPane.ERROR_MESSAGE
+            );
+            canProceed = false;
+        }
+        else if (currentRecipe == null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No recipe selected.",
+                    ERROR_TITLE,
+                    JOptionPane.ERROR_MESSAGE
+            );
+            canProceed = false;
+        }
 
-                if (onBackToRecipeList != null) {
-                    onBackToRecipeList.run();
-                }
+        if (canProceed) {
+            // 不再 catch RuntimeException，避免 IllegalCatch
+            favoriteController.add(currentUsername, currentRecipe);
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Recipe added to your favorites.",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+
+            if (onBackToRecipeList != null) {
+                onBackToRecipeList.run();
             }
-            catch (RuntimeException ex) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Failed to add recipe to favorites: " + ex.getMessage(),
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
-        });
+        }
     }
 
     /**
