@@ -19,7 +19,6 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
 import entity.Recipe;
-import interface_adapter.favoritelist.AddFavoriteRecipeController;
 import interface_adapter.favoritelist.FavoriteListState;
 import interface_adapter.favoritelist.FavoriteListViewModel;
 
@@ -27,8 +26,6 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
 
     private final FavoriteListViewModel viewModel;
 
-    private AddFavoriteRecipeController favoriteController;
-    private String currentUsername;
     private Runnable onBackToRecipes;
 
     private final JLabel titleLabel = new JLabel("My Favorite Recipes");
@@ -43,7 +40,6 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
 
     private List<Recipe> currentFavorites = Collections.emptyList();
 
-    // 双击某个 favorite 时要做的事情（由外部设置）
     private Consumer<Recipe> onOpenInstruction;
 
     public FavoriteListView(FavoriteListViewModel viewModel) {
@@ -62,7 +58,6 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
         final int scrollPaneHeight = 300;
         scrollPane.setPreferredSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
 
-        // 双击 favorite → 打开 instruction 页面
         final int doubleClickCount = 2;
         favoritesList.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -78,7 +73,6 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
             }
         });
 
-        // Back 按钮：回到 recipes
         backButton.addActionListener(e -> {
             if (onBackToRecipes != null) {
                 onBackToRecipes.run();
@@ -133,14 +127,6 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
             }
             favoritesList.setEnabled(true);
         }
-    }
-
-    public void setFavoriteController(AddFavoriteRecipeController controller) {
-        this.favoriteController = controller;
-    }
-
-    public void setCurrentUsername(String username) {
-        this.currentUsername = username;
     }
 
     public void setOnBackToRecipes(Runnable onBackToRecipes) {

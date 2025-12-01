@@ -51,7 +51,6 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
 
     private RecipeSearchController controller;
     private AddToCookingListController cookingListController;
-    private AddFavoriteRecipeController favoriteController;
 
     private Runnable onOpenCookingList;
     private Runnable onOpenFavorites;
@@ -295,10 +294,6 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
 
     public void setOnOpenInstruction(Consumer<Recipe> onOpenInstruction) {
         this.onOpenInstruction = onOpenInstruction;
-    }
-
-    public void setFavoriteController(AddFavoriteRecipeController favoriteController) {
-        this.favoriteController = favoriteController;
     }
 
     public void setOnBack(Runnable onBack) {

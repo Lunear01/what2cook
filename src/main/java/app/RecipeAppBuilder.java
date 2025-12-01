@@ -180,8 +180,6 @@ public final class RecipeAppBuilder {
         final FavoriteListView favoriteListView =
                 new FavoriteListView(favoriteListViewModel);
 
-        favoriteListView.setFavoriteController(addFavoriteRecipeController);
-
         // Fridge (add / get / delete)
         final FridgeViewModel fridgeViewModel = new FridgeViewModel();
         final FridgePresenter fridgePresenter = new FridgePresenter(fridgeViewModel);
@@ -221,7 +219,6 @@ public final class RecipeAppBuilder {
                 new RecipeInstructionView();
         recipeInstructionView.setFavoriteController(addFavoriteRecipeController);
 
-        recipeSearchView.setFavoriteController(addFavoriteRecipeController);
         recipeSearchView.setCookingListController(addToCookingListController);
 
         recipeSearchController.setFavoriteController(addFavoriteRecipeController);
@@ -314,7 +311,6 @@ public final class RecipeAppBuilder {
             recipeSearchView.setCurrentUsername(username);
             recipeInstructionView.setCurrentUsername(username);
             recipeSearchController.setCurrentUsername(username);
-            favoriteListView.setCurrentUsername(username);
             cookingListView.setCurrentUsername(username);
             frame.setTitle(ingredientTitle);
             cardLayout.show(cardPanel, ingredient);
