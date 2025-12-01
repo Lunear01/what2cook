@@ -26,9 +26,9 @@ public class InMemoryFavoriteRecipeDataAccess
     @Override
     public void addToFavorites(String username, Recipe recipe) {
         final List<Recipe> favorites =
-                favoritesByUser.computeIfAbsent(username, u -> new ArrayList<>());
+                favoritesByUser.computeIfAbsent(username, uuu -> new ArrayList<>());
 
-        if (recipe != null && favorites.stream().noneMatch(r -> r.getId() == recipe.getId())) {
+        if (recipe != null && favorites.stream().noneMatch(rrr -> rrr.getId() == recipe.getId())) {
             favorites.add(recipe);
         }
     }
