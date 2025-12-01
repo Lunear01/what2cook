@@ -174,9 +174,9 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         if (newValue instanceof RecipeSearchState) {
             final RecipeSearchState state = (RecipeSearchState) newValue;
 
+            // --- Fix AvoidInlineConditionals ---
             final List<Recipe> recipes = state.getRecipes();
             final String sizeText;
-
             if (recipes == null) {
                 sizeText = "null";
             }
@@ -187,8 +187,8 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
             System.out.println("DEBUG recipes size = " + sizeText);
 
             updateIngredients(state.getIngredients());
-            updateRecipes(state.getRecipes());
-            updateResultCount(state.getRecipes());
+            updateRecipes(recipes);
+            updateResultCount(recipes);
 
             if (state.getError() != null) {
                 JOptionPane.showMessageDialog(
@@ -237,12 +237,8 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     }
 
     private void updateResultCount(List<Recipe> recipes) {
-        final int count;
-
-        if (recipes == null) {
-            count = 0;
-        }
-        else {
+        int count = 0;
+        if (recipes != null) {
             count = recipes.size();
         }
         resultsCountLabel.setText(count + " results");
