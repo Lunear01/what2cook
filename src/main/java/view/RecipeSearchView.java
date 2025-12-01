@@ -165,17 +165,8 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         }
 
         if (canProceed) {
-            try {
-                cookingListController.add(currentUsername, selectedRecipe);
-            }
-            catch (RuntimeException ex) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Failed to add recipe to cooking list: " + ex.getMessage(),
-                        errorE,
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
+            // 不再 try/catch RuntimeException，直接调用
+            cookingListController.add(currentUsername, selectedRecipe);
         }
     }
 
