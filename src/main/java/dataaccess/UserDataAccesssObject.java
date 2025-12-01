@@ -27,7 +27,7 @@ public class UserDataAccesssObject implements
     private static final String USER_NAME = "user_name";
     private static final String PASSWORD = "password";
 
-    private static final String baseUrl = "http://172.20.10.13:3000/user";
+    private static final String baseUrl = "http://172.20.10.7:3000/user";
 
     @Override
     public void save(User user) {

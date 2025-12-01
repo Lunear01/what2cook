@@ -30,7 +30,7 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
     private static final String RECIPE_ID = "recipe_id";
     private static final String USER_NAME = "user_name";
 
-    private final String BASE_URL = "http://172.20.10.13:3000/recipe";
+    private final String BASE_URL = "http://172.20.10.7:3000/recipe";
 
     @Override
     public void addRecipe(String userName, Recipe recipe) {

@@ -8,17 +8,17 @@ public class AddFavoriteRecipeInteractor implements AddFavoriteRecipeInputBounda
 
     private final AddFavoriteRecipeDataAccessInterface favoritesDao;
     private final AddFavoriteRecipeOutputBoundary presenter;
-    private String lastMessage = "";
+
+    /**
+     * Stores the message for the last add attempt,
+     * so that the controller can retrieve and show it.
+     */
+    private String lastMessage;
 
     public AddFavoriteRecipeInteractor(AddFavoriteRecipeDataAccessInterface favoritesDao,
                                        AddFavoriteRecipeOutputBoundary presenter) {
         this.favoritesDao = favoritesDao;
         this.presenter = presenter;
-
-    }
-
-    public String getLastMessage() {
-        return lastMessage;
     }
 
     @Override
@@ -26,22 +26,30 @@ public class AddFavoriteRecipeInteractor implements AddFavoriteRecipeInputBounda
 
         final String username = inputData.getUsername();
         final Recipe recipe = inputData.getRecipe();
+
         final List<Recipe> currentFavorites = favoritesDao.getFavorites(username);
+
         final boolean exists = currentFavorites.stream()
                 .anyMatch(recipeE -> recipeE.getId() == recipe.getId());
+
         final List<Recipe> updatedFavorites;
         final String message;
 
         if (exists) {
+            // 已经存在：不再 add，只用当前列表
             updatedFavorites = currentFavorites;
             message = recipe.getTitle() + " is already in your favorites.";
         }
         else {
+            // 不存在：先加入 DAO，再重新取一次列表
             favoritesDao.addToFavorites(username, recipe);
             updatedFavorites = favoritesDao.getFavorites(username);
             message = recipe.getTitle() + " added to your favorites!";
         }
+
+        // 记录本次 message，给 controller 用
         lastMessage = message;
+
         presenter.present(
                 new AddFavoriteRecipeOutputData(
                         updatedFavorites,
@@ -50,21 +58,12 @@ public class AddFavoriteRecipeInteractor implements AddFavoriteRecipeInputBounda
         );
     }
 
-    @Override
-    public void remove(AddFavoriteRecipeInputData inputData) {
-
-        final String username = inputData.getUsername();
-        final Recipe recipe = inputData.getRecipe();
-
-        favoritesDao.removeFromFavorites(username, recipe);
-
-        final List<Recipe> updated = favoritesDao.getFavorites(username);
-
-        presenter.present(
-                new AddFavoriteRecipeOutputData(
-                        updated,
-                        recipe.getTitle() + " removed from your favorites!"
-                )
-        );
+    /**
+     * Returns the message of the last add attempt.
+     *
+     * @return last status message, or null if execute() has not been called yet
+     */
+    public String getLastMessage() {
+        return lastMessage;
     }
 }
