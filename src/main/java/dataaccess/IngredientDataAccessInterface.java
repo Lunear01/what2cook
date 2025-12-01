@@ -9,8 +9,9 @@ public interface IngredientDataAccessInterface {
      * add the ingredient.
      * @param userName the name of current user
      * @param ingredientName the name of the ingredient that need to be added
+     * @return the id of the ingredient that was added
      */
-    void addIngredient(String userName, String ingredientName);
+    int addIngredient(String userName, String ingredientName);
 
     /**
      * get the ingredient.

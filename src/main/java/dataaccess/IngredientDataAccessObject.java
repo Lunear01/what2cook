@@ -39,27 +39,8 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
      * @throws RuntimeException if the request fails or the backend indicates failure
      */
     @Override
-    public void addIngredient(String userName, String ingredientName) {
-        final HttpURLConnection conn = openAddIngredientConnection();
-        final JSONObject body = buildAddIngredientBody(userName, ingredientName);
-
-        sendBody(conn, body);
-
-        final JSONObject res = readResponseAsJson(conn);
-        final boolean success = res.getBoolean(SUCCESS);
-
-        if (!success) {
-            throw new RuntimeException("Failed to add ingredient");
-        }
-    }
-
-    /**
-     * Opens and configures the HTTP connection used for adding an ingredient.
-     *
-     * @return an initialized HttpURLConnection
-     * @throws RuntimeException if the URL is invalid or an I/O exception occurs
-     */
-    private HttpURLConnection openAddIngredientConnection() {
+    public int addIngredient(String userName, String ingredientName) {
+        final HttpURLConnection conn;
         try {
             final URL url = new URI(BaseUrl + "/add").toURL();
             final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -168,9 +149,7 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
         if (!success) {
             throw new RuntimeException("Failed to add recipe");
         }
-
-        final JSONArray ingredientsArray = res.getJSONArray("ingredients");
-        return parseIngredientsArray(ingredientsArray);
+        return res.getInt("ingredient_id");
     }
 
     /**

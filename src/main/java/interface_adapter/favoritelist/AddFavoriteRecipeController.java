@@ -3,6 +3,7 @@ package interface_adapter.favoritelist;
 import entity.Recipe;
 import use_case.add_favorite_list.AddFavoriteRecipeInputBoundary;
 import use_case.add_favorite_list.AddFavoriteRecipeInputData;
+import use_case.add_favorite_list.AddFavoriteRecipeInteractor;
 
 /**
  * Controller for adding a recipe to the user's favorite list.
