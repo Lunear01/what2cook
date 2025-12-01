@@ -14,14 +14,14 @@ import java.util.List;
 
 public class IngredientDataAccessObject implements IngredientDataAccessInterface {
 
-    private static final String BaseUrl = "http://172.20.10.7:3000/ingredient";
+    private static final String BaseUrl = "http://172.20.10.13:3000/ingredient";
 
     private static final String GET = "GET";
     private static final String POST = "POST";
     private static final String DELETE = "DELETE";
 
     @Override
-    public void addIngredient(String userName, String ingredientName) {
+    public int addIngredient(String userName, String ingredientName) {
         final HttpURLConnection conn;
         try {
             final URL url = new URI(BaseUrl + "/add").toURL();
@@ -78,6 +78,7 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
         if (!success) {
             throw new RuntimeException("Failed to add ingredient");
         }
+        return res.getInt("ingredient_id");
     }
 
     @Override

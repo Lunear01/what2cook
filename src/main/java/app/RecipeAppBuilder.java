@@ -201,7 +201,8 @@ public final class RecipeAppBuilder {
                         addToFridgeInteractor,
                         getFridgeInteractor,
                         deleteFridgeInteractor,
-                        loginViewModel
+                        loginViewModel,
+                        fridgeViewModel
                 );
 
         final FridgeView fridgeView = new FridgeView(fridgeViewModel);
@@ -210,11 +211,7 @@ public final class RecipeAppBuilder {
         // ★ 当在 Ingredient 页面点击 “Add” 时，同步加入 fridge
         ingredientSearchView.setOnAddToFridge(name -> {
             try {
-                final Ingredient ing = Ingredient.builder()
-                        .setName(name)
-                        .setId(-1)
-                        .build();
-                fridgeController.addIngredient(ing);
+                fridgeController.addIngredient(name);
             }
             catch (Exception ex) {
                 ex.printStackTrace();
@@ -270,11 +267,11 @@ public final class RecipeAppBuilder {
             cardLayout.show(cardPanel, recipe);
         });
 
-        // Fridge 页面的 Back：回到 Ingredients 页面
-        fridgeView.setOnBack(() -> {
-            frame.setTitle(ingredientTitle);
-            cardLayout.show(cardPanel, ingredient);
-        });
+//        // Fridge 页面的 Back：回到 Ingredients 页面
+//        fridgeView.setOnBack(() -> {
+//            frame.setTitle(ingredientTitle);
+//            cardLayout.show(cardPanel, ingredient);
+//        });
 
         cardPanel.add(loginView, login);
         cardPanel.add(signupView, signup);
