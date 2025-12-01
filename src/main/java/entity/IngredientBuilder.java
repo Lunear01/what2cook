@@ -18,16 +18,17 @@ public class IngredientBuilder {
     /**
      * Set the id for this IngredientBuilder.
      *
-     * @param ingredientId the ingredient's id
+     * @param id the ingredient's id
      * @return this builder
      */
-    public IngredientBuilder setId(int ingredientId) {
-        this.ingredientId = ingredientId;
+    public IngredientBuilder setId(int id) {
+        this.ingredientId = id;
         return this;
     }
 
     /**
      * Builds and returns an Ingredient.
+     * @return Ingredient info#
      */
     public Ingredient build() {
 

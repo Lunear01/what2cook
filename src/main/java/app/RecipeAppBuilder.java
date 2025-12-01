@@ -348,7 +348,8 @@ public final class RecipeAppBuilder {
         ingredientSearchView.setOnOpenFridge(() -> {
             try {
                 fridgeController.GetIngredient();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 ex.printStackTrace();
             }
             frame.setTitle("What2Cook - Fridge");
