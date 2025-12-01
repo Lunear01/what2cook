@@ -1,8 +1,9 @@
 package view;
 
-import interface_adapter.fridgemodify.FridgeController;
-import interface_adapter.fridgemodify.FridgeState;
-import interface_adapter.fridgemodify.FridgeViewModel;
+import java.awt.Component;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -12,10 +13,10 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.List;
+
+import interface_adapter.fridgemodify.FridgeController;
+import interface_adapter.fridgemodify.FridgeState;
+import interface_adapter.fridgemodify.FridgeViewModel;
 
 /**
  * A simple page-style view to display the user's fridge contents.
@@ -88,7 +89,7 @@ public class FridgeView extends JPanel implements PropertyChangeListener {
     }
 
     /**
-     * ViewModel 的状态变化时被调用。
+     *
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
