@@ -8,11 +8,17 @@ public class AddFavoriteRecipeInteractor implements AddFavoriteRecipeInputBounda
 
     private final AddFavoriteRecipeDataAccessInterface favoritesDao;
     private final AddFavoriteRecipeOutputBoundary presenter;
+    private String lastMessage = "";
 
     public AddFavoriteRecipeInteractor(AddFavoriteRecipeDataAccessInterface favoritesDao,
                                        AddFavoriteRecipeOutputBoundary presenter) {
         this.favoritesDao = favoritesDao;
         this.presenter = presenter;
+
+    }
+
+    public String getLastMessage() {
+        return lastMessage;
     }
 
     @Override
@@ -26,25 +32,30 @@ public class AddFavoriteRecipeInteractor implements AddFavoriteRecipeInputBounda
         final boolean exists = currentFavorites.stream()
                 .anyMatch(recipeE -> recipeE.getId() == recipe.getId());
 
-        final AddFavoriteRecipeOutputData outputData;
+        final List<Recipe> updatedFavorites;
+        final String message;
 
         if (exists) {
-            outputData = new AddFavoriteRecipeOutputData(
-                    currentFavorites,
-                    recipe.getTitle() + " is already in your favorites."
-            );
+            // 已经存在：不再 add，只用当前列表
+            updatedFavorites = currentFavorites;
+            message = recipe.getTitle() + " is already in your favorites.";
         }
         else {
+            // 不存在：先加入 DAO，再重新取一遍列表
             favoritesDao.addToFavorites(username, recipe);
-            final List<Recipe> updated = favoritesDao.getFavorites(username);
-
-            outputData = new AddFavoriteRecipeOutputData(
-                    updated,
-                    recipe.getTitle() + " added to your favorites!"
-            );
+            updatedFavorites = favoritesDao.getFavorites(username);
+            message = recipe.getTitle() + " added to your favorites!";
         }
 
-        presenter.present(outputData);
+        // 记录这次 message，留给 controller 用
+        lastMessage = message;
+
+        presenter.present(
+                new AddFavoriteRecipeOutputData(
+                        updatedFavorites,
+                        message
+                )
+        );
     }
 
     @Override
