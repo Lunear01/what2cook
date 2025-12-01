@@ -55,7 +55,7 @@ exports.deleteIngredient = async (req, res) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: err.message || "Failed to delete ingredient" });
+        res.status(500).json({ success: false, error: err.message || "Failed to delete ingredient" });
     }
 };
 
@@ -73,6 +73,6 @@ exports.exists = async (req, res) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: "Server error" });
+        res.status(500).json({ success: false, error: "Server error" });
     }
 };
