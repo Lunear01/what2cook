@@ -33,8 +33,7 @@ public class AddFavoriteRecipeInteractor implements AddFavoriteRecipeInputBounda
                     currentFavorites,
                     recipe.getTitle() + " is already in your favorites."
             );
-        }
-        else {
+        } else {
             favoritesDao.addToFavorites(username, recipe);
             final List<Recipe> updated = favoritesDao.getFavorites(username);
 
@@ -45,23 +44,5 @@ public class AddFavoriteRecipeInteractor implements AddFavoriteRecipeInputBounda
         }
 
         presenter.present(outputData);
-    }
-
-    @Override
-    public void remove(AddFavoriteRecipeInputData inputData) {
-
-        final String username = inputData.getUsername();
-        final Recipe recipe = inputData.getRecipe();
-
-        favoritesDao.removeFromFavorites(username, recipe);
-
-        final List<Recipe> updated = favoritesDao.getFavorites(username);
-
-        presenter.present(
-                new AddFavoriteRecipeOutputData(
-                        updated,
-                        recipe.getTitle() + " removed from your favorites!"
-                )
-        );
     }
 }
