@@ -28,32 +28,4 @@ public class AddFavoriteRecipeController {
                 new AddFavoriteRecipeInputData(username, recipe);
         interactor.execute(inputData);
     }
-
-    public String addAndGetMessage(String username, Recipe recipe) {
-        final AddFavoriteRecipeInputData inputData =
-                new AddFavoriteRecipeInputData(username, recipe);
-        interactor.execute(inputData);
-
-        // 这里做一次安全的 downcast 拿到 lastMessage
-        if (interactor instanceof AddFavoriteRecipeInteractor) {
-            final AddFavoriteRecipeInteractor concrete =
-                    (AddFavoriteRecipeInteractor) interactor;
-            return concrete.getLastMessage();
-        }
-
-        // 理论上不会走到这里，给个兜底
-        return "";
-    }
-
-    /**
-     * Removes the given recipe from the user's favorite list.
-     *
-     * @param username the user whose favorite list is modified
-     * @param recipe   the recipe to remove
-     */
-    public void remove(String username, Recipe recipe) {
-        final AddFavoriteRecipeInputData inputData =
-                new AddFavoriteRecipeInputData(username, recipe);
-        interactor.remove(inputData);
-    }
 }

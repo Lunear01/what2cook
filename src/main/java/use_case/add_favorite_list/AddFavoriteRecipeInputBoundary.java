@@ -7,11 +7,4 @@ public interface AddFavoriteRecipeInputBoundary {
      * @param inputData the data required to add the recipe
      */
     void execute(AddFavoriteRecipeInputData inputData);
-
-    /**
-     * Removes a recipe from the user's favorite list.
-     *
-     * @param inputData the data required to remove the recipe
-     */
-    void remove(AddFavoriteRecipeInputData inputData);
 }
