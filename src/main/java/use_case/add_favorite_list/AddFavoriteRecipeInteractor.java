@@ -26,30 +26,22 @@ public class AddFavoriteRecipeInteractor implements AddFavoriteRecipeInputBounda
 
         final String username = inputData.getUsername();
         final Recipe recipe = inputData.getRecipe();
-
         final List<Recipe> currentFavorites = favoritesDao.getFavorites(username);
-
         final boolean exists = currentFavorites.stream()
                 .anyMatch(recipeE -> recipeE.getId() == recipe.getId());
-
         final List<Recipe> updatedFavorites;
         final String message;
 
         if (exists) {
-            // 已经存在：不再 add，只用当前列表
             updatedFavorites = currentFavorites;
             message = recipe.getTitle() + " is already in your favorites.";
         }
         else {
-            // 不存在：先加入 DAO，再重新取一遍列表
             favoritesDao.addToFavorites(username, recipe);
             updatedFavorites = favoritesDao.getFavorites(username);
             message = recipe.getTitle() + " added to your favorites!";
         }
-
-        // 记录这次 message，留给 controller 用
         lastMessage = message;
-
         presenter.present(
                 new AddFavoriteRecipeOutputData(
                         updatedFavorites,
