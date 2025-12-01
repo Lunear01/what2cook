@@ -1,11 +1,11 @@
 package use_case.fridge.GetFridge;
 
+import java.util.List;
+
 import dataaccess.IngredientDataAccessInterface;
 import entity.Ingredient;
 
-import java.util.List;
-
-public class GetFridgeInteractor implements GetFridgeInputBoundary{
+public class GetFridgeInteractor implements GetFridgeInputBoundary {
     private final IngredientDataAccessInterface fridgeDataAccess;
     private final GetFridgeOutputBoundary presenter;
 
@@ -18,9 +18,9 @@ public class GetFridgeInteractor implements GetFridgeInputBoundary{
     @Override
     public GetFridgeResponseModel getIngredient(GetFridgeRequestModel requestModel) throws Exception {
 
-        List<Ingredient> ingredients = fridgeDataAccess.getAllIngredients(requestModel.getUserName());
+        final List<Ingredient> ingredients = fridgeDataAccess.getAllIngredients(requestModel.getUserName());
 
-        GetFridgeResponseModel response = new GetFridgeResponseModel(
+        final GetFridgeResponseModel response = new GetFridgeResponseModel(
                 requestModel.getUserName(),
                 ingredients
         );

@@ -1,6 +1,6 @@
 package use_case.fridge.AddToFridge;
 
-public interface AddToFridgeInputBoundary{
+public interface AddToFridgeInputBoundary {
     /**
      * Executes the add-to-fridge-list use case.
      *
