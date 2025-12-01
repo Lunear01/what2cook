@@ -14,6 +14,12 @@ public class AddFavoriteRecipeInteractor implements AddFavoriteRecipeInputBounda
     private final AddFavoriteRecipeDataAccessInterface favoritesDao;
     private final AddFavoriteRecipeOutputBoundary presenter;
 
+    /**
+     * Stores the message for the last add attempt,
+     * so that the controller can retrieve and show it.
+     */
+    private String lastMessage;
+
     public AddFavoriteRecipeInteractor(AddFavoriteRecipeDataAccessInterface favoritesDao,
                                        AddFavoriteRecipeOutputBoundary presenter) {
         this.favoritesDao = favoritesDao;
@@ -40,16 +46,22 @@ public class AddFavoriteRecipeInteractor implements AddFavoriteRecipeInputBounda
             );
         }
         else {
+            // 不存在：先加入 DAO，再重新取一次列表
             favoritesDao.addToFavorites(username, recipe);
             final List<Recipe> updated = favoritesDao.getFavorites(username);
 
-            outputData = new AddFavoriteRecipeOutputData(
-                    updated,
-                    recipe.getTitle() + " added to your favorites!"
-            );
-        }
+        // 记录本次 message，给 controller 用
+        lastMessage = message;
 
         presenter.present(outputData);
     }
 
+    /**
+     * Returns the message of the last add attempt.
+     *
+     * @return last status message, or null if execute() has not been called yet
+     */
+    public String getLastMessage() {
+        return lastMessage;
+    }
 }

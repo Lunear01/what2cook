@@ -42,6 +42,8 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
     private final JButton backButton = new JButton("Back to Recipes");
 
     private List<Recipe> currentFavorites = Collections.emptyList();
+
+    // 双击某个 favorite 时要做的事情（由外部设置）
     private Consumer<Recipe> onOpenInstruction;
 
     public FavoriteListView(FavoriteListViewModel viewModel) {
@@ -60,7 +62,7 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
         final int scrollPaneHeight = 300;
         scrollPane.setPreferredSize(new Dimension(scrollPaneWidth, scrollPaneHeight));
 
-        // 双击打开 instructions
+        // 双击 favorite → 打开 instruction 页面
         final int doubleClickCount = 2;
         favoritesList.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -90,10 +92,15 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
         add(Box.createVerticalStrut(verticalStrutHeight));
         add(scrollPane);
         add(Box.createVerticalStrut(verticalStrutHeight));
-        add(Box.createVerticalStrut(horizontalStrut5));
         add(backButton);
         add(Box.createVerticalStrut(horizontalStrut5));
         add(statusLabel);
+
+        backButton.addActionListener(e -> {
+            if (onBackToRecipes != null) {
+                onBackToRecipes.run();
+            }
+        });
     }
 
     @Override
