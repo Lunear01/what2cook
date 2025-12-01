@@ -27,10 +27,16 @@ public class Ingredient {
         return ingredientId;
     }
 
+    /**
+     * Returns a new {@code IngredientBuilder} initialized with the fields of this
+     * {@code Ingredient}.
+     * This method allows safe modification of an existing {@code Ingredient}
+     * instance by creating a new builder pre-filled with its current values.
+     * @return a new {@code IngredientBuilder} pre-populated with this object's data
+     */
     public IngredientBuilder toBuilder() {
         return new IngredientBuilder()
                 .setName(this.name)
                 .setId(this.ingredientId);
     }
-
 }
