@@ -181,10 +181,10 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
                 sizeText = "null";
             }
             else {
-                sizeText = Integer.toString(recipes.size());
+                sizeText = String.valueOf(recipes.size());
             }
+
             System.out.println("DEBUG recipes size = " + sizeText);
-            // -----------------------------------
 
             updateIngredients(state.getIngredients());
             updateRecipes(recipes);

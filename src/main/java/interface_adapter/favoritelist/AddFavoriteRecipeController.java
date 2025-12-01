@@ -30,21 +30,24 @@ public class AddFavoriteRecipeController {
     }
 
     /**
-     * Adds the recipe and returns a user-friendly message
-     * (either "already in favorites" or "added to favorites").
-     * 专门给需要拿提示文案的调用方（例如 RecipeSearchController）用。
+     * Adds the recipe and returns a user-friendly message.
+     * @param username the name of the user whose favorites are updated
+     * @param recipe   the recipe to add to the favorites
+     * @return a user-friendly status message such as
+     *         "already in favorites" or "added to favorites"
      */
     public String addAndGetMessage(String username, Recipe recipe) {
         final AddFavoriteRecipeInputData inputData =
                 new AddFavoriteRecipeInputData(username, recipe);
         interactor.execute(inputData);
 
+        String message = "";
         if (interactor instanceof AddFavoriteRecipeInteractor) {
             final AddFavoriteRecipeInteractor concrete =
                     (AddFavoriteRecipeInteractor) interactor;
-            return concrete.getLastMessage();
+            message = concrete.getLastMessage();
         }
-        return "";
+        return message;
     }
 }
 

@@ -73,7 +73,7 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
             }
         });
 
-        backButton.addActionListener(e -> {
+        backButton.addActionListener(eev -> {
             if (onBackToRecipes != null) {
                 onBackToRecipes.run();
             }
@@ -90,7 +90,7 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
         add(Box.createVerticalStrut(horizontalStrut5));
         add(statusLabel);
 
-        backButton.addActionListener(e -> {
+        backButton.addActionListener(eev -> {
             if (onBackToRecipes != null) {
                 onBackToRecipes.run();
             }
@@ -123,7 +123,7 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
         }
         else {
             for (Recipe recipe : currentFavorites) {
-                listModel.addElement("• " + recipe.getTitle());
+                listModel.addElement("\u2022" + recipe.getTitle());
             }
             favoritesList.setEnabled(true);
         }
