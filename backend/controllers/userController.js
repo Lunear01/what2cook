@@ -20,7 +20,7 @@ exports.signup = async (req, res) => {
 
 exports.exists = async (req, res) => {
     try {
-        const { user_name } = req.body;
+        const { user_name } = req.params;
 
         if ( !user_name ) {
             return res.status(400).json({ error: "Missing user_name" });

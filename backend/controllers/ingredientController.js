@@ -2,13 +2,13 @@ const ingredientService = require("../services/ingredientServices");
 
 exports.addIngredient = async (req, res) => {
     try {
-        const { user_name, ingredient_name, ingredient_id } = req.body;
+        const { user_name, ingredient_name } = req.body;
 
-        if (!user_name || !ingredient_name || !ingredient_id ) {
+        if (!user_name || !ingredient_name ) {
             return res.status(400).json({ error: "Missing fields" });
         }
 
-        const result = await ingredientService.addIngredient(user_name, ingredient_name, ingredient_id);
+        const result = await ingredientService.addIngredient(user_name, ingredient_name);
 
         res.json({
             success: true,
@@ -17,7 +17,7 @@ exports.addIngredient = async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: err.message || "Failed to add ingredient" });
+        res.status(500).json({ success: false, error: err.message || "Failed to add ingredient" });
     }
 };
 
@@ -55,5 +55,23 @@ exports.deleteIngredient = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: err.message || "Failed to delete ingredient" });
+    }
+};
+
+exports.exists = async (req, res) => {
+    try {
+        const { user_name, ingredient_id } = req.params;
+
+        if (!user_name || !ingredient_id) {
+            return res.status(400).json({ error: "Missing fields" });
+        }
+
+        const result = await ingredientService.findIngredient(user_name, ingredient_id);
+
+        return res.json({ success: true, exists: !!result });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
     }
 };

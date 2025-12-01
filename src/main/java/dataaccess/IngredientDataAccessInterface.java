@@ -8,10 +8,9 @@ public interface IngredientDataAccessInterface {
     /**
      * add the ingredient.
      * @param userName the name of current user
-     * @param ingredientID the id of the ingredient that need to be added
      * @param ingredientName the name of the ingredient that need to be added
      */
-    void addIngredient(String userName, int ingredientID, String ingredientName);
+    void addIngredient(String userName, String ingredientName);
 
     /**
      * get the ingredient.
@@ -26,5 +25,13 @@ public interface IngredientDataAccessInterface {
      * @param ingredientID the id of the ingredient that need to be deleted
      */
     void deleteIngredient(String userName, int ingredientID);
+
+    /**
+     * Checks if the given username exists.
+     * @param username the username to look for
+     * @param ingredientID the id of the ingredient to look for
+     * @return true if an ingredient with the given username and idexists; false otherwise
+     */
+    boolean exists(String username, int ingredientID);
 
 }

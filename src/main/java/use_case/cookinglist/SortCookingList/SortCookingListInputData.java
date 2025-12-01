@@ -1,17 +1,28 @@
-package use_case.cookinglist;
+package use_case.cookinglist.SortCookingList;
 
+/**
+ * Input data for sorting the cooking list.
+ */
 public class SortCookingListInputData {
     private final String username;
     private final SortType sortType;
 
+    /**
+     * Enum representing the type of sort to apply.
+     */
     public enum SortType {
         BY_HEALTH_SCORE,
         BY_CALORIES
     }
-//not recorded on github
+    // not recorded on github
 
+    /**
+     * Constructor for SortCookingListInputData.
+     * @param username the username of the current user
+     * @param sortType the type of sort to apply
+     * @throws IllegalArgumentException if username is null/empty or sortType is null
+     */
     public SortCookingListInputData(String username, SortType sortType) {
-        // Bug #16 修复: 添加参数验证
         if (username == null || username.trim().isEmpty()) {
             throw new IllegalArgumentException("Username cannot be null or empty");
         }

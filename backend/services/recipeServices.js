@@ -63,6 +63,25 @@ const recipeServices = {
         );
 
         return result;
+    },
+
+    async findRecipe(user_name, recipe_id){
+        const [userRows] = await db.execute(
+            "SELECT user_id FROM user WHERE user_name = ?",
+            [user_name]
+        );
+
+        if (userRows.length === 0) {
+            throw new Error("User not found")
+        }
+
+        const user_id = userRows[0].user_id;
+
+        const [recipe_row] = await db.execute(
+            "SELECT * FROM recipe WHERE user_id = ? AND recipe_id = ?",
+            [user_id, recipe_id]
+        );
+        return recipe_row[0]
     }
 };
 
