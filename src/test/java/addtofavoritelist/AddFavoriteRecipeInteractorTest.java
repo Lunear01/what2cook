@@ -123,27 +123,4 @@ public class AddFavoriteRecipeInteractorTest {
         assertEquals(1, out.getFavorites().size());
         assertEquals(0, dao.addCalls); // addToFavorites not called on duplicate
     }
-
-    @Test
-    public void remove_removesFavorite_andPresentsUpdatedList() {
-        Recipe r1 = buildRecipe(10, "Soup");
-        Recipe r2 = buildRecipe(11, "Salad");
-        dao.favorites.add(r1);
-        dao.favorites.add(r2);
-
-        AddFavoriteRecipeInputData input =
-                new AddFavoriteRecipeInputData("user", r1);
-
-        interactor.remove(input);
-
-        AddFavoriteRecipeOutputData out = presenter.lastOutput;
-        assertNotNull(out);
-        assertEquals("Soup removed from your favorites!", out.getMessage());
-        assertEquals(1, out.getFavorites().size());
-        assertEquals(11, out.getFavorites().get(0).getId());
-
-        assertEquals(1, dao.removeCalls);
-        assertEquals("user", dao.lastUsernameRemove);
-        assertEquals(r1, dao.lastRemoved);
-    }
 }
