@@ -8,8 +8,8 @@ API infused recipe recommendation/search engine based on user provided ingredien
 - [x] 4. As a user, I want to get the instructions of my selected recipe so that I can cook it.
 - [x] 5. As a user, I want to calculate the total calories for each dish based on the ingredients I input, so that I can monitor my overall calorie intake when choosing what to cook.
 - [x] 6. As a user, I want to get the health score for each dish, so that I can understand the nutritional value of the foods I have.
-- [ ] 7. As a user, I want to add a recipe to my personal cooking list, so that I can keep track of the dishes I plan to cook.
-- [ ] 8. As a user, I want to add recipes to my favorites list, so that I can easily find and revisit the recipes I like the most.
+- [x] 7. As a user, I want to add a recipe to my personal cooking list, so that I can keep track of the dishes I plan to cook.
+- [x] 8. As a user, I want to add recipes to my favorites list, so that I can easily find and revisit the recipes I like the most.
 - [x] 9. As a user, I want to search my recipes without waiting for so long, so I can save more time in cooking the recipes.
 
 ### Backend Framework:
