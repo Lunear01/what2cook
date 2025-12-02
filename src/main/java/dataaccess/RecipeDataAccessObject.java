@@ -16,11 +16,7 @@ import java.util.List;
 
 public class RecipeDataAccessObject implements RecipeDataAccessInterface {
 
-    private final String BASE_URL = "http://172.20.10.3:3000/recipe";
-
-    private static final String GET = "GET";
-    private static final String POST = "POST";
-    private static final String DELETE = "DELETE";
+    private final String BASE_URL = Constance.baseUrl + "recipe";
 
     @Override
     public void addRecipe(String userName, Recipe recipe) {
@@ -28,12 +24,12 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
         try {
             final URL url = new URI(BASE_URL + "/add").toURL();
             conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod(POST);
-            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestMethod(Constance.POST);
+            conn.setRequestProperty(Constance.Content_Type, Constance.Content_Type_JSON);
             conn.setDoOutput(true);
         }
         catch (URISyntaxException uriSyntaxException) {
-            System.out.println("Invalid URI syntax");
+            System.out.println(Constance.invalid_URI_syntax);
             throw new RuntimeException(uriSyntaxException);
         }
         catch (IOException ioException) {
@@ -44,7 +40,6 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
         for (Ingredient ingredient : recipe.getIngredients()) {
             final JSONObject ing = new JSONObject();
             ing.put("ingredient_name", ingredient.getName());
-            ing.put("ingredient_id", ingredient.getIngredientId());
             ingredients.put(ing);
         }
 
@@ -106,12 +101,12 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
         try {
             final URL url = new URI(BASE_URL + "/" + userName).toURL();
             conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod(GET);
-            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestMethod(Constance.GET);
+            conn.setRequestProperty(Constance.Content_Type, Constance.Content_Type_JSON);
             conn.setDoOutput(false);
         }
         catch (URISyntaxException uriSyntaxException) {
-            System.out.println("Invalid URI syntax");
+            System.out.println(Constance.invalid_URI_syntax);
             throw new RuntimeException(uriSyntaxException);
         }
         catch (IOException ioException) {
@@ -154,13 +149,13 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
 
             final JSONObject obj = recipesArray.getJSONObject(i);
             final List<Ingredient> ingredientList = new ArrayList<>();
-            final JSONArray ingredientsArray = obj.getJSONArray("ingredients");
+            final JSONObject recipeObj = obj.getJSONObject("recipes");
+            final JSONArray ingredientsArray = recipeObj.getJSONArray("ingredients");
 
             for (int j = 0; j < ingredientsArray.length(); j++) {
                 final JSONObject object = ingredientsArray.getJSONObject(j);
                 final Ingredient ing = Ingredient.builder()
                         .setName(object.getString("ingredient_name"))
-                        .setId(object.getInt("ingredient_id"))
                         .build();
                 ingredientList.add(ing);
             }
@@ -185,12 +180,12 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
         try {
             final URL url = new URI(BASE_URL + "/delete").toURL();
             conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod(DELETE);
+            conn.setRequestMethod(Constance.DELETE);
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(true);
         }
         catch (URISyntaxException uriSyntaxException) {
-            System.out.println("Invalid URI syntax");
+            System.out.println(Constance.invalid_URI_syntax);
             throw new RuntimeException(uriSyntaxException);
         }
         catch (IOException ioException) {
@@ -225,8 +220,8 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
                 sb.append(line);
             }
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException event) {
+            throw new RuntimeException(event);
         }
 
         final JSONObject res = new JSONObject(sb.toString());

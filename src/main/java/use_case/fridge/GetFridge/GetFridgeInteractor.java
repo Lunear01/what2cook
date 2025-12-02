@@ -2,7 +2,7 @@ package use_case.fridge.GetFridge;
 
 import java.util.List;
 
-import dataaccess.IngredientDataAccessInterface;
+import use_case.fridge.IngredientDataAccessInterface;
 import entity.Ingredient;
 
 public class GetFridgeInteractor implements GetFridgeInputBoundary {

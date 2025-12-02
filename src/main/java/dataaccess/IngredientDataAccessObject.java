@@ -1,10 +1,9 @@
 package dataaccess;
 
-import entity.Ingredient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.OutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -12,13 +11,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import entity.Ingredient;
+import use_case.fridge.IngredientDataAccessInterface;
+
+
 public class IngredientDataAccessObject implements IngredientDataAccessInterface {
 
-    private static final String BaseUrl = "http://172.20.10.3:3000/ingredient";
-
-    private static final String GET = "GET";
-    private static final String POST = "POST";
-    private static final String DELETE = "DELETE";
+    private static final String BaseUrl = Constance.baseUrl + "ingredient";
 
     @Override
     public int addIngredient(String userName, String ingredientName) {
@@ -26,12 +28,12 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
         try {
             final URL url = new URI(BaseUrl + "/add").toURL();
             conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod(POST);
-            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestMethod(Constance.POST);
+            conn.setRequestProperty(Constance.Content_Type, Constance.Content_Type_JSON);
             conn.setDoOutput(true);
         }
         catch (URISyntaxException uriSyntaxException) {
-            System.out.println("Invalid URI syntax");
+            System.out.println(Constance.invalid_URI_syntax);
             throw new RuntimeException(uriSyntaxException);
         }
         catch (IOException ioException) {
@@ -47,8 +49,8 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
             os.write(body.toString().getBytes());
             os.flush();
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException event) {
+            throw new RuntimeException(event);
         }
 
         final StringBuilder sb = new StringBuilder();
@@ -67,8 +69,8 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
                 sb.append(line);
             }
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException event) {
+            throw new RuntimeException(event);
         }
 
         final JSONObject res = new JSONObject(sb.toString());
@@ -87,12 +89,12 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
         try {
             final URL url = new URI(BaseUrl + "/" + userName).toURL();
             conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod(GET);
-            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestMethod(Constance.GET);
+            conn.setRequestProperty(Constance.Content_Type, Constance.Content_Type_JSON);
             conn.setDoOutput(false);
         }
         catch (URISyntaxException uriSyntaxException) {
-            System.out.println("Invalid URI syntax");
+            System.out.println(Constance.invalid_URI_syntax);
             throw new RuntimeException(uriSyntaxException);
         }
         catch (IOException ioException) {
@@ -148,12 +150,12 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
         try {
             final URL url = new URI(BaseUrl + "/delete").toURL();
             conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod(DELETE);
-            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestMethod(Constance.DELETE);
+            conn.setRequestProperty(Constance.Content_Type, Constance.Content_Type_JSON);
             conn.setDoOutput(true);
         }
         catch (URISyntaxException uriSyntaxException) {
-            System.out.println("Invalid URI syntax");
+            System.out.println(Constance.invalid_URI_syntax);
             throw new RuntimeException(uriSyntaxException);
         }
         catch (IOException ioException) {
@@ -207,12 +209,12 @@ public class IngredientDataAccessObject implements IngredientDataAccessInterface
         try {
             final URL url = new URI(BaseUrl + userName + "/exists/" + ingredientID).toURL();
             conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod(GET);
+            conn.setRequestMethod(Constance.GET);
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(false);
         }
         catch (URISyntaxException uriSyntaxException) {
-            System.out.println("Invalid URI syntax");
+            System.out.println(Constance.invalid_URI_syntax);
             throw new RuntimeException(uriSyntaxException);
         }
         catch (IOException ioException) {

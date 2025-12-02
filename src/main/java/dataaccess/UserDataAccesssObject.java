@@ -14,20 +14,17 @@ import use_case.signup.SignupUserDataAccessInterface;
 public class UserDataAccesssObject implements
         LoginUserDataAccessInterface, SignupUserDataAccessInterface {
 
-    private static final String POST = "POST";
-    private static final String GET = "GET";
-
-    private static final String baseUrl = "http://172.20.10.3:3000/user";
+    private static final String BASE_URL = Constance.baseUrl + "user";
 
     @Override
     public void save(User user) {
 
         try {
-            final URL url = new URI(baseUrl + "/signup").toURL();
+            final URL url = new URI(BASE_URL + "/signup").toURL();
             final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod(POST);
+            conn.setRequestMethod(Constance.POST);
             conn.setDoOutput(true);
-            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty(Constance.Content_Type, Constance.Content_Type_JSON);
 
             final JSONObject body = new JSONObject();
             body.put("user_name", user.getName());
@@ -41,7 +38,7 @@ public class UserDataAccesssObject implements
             conn.getInputStream();
         }
         catch (URISyntaxException uriSyntaxException) {
-            System.out.println("Invalid URI syntax");
+            System.out.println(Constance.invalid_URI_syntax);
             throw new RuntimeException(uriSyntaxException);
         }
         catch (IOException ioException) {
@@ -53,9 +50,9 @@ public class UserDataAccesssObject implements
     public User get(String userName, String password) {
         final HttpURLConnection conn;
         try {
-            final URL url = new URI(baseUrl + "/login").toURL();
+            final URL url = new URI(BASE_URL + "/login").toURL();
             conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod(POST);
+            conn.setRequestMethod(Constance.POST);
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(true);
         }
@@ -76,8 +73,8 @@ public class UserDataAccesssObject implements
             os.write(body.toString().getBytes());
             os.flush();
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException event) {
+            throw new RuntimeException(event);
         }
 
         final StringBuilder sb = new StringBuilder();
@@ -96,15 +93,15 @@ public class UserDataAccesssObject implements
                 sb.append(line);
             }
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        catch (IOException event) {
+            throw new RuntimeException(event);
         }
 
         final JSONObject res = new JSONObject(sb.toString());
 
         final String message = res.getString("message");
 
-        if (!message.equals("Login success")) {
+        if (!message.equals(Constance.login_success)) {
             return null; // may have issue look later.
         }
 
@@ -121,23 +118,23 @@ public class UserDataAccesssObject implements
     public boolean existsByName(String userName) {
         final URL url;
         try {
-            url = new URI(baseUrl + "/" + userName).toURL();
+            url = new URI(BASE_URL + "/" + userName).toURL();
         }
-        catch (URISyntaxException e) {
-            System.out.println(e.getMessage());
-            throw new RuntimeException(e);
+        catch (URISyntaxException event) {
+            System.out.println(event.getMessage());
+            throw new RuntimeException(event);
         }
-        catch (MalformedURLException e) {
+        catch (MalformedURLException event) {
             System.out.println("Malformed URL");
-            throw new RuntimeException(e);
+            throw new RuntimeException(event);
         }
 
         final HttpURLConnection conn;
         final StringBuilder sb;
         try {
             conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod(GET);
-            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestMethod(Constance.GET);
+            conn.setRequestProperty(Constance.Content_Type, Constance.Content_Type_JSON);
             conn.setDoOutput(false);
 
             final BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -148,9 +145,9 @@ public class UserDataAccesssObject implements
                 sb.append(line);
             }
         }
-        catch (IOException e) {
-            System.out.println("Error opening connection: " + e.getMessage());
-            throw new RuntimeException(e);
+        catch (IOException event) {
+            System.out.println("Error opening connection: " + event.getMessage());
+            throw new RuntimeException(event);
         }
 
         final JSONObject res = new JSONObject(sb.toString());

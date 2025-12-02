@@ -1,4 +1,4 @@
-package dataaccess;
+package use_case.fridge;
 
 import entity.Ingredient;
 

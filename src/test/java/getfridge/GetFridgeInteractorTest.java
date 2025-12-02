@@ -8,7 +8,7 @@ import static org.junit.Assert.assertSame;
 import java.util.ArrayList;
 import java.util.List;
 
-import dataaccess.IngredientDataAccessInterface;
+import use_case.fridge.IngredientDataAccessInterface;
 import entity.Ingredient;
 import org.junit.Test;
 
