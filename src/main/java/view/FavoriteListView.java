@@ -89,12 +89,6 @@ public class FavoriteListView extends JPanel implements PropertyChangeListener {
         add(backButton);
         add(Box.createVerticalStrut(horizontalStrut5));
         add(statusLabel);
-
-        backButton.addActionListener(eev -> {
-            if (onBackToRecipes != null) {
-                onBackToRecipes.run();
-            }
-        });
     }
 
     @Override

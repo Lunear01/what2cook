@@ -246,7 +246,6 @@ public final class RecipeAppBuilder {
         final String recipe = "recipe";
         final String cooking = "cooking";
         final String favorites = "favorites";
-        final String recipeInstruction = "recipeInstruction";
         final String fridge = "fridge";
         final String recipeTitle = "What2Cook - Recipes";
         final String ingredientTitle = "What2Cook - Ingredients";
@@ -283,11 +282,6 @@ public final class RecipeAppBuilder {
         signupView.setOnBackToLogin(() -> {
             frame.setTitle("What2Cook - Login");
             cardLayout.show(cardPanel, login);
-        });
-
-        recipeSearchView.setOnOpenInstruction(recipeObj -> {
-            frame.setTitle("What2Cook - Instructions");
-            cardLayout.show(cardPanel, recipeInstruction);
         });
 
         favoriteListView.setOnOpenInstruction(recipeObj -> {
