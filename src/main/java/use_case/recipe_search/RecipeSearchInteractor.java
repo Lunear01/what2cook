@@ -46,7 +46,6 @@ public class RecipeSearchInteractor implements RecipeSearchInputBoundary {
      */
     @Override
     public void execute(RecipeSearchInputData inputData) {
-        //Extract ingredient list
         final List<Ingredient> ingredients = inputData.getIngredients();
 
         if (ingredients == null || ingredients.isEmpty()) {
