@@ -69,7 +69,6 @@ import view.FavoriteListView;
 import view.FridgeView;
 import view.IngredientSearchView;
 import view.LoginView;
-import view.RecipeInstructionView;
 import view.RecipeSearchView;
 import view.SignupView;
 
@@ -215,10 +214,6 @@ public final class RecipeAppBuilder {
         });
 
         // Recipe instructions
-        final RecipeInstructionView recipeInstructionView =
-                new RecipeInstructionView();
-        recipeInstructionView.setFavoriteController(addFavoriteRecipeController);
-
         recipeSearchView.setCookingListController(addToCookingListController);
 
         recipeSearchController.setFavoriteController(addFavoriteRecipeController);
@@ -273,13 +268,7 @@ public final class RecipeAppBuilder {
         cardPanel.add(recipeSearchView, recipe);
         cardPanel.add(cookingListView, cooking);
         cardPanel.add(favoriteListView, favorites);
-        cardPanel.add(recipeInstructionView, recipeInstruction);
         cardPanel.add(fridgeView, fridge);
-
-        recipeInstructionView.setOnBackToRecipeList(() -> {
-            frame.setTitle(recipeTitle);
-            cardLayout.show(cardPanel, recipe);
-        });
 
         cookingListView.setOnBack(() -> {
             frame.setTitle(recipeTitle);
@@ -297,7 +286,6 @@ public final class RecipeAppBuilder {
         });
 
         recipeSearchView.setOnOpenInstruction(recipeObj -> {
-            recipeInstructionView.setRecipe(recipeObj);
             frame.setTitle("What2Cook - Instructions");
             cardLayout.show(cardPanel, recipeInstruction);
         });
@@ -309,7 +297,6 @@ public final class RecipeAppBuilder {
         loginView.setOnLoginSuccess(() -> {
             final String username = loginViewModel.getState().getUsername();
             recipeSearchView.setCurrentUsername(username);
-            recipeInstructionView.setCurrentUsername(username);
             recipeSearchController.setCurrentUsername(username);
             cookingListView.setCurrentUsername(username);
             frame.setTitle(ingredientTitle);
