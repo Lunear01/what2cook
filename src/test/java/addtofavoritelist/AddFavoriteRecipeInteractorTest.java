@@ -22,15 +22,11 @@ public class AddFavoriteRecipeInteractorTest {
         final List<Recipe> favorites = new ArrayList<>();
 
         int addCalls = 0;
-        int removeCalls = 0;
         String lastUsernameAdd;
-        String lastUsernameRemove;
         Recipe lastAdded;
-        Recipe lastRemoved;
 
         @Override
         public List<Recipe> getFavorites(String username) {
-            // return copy to simulate real DAO
             return new ArrayList<>(favorites);
         }
 
@@ -40,14 +36,6 @@ public class AddFavoriteRecipeInteractorTest {
             lastUsernameAdd = username;
             lastAdded = recipe;
             favorites.add(recipe);
-        }
-
-        @Override
-        public void removeFromFavorites(String username, Recipe recipe) {
-            removeCalls++;
-            lastUsernameRemove = username;
-            lastRemoved = recipe;
-            favorites.removeIf(r -> r.getId() == recipe.getId());
         }
     }
 
@@ -87,6 +75,14 @@ public class AddFavoriteRecipeInteractorTest {
                 .build();
     }
 
+    /**
+     * Last message should be null before any execute() calls.
+     */
+    @Test
+    public void getLastMessage_beforeExecute_returnsNull() {
+        assertNull(interactor.getLastMessage());
+    }
+
     @Test
     public void execute_addNewFavorite_addsAndPresentsUpdatedList() {
         Recipe recipe = buildRecipe(1, "Pizza");
@@ -104,12 +100,14 @@ public class AddFavoriteRecipeInteractorTest {
         assertEquals(1, dao.addCalls);
         assertEquals("user", dao.lastUsernameAdd);
         assertEquals(recipe, dao.lastAdded);
+
+        assertEquals("Pizza added to your favorites!", interactor.getLastMessage());
     }
 
     @Test
     public void execute_addDuplicateFavorite_doesNotCallAddAndShowsAlreadyMessage() {
         Recipe existing = buildRecipe(2, "Burger");
-        dao.favorites.add(existing); // pre-populate favorites
+        dao.favorites.add(existing);
 
         Recipe duplicate = buildRecipe(2, "Burger"); // different object, same id
         AddFavoriteRecipeInputData input =
@@ -121,6 +119,8 @@ public class AddFavoriteRecipeInteractorTest {
         assertNotNull(out);
         assertEquals("Burger is already in your favorites.", out.getMessage());
         assertEquals(1, out.getFavorites().size());
-        assertEquals(0, dao.addCalls); // addToFavorites not called on duplicate
+        assertEquals(0, dao.addCalls);
+
+        assertEquals("Burger is already in your favorites.", interactor.getLastMessage());
     }
 }
