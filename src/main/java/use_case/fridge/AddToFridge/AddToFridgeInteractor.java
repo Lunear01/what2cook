@@ -1,6 +1,6 @@
 package use_case.fridge.AddToFridge;
 
-import dataaccess.IngredientDataAccessInterface;
+import use_case.fridge.IngredientDataAccessInterface;
 
 public class AddToFridgeInteractor implements AddToFridgeInputBoundary {
 

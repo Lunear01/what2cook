@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import dataaccess.InMemoryFavoriteRecipeDataAccess;
-import dataaccess.IngredientDataAccessInterface;
+import use_case.fridge.IngredientDataAccessInterface;
 import dataaccess.IngredientDataAccessObject;
 import dataaccess.RecipeDataAccessObject;
 import dataaccess.UserDataAccesssObject;
@@ -321,7 +321,7 @@ public final class RecipeAppBuilder {
 
         ingredientSearchView.setOnOpenFridge(() -> {
             try {
-                fridgeController.GetIngredient();
+                fridgeController.getIngredient();
             }
             catch (Exception ex) {
                 ex.printStackTrace();

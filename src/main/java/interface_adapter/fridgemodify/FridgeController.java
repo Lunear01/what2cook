@@ -1,5 +1,7 @@
 package interface_adapter.fridgemodify;
 
+import java.util.List;
+
 import entity.Ingredient;
 import interface_adapter.login.LoginViewModel;
 import use_case.fridge.AddToFridge.AddToFridgeInputBoundary;
@@ -9,8 +11,6 @@ import use_case.fridge.DeleteFridge.DeleteFridgeRequestModel;
 import use_case.fridge.GetFridge.GetFridgeInputBoundary;
 import use_case.fridge.GetFridge.GetFridgeRequestModel;
 import use_case.fridge.GetFridge.GetFridgeResponseModel;
-
-import java.util.List;
 
 public class FridgeController {
 
@@ -34,33 +34,51 @@ public class FridgeController {
         this.viewModel = viewModel;
     }
 
-    /** 添加 ingredient 并刷新 fridge */
+    /**
+     *  Add ingredient to fridge.
+     *  update fridge ViewModel after adding.
+     *  @param ingredientName the name of the ingredient to add
+     *  @throws Exception if add fails
+     */
     public void addIngredient(String ingredientName) throws Exception {
         final String username = loginVm.getState().getUsername();
         addUc.addIngredient(new AddToFridgeRequestModel(username, ingredientName));
-        GetIngredient();
+        getIngredient();
     }
 
-    /** 获取 fridge 列表，并更新 ViewModel */
-    public void GetIngredient() throws Exception {
+    /**
+     * Get ingredients from fridge.
+     * Update fridge ViewModel after getting.
+     * @throws Exception if get fails
+     */
+    public void getIngredient() throws Exception {
         final String username = loginVm.getState().getUsername();
-        GetFridgeResponseModel response = getUc.getIngredient(new GetFridgeRequestModel(username));
+        final GetFridgeResponseModel response = getUc.getIngredient(new GetFridgeRequestModel(username));
         viewModel.setState(responseToFridgeState(response));
     }
 
-    /** 删除 ingredient 并刷新 fridge */
+    /**
+     * Delete ingredients from fridge.
+     * Update fridge ViewModel after getting.
+     * @param ingredient the ingredient to delete
+     * @throws Exception if delete fails
+     */
     public void deleteIngredient(Ingredient ingredient) throws Exception {
         deleteUc.deleteIngredient(new DeleteFridgeRequestModel(
                 loginVm.getState().getUsername(),
                 ingredient.getIngredientId()
         ));
-        GetIngredient();
+        getIngredient();
     }
 
-    /** 将 ResponseModel 转换为 FridgeState */
+    /**
+     * Change GetFridgeResponseModel to FridgeState.
+     * @param response the GetFridgeResponseModel from use case
+     * @return the FridgeState for ViewModel
+     */
     private FridgeState responseToFridgeState(GetFridgeResponseModel response) {
-        FridgeState state = new FridgeState();
-        List<Ingredient> ingredients = response.getIngredients();  // 假设 ResponseModel 有 getIngredients()
+        final FridgeState state = new FridgeState();
+        final List<Ingredient> ingredients = response.getIngredients();
         state.setIngredients(ingredients);
         return state;
     }
