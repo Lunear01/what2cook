@@ -19,8 +19,15 @@ public class AddToCookingListController {
      * @param recipe   the recipe to add.
      */
     public void add(String username, Recipe recipe) {
+        System.out.println("DEBUG Controller: add() called");
+        System.out.println("  - Username: " + username);
+        System.out.println("  - Recipe: " + recipe.getTitle());
+
         final AddToCookingListInputData inputData =
                 new AddToCookingListInputData(username, recipe);
+
+        System.out.println("DEBUG Controller: Calling interactor.execute()...");
         interactor.execute(inputData);
+        System.out.println("DEBUG Controller: interactor.execute() completed");
     }
 }

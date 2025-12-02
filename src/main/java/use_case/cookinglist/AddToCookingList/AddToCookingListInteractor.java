@@ -21,29 +21,61 @@ public class AddToCookingListInteractor implements AddToCookingListInputBoundary
 
     @Override
     public void execute(AddToCookingListInputData inputData) {
-        final String username = inputData.getUsername();
-        final Recipe recipe = inputData.getRecipe();
-        final List<Recipe> currentList = cookingListDao.getAllRecipes(username);
-        final boolean exists = currentList.stream()
-                .anyMatch(recipeItem -> recipeItem.getId() == recipe.getId());
+        System.out.println("\n--- Interactor: execute() started ---");
+        try {
+            final String username = inputData.getUsername();
+            final Recipe recipe = inputData.getRecipe();
 
-        if (exists) {
-            presenter.present(
-                    new AddToCookingListOutputData(
-                            currentList,
-                            recipe.getTitle() + " is already in your cooking list."
-                    )
-            );
+            System.out.println("DEBUG Interactor: Input data received");
+            System.out.println("  - Username: " + username);
+            System.out.println("  - Recipe ID: " + recipe.getId());
+            System.out.println("  - Recipe Title: " + recipe.getTitle());
+
+            System.out.println("DEBUG Interactor: Fetching current cooking list from DAO...");
+            final List<Recipe> currentList = cookingListDao.getAllRecipes(username);
+            System.out.println("DEBUG Interactor: Current list size = " + currentList.size());
+
+            final boolean exists = currentList.stream()
+                    .anyMatch(recipeItem -> recipeItem.getId() == recipe.getId());
+
+            System.out.println("DEBUG Interactor: Recipe exists in list = " + exists);
+
+            if (exists) {
+                System.out.println("DEBUG Interactor: Recipe already exists, notifying presenter");
+                presenter.present(
+                        new AddToCookingListOutputData(
+                                currentList,
+                                recipe.getTitle() + " is already in your cooking list."
+                        )
+                );
+                System.out.println("DEBUG Interactor: Presenter notified (duplicate)");
+            }
+            else {
+                System.out.println("DEBUG Interactor: Adding new recipe to DAO...");
+                cookingListDao.addRecipe(username, recipe);
+                System.out.println("DEBUG Interactor: DAO.addRecipe() completed successfully");
+
+                System.out.println("DEBUG Interactor: Fetching updated list from DAO...");
+                final List<Recipe> updatedList = cookingListDao.getAllRecipes(username);
+                System.out.println("DEBUG Interactor: Updated list size = " + updatedList.size());
+
+                System.out.println("DEBUG Interactor: Notifying presenter with success message");
+                presenter.present(
+                        new AddToCookingListOutputData(
+                                updatedList,
+                                recipe.getTitle() + " added to your cooking list!"
+                        )
+                );
+                System.out.println("DEBUG Interactor: Presenter notified (success)");
+            }
         }
-        else {
-            cookingListDao.addRecipe(username, recipe);
-            final List<Recipe> updatedList = cookingListDao.getAllRecipes(username);
-            presenter.present(
-                    new AddToCookingListOutputData(
-                            updatedList,
-                            recipe.getTitle() + " added to your cooking list!"
-                    )
-            );
+        catch (Exception e) {
+            System.err.println("ERROR Interactor: Exception occurred!");
+            System.err.println("  Exception type: " + e.getClass().getName());
+            System.err.println("  Message: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
         }
+        System.out.println("--- Interactor: execute() completed ---\n");
     }
 }

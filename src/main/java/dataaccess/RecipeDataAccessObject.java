@@ -24,19 +24,30 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
 
     @Override
     public void addRecipe(String userName, Recipe recipe) {
+        System.out.println("\n+++ DAO: addRecipe() started +++");
+        System.out.println("DAO: Input parameters:");
+        System.out.println("  - userName: " + userName);
+        System.out.println("  - recipe.getId(): " + recipe.getId());
+        System.out.println("  - recipe.getTitle(): " + recipe.getTitle());
+
         final HttpURLConnection conn;
         try {
             final URL url = new URI(BASE_URL + "/add").toURL();
+            System.out.println("DAO: Target URL: " + url);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(POST);
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(true);
+            System.out.println("DAO: HTTP connection established");
         }
         catch (URISyntaxException uriSyntaxException) {
-            System.out.println("Invalid URI syntax");
+            System.err.println("DAO ERROR: Invalid URI syntax");
+            uriSyntaxException.printStackTrace();
             throw new RuntimeException(uriSyntaxException);
         }
         catch (IOException ioException) {
+            System.err.println("DAO ERROR: IOException during connection setup");
+            ioException.printStackTrace();
             throw new RuntimeException(ioException);
         }
 
@@ -47,6 +58,7 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
             ing.put("ingredient_id", ingredient.getIngredientId());
             ingredients.put(ing);
         }
+        System.out.println("DAO: Ingredients array created with " + ingredients.length() + " items");
 
         final JSONObject recipeJson = new JSONObject();
         recipeJson.put("title", recipe.getTitle());
@@ -62,42 +74,62 @@ public class RecipeDataAccessObject implements RecipeDataAccessInterface {
         body.put("recipe_id", recipe.getId());
         body.put("recipes", recipeJson);
 
+        System.out.println("DAO: Request body prepared:");
+        System.out.println(body.toString(2));
+
         try {
+            System.out.println("DAO: Sending request to backend...");
             final OutputStream os = conn.getOutputStream();
             os.write(body.toString().getBytes());
             os.flush();
+            System.out.println("DAO: Request sent successfully");
         }
         catch (IOException e) {
+            System.err.println("DAO ERROR: IOException during request sending");
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
 
         final StringBuilder sb = new StringBuilder();
+        int responseCode = -1;
         try {
+            responseCode = conn.getResponseCode();
+            System.out.println("DAO: Response code: " + responseCode);
+
             final BufferedReader br;
 
-            if (conn.getResponseCode() >= 200 && conn.getResponseCode() < 300) {
+            if (responseCode >= 200 && responseCode < 300) {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                System.out.println("DAO: Reading successful response...");
             }
             else {
                 br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+                System.out.println("DAO: Reading error response...");
             }
 
             String line;
             while ((line = br.readLine()) != null) {
                 sb.append(line);
             }
+            System.out.println("DAO: Response body: " + sb.toString());
         }
         catch (IOException e) {
+            System.err.println("DAO ERROR: IOException during response reading");
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
 
         final JSONObject res = new JSONObject(sb.toString());
 
         final boolean success = res.getBoolean("success");
+        System.out.println("DAO: Backend response success = " + success);
 
         if (!success) {
+            System.err.println("DAO ERROR: Backend returned success=false");
             throw new RuntimeException("Failed to add recipe");
         }
+
+        System.out.println("+++ DAO: addRecipe() completed successfully +++\n");
     }
 
     @Override

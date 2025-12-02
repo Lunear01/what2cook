@@ -131,10 +131,12 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
     }
 
     private void handleAddToCookingList() {
+        System.out.println("\n========== ADD TO COOKING LIST CLICKED ==========");
 
         boolean canProceed = true;
 
         if (cookingListController == null) {
+            System.out.println("ERROR: cookingListController is null");
             JOptionPane.showMessageDialog(
                     this,
                     "Cooking list is not configured.",
@@ -144,6 +146,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
             canProceed = false;
         }
         else if (currentUsername == null || currentUsername.isEmpty()) {
+            System.out.println("ERROR: currentUsername is null or empty");
             JOptionPane.showMessageDialog(
                     this,
                     "User is not logged in.",
@@ -153,6 +156,7 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
             canProceed = false;
         }
         else if (selectedRecipe == null) {
+            System.out.println("ERROR: selectedRecipe is null");
             JOptionPane.showMessageDialog(
                     this,
                     "Please click a recipe card first.",
@@ -163,8 +167,28 @@ public class RecipeSearchView extends JPanel implements PropertyChangeListener {
         }
 
         if (canProceed) {
+            System.out.println("DEBUG RecipeSearchView: All checks passed");
+            System.out.println("  - Username: " + currentUsername);
+            System.out.println("  - Recipe ID: " + selectedRecipe.getId());
+            System.out.println("  - Recipe Title: " + selectedRecipe.getTitle());
+            System.out.println("  - Recipe Calories: " + selectedRecipe.getCalories());
+            System.out.println("  - Recipe Health Score: " + selectedRecipe.getHealthScore());
+            System.out.println("  - Recipe Ingredients count: " +
+                (selectedRecipe.getIngredients() != null ? selectedRecipe.getIngredients().size() : "null"));
+
+            System.out.println("DEBUG RecipeSearchView: Calling controller.add()...");
             cookingListController.add(currentUsername, selectedRecipe);
+            System.out.println("DEBUG RecipeSearchView: controller.add() completed");
+
+            // Show success message to user
+            JOptionPane.showMessageDialog(
+                    this,
+                    selectedRecipe.getTitle() + " has been processed!\nCheck 'View My Cooking List' to see the result.",
+                    "Add to Cooking List",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
         }
+        System.out.println("========== ADD TO COOKING LIST END ==========\n");
     }
 
     @Override
