@@ -16,8 +16,7 @@ import recipeapi.exceptions.RecipeNotFoundException;
 public class SpoonacularRecipeFetcher implements RecipeFetcher {
 
     private static final String API_KEY = System.getenv().getOrDefault(
-            "SPOONACULAR_API_KEY",
-            "a8caa3ad56aa4b7ba4a935fda8cfabdd"
+            "SPOONACULAR_API_KEY", "your_default_api_key_here"
     );
 
     private static final String BASE_URL = "https://api.spoonacular.com/recipes";

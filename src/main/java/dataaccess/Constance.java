@@ -1,11 +1,11 @@
 package dataaccess;
 
 public final class Constance {
-    private Constance(){
+    private Constance() {
         // prevent instantiation
     }
 
-    public static final String baseUrl = "http://192.168.2.13:3000/";
+    public static final String baseUrl = "http://localhost:3000/";
 
     public static final String GET = "GET";
     public static final String POST = "POST";
