@@ -11,17 +11,16 @@ API infused recipe recommendation/search engine based on user provided ingredien
 - [x] 7. As a user I want to have my user credentials and user information saved, so that I don’t have to create an account every time I want to login. 
 
 ### Backend Framework:
-Client (Java APP / Android) <--HTTP/JSON--> API Gateway (Express index.js)
+Client (Java APP) <--HTTP/JSON--> API Gateway (Express index.js)
 ├── routes/ (userRoutes, ingredientRoutes, recipeRoutes)
 ├── controllers/ (userController, ingredientController, recipeController)
 ├── services/ (userService, ingredientService, recipeService)
 └── db.js (mysql2 connection pool)
 
 MySQL Database (what2cook)
-├── users / users table
-├── ingredients (master list)
-├── user_ingredients (user's ingredient list)
-└── user_recipes (user's saved recipes)
+├── user / users table
+├── ingredient (user's ingredient list)
+└── recipe (user's saved recipes)
 
 ### Group Memebers:
 - Haiwen Yi
